@@ -60,7 +60,7 @@ import org.meandre.core.ExecutableComponent;
            name="URLFetcher",
            tags="URL, stream")
         
-public class URLFetcher implements ExecutableComponent{
+public class URLFetcher implements ExecutableComponent {
    
     @ComponentProperty(defaultValue="http://norma.ncsa.uiuc.edu/public-dav/Datasets/numeric/cpu.arff",
                        description="This property sets the URL.",

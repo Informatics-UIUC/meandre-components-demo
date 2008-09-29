@@ -70,7 +70,7 @@ public class StreamContentReader implements ExecutableComponent {
                        name="contentType")
     final static String DATA_PROPERTY = "contentType";
     
-    @ComponentInput(description="Read the content as stream.",
+    @ComponentInput(description="Read content as stream.",
                     name= "inputStream")
     public final static String DATA_INPUT = "inputStream";
     
