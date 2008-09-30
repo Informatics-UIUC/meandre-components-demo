@@ -58,6 +58,7 @@ import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamTerminator;
+import org.meandre.core.system.components.ext.StreamInitiator;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -101,6 +102,7 @@ public class RSSPusher implements ExecutableComponent {
         List entries = feed.getEntries();
         //System.out.println("entries.size: " + entries.size());
         int i = 0;
+        cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamInitiator());
         for(final Iterator iter = entries.iterator(); iter.hasNext();) {
             SyndEntry entry = (SyndEntry)iter.next();
             //System.out.println("\tAuthor(" + (i++) + "): " + entry.getDescription().getType());

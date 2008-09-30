@@ -83,7 +83,8 @@ public class StringLinePusher implements ExecutableComponent {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
         
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line; 
+        String line;
+        cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamInitiator());
         try {
             while((line = br.readLine())!= null) {
                 //System.out.println(line);

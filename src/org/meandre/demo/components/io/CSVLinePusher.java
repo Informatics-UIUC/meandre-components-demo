@@ -57,6 +57,7 @@ import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
+import org.meandre.core.system.components.ext.StreamInitiator;
 import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
@@ -86,13 +87,14 @@ public class CSVLinePusher implements ExecutableComponent {
         
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line; 
+        cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamInitiator());
         try {
             while((line = br.readLine())!= null) {
                 StringTokenizer st = new StringTokenizer(line, ",");
                 Object[] tokens = new Object[st.countTokens()];
                 int pos = 0;
                 while(st.hasMoreTokens()) {
-                    String token = st.nextToken();
+                    String token = st.nextToken().trim();
                     tokens[pos++] = token;
                 }
                 /*for(int i=0; i<tokens.length; i++) {

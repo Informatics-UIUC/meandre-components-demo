@@ -92,7 +92,7 @@ public class StreamCSVReader implements ExecutableComponent {
                 Object[] tokens = new Object[st.countTokens()];
                 int pos = 0;
                 while(st.hasMoreTokens()) {
-                    String token = st.nextToken();
+                    String token = st.nextToken().trim();
                     tokens[pos++] = token;
                 }
                 result.add(tokens);
