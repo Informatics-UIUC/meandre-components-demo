@@ -79,6 +79,8 @@ public class StreamContentReader implements ExecutableComponent {
     public final static String DATA_OUTPUT = "outputObject";
     
     private final static String STRING_DELIMITER = "\n";
+    private final static int ARRAY_LENGTH = 4096;
+    private final static int BYTE_LENGTH = 1024;
     
     /** When ready for execution.
     *
@@ -115,13 +117,13 @@ public class StreamContentReader implements ExecutableComponent {
             //System.out.println(sb.toString());
         } else {
             DataInputStream dis = new DataInputStream(is);
-            byte[] b = new byte[4096];
+            byte[] b = new byte[ARRAY_LENGTH];
             int  nrBytes = 0,
                  totalBytes = 0;
             try {
-                while((nrBytes = dis.read(b, totalBytes, 1024)) != -1) {
+                while((nrBytes = dis.read(b, totalBytes, BYTE_LENGTH)) != -1) {
                     totalBytes += nrBytes;
-                    if(totalBytes+1024 >= b.length) {
+                    if(!bytesAvailable(totalBytes, b.length)) {
                         byte[] tmp = new byte[b.length + 4096];
                         System.arraycopy(b, 0, tmp, 0, b.length);
                         b = tmp;
@@ -144,6 +146,16 @@ public class StreamContentReader implements ExecutableComponent {
                 throw new ComponentExecutionException(e);
             }
         }
+    }
+    
+    /**
+     * 
+     * @param totalBytes_ The total bytes read from stream so far.
+     * @param length_ The length of array holding data.
+     * @return false if there are not enough bytes, otherwise true.
+     */
+    private boolean bytesAvailable(int totalBytes_, int length_) {
+        return totalBytes_+BYTE_LENGTH >= length_?false: true;
     }
     
     /**
