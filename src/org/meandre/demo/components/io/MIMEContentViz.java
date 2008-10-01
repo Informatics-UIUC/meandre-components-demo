@@ -42,7 +42,6 @@
 
 package org.meandre.demo.components.io;
 
-import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.concurrent.Semaphore;
 
@@ -136,8 +135,8 @@ public class MIMEContentViz
             while(st.hasMoreTokens()) 
                 sb.append(st.nextToken()).append("<br/>");
         }
-        else if(mimeType.startsWith("image")) {//image/jpeg, image/gif and image/png work
-            String s = new sun.misc.BASE64Encoder().encode(inputContent);
+        else if(mimeType.startsWith("image")) {//type could be jpeg, gif or png
+            String s = new sun.misc.BASE64Encoder().encode(inputContent); //convert byte[] to base64 string
             sb.append("<img src=\"data:").append(mimeType).append(";base64,");
             sb.append(s).append("\"");
             sb.append(" border=\"0\" />");
