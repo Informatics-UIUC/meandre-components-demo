@@ -88,6 +88,9 @@ public class CSVReader implements ExecutableComponent {
         Vector<Object[]> result = new Vector<Object[]> ();
         try {
             while((line = br.readLine())!= null) {
+                line = line.trim();
+                if(line.length() == 0)
+                    continue;
                 StringTokenizer st = new StringTokenizer(line, ",");
                 Object[] tokens = new Object[st.countTokens()];
                 int pos = 0;
