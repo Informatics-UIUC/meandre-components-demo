@@ -99,8 +99,12 @@ public class StreamContentReader implements ExecutableComponent {
             StringBuffer sb = new StringBuffer();
             String line; 
             try {
-                while((line = br.readLine())!= null)
+                while((line = br.readLine())!= null) {
+                    line = line.trim();
+                    if(line.length() == 0)
+                        continue;
                     sb.append(line).append(STRING_DELIMITER);
+                }
                 is.close();
                 br.close();
             }catch(java.io.IOException e) {
