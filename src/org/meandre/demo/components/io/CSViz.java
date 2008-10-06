@@ -260,7 +260,7 @@ public class CSViz
             }
         } else {
             for(int column=currentColumn[theBar]; column<=nextColumn[theBar]; column++)
-                sb.append("<th>").append(" ").append("</th>\n");
+                sb.append("<th>").append(" ").append("</th>\n");  
         }
         sb.append("</tr>\n");
         sb.append("</thead>\n");
@@ -330,8 +330,6 @@ public class CSViz
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws
             WebUIException {
-        System.out.println(request.getPathInfo());
-
         if (request.getParameter("done") != null) {
             sem.release();
         } else if(request.getParameter("page") != null ||
