@@ -70,7 +70,7 @@ public class RSSReader implements ExecutableComponent {
                     name= "inputStream")
     public final static String DATA_INPUT = "inputStream";
     
-    @ComponentOutput(description="Output content as syndication object.",
+    @ComponentOutput(description="Output content as syndication feed.",
                      name="outputObject")        
     public final static String DATA_OUTPUT = "outputObject";
     
