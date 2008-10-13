@@ -61,7 +61,7 @@ import org.meandre.core.ExecutableComponent;
 @Component(creator="Lily Dong",
            description="Read a CSV file as stream and " + 
            "output it as a vector containing object array.",
-           name="StreamCSVReader",
+           name="CSVReader",
            tags="CSV")
 
 public class CSVReader implements ExecutableComponent {

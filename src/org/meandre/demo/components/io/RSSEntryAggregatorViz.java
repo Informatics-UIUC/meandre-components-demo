@@ -134,10 +134,6 @@ public class RSSEntryAggregatorViz
         sb.append("<h1>Contents of Entries</h1>\n");
         sb.append("</div>\n");
         
-        /*sb.append("<xsl:apply-templates select=\"srw:title\"/>\n");
-        sb.append("<xsl:apply-templates select=\"srw:description\"/>\n");
-        sb.append("<xsl:apply-templates select=\"srw:copyright\"/>\n");
-        sb.append("<xsl:apply-templates select=\"srw:date\"/>\n");*/
         sb.append("<xsl:apply-templates select=\"srw:entries\"/>\n"); 
                     
         sb.append("<div align=\"center\">\n");
@@ -150,7 +146,6 @@ public class RSSEntryAggregatorViz
         sb.append("</xsl:template>\n");
 
         sb.append("<xsl:template match=\"srw:entries\">\n");      
-        //sb.append("<h2><xsl:text>Contents of Entries:</xsl:text></h2>\n");
         sb.append("<p>\n");
         sb.append("<table class=\"display\">\n");
         sb.append("<tr class=\"odd\"><th>Title</th><th class=\"odd\">Content</th></tr>\n");
@@ -173,86 +168,15 @@ public class RSSEntryAggregatorViz
         sb.append("</table>\n");
         sb.append("</p>\n");
         sb.append("</xsl:template>\n");
-
-        sb.append("<xsl:template match=\"srw:date\">\n");      
-        sb.append("<h2><xsl:text>Published Date:</xsl:text></h2>\n");
-        sb.append("<p>\n");
-        sb.append("<table class=\"display\">\n");
-        sb.append("<xsl:for-each select=\"//mx:date\">\n");
-        sb.append("<tr class=\"odd\" >\n");
-        sb.append("<td><xsl:value-of select=\".\"/></td>\n");
-        sb.append("</tr>\n");
-        sb.append("</xsl:for-each>\n"); 
-        sb.append("</table>\n");
-        sb.append("</p>\n");
-        sb.append("</xsl:template>\n");
-
-        sb.append("<xsl:template match=\"srw:copyright\">\n");     
-        sb.append("<h2><xsl:text>Copyright:</xsl:text></h2>\n");
-        sb.append("<p>\n");
-        sb.append("<table class=\"display\">\n");
-        sb.append("<xsl:for-each select=\"//mx:copyright\">\n");
-        sb.append("<tr class=\"odd\">\n");
-        sb.append("<td><xsl:value-of select=\".\"/></td>\n");
-        sb.append("</tr>\n");
-        sb.append("</xsl:for-each>\n");
-        sb.append("</table>\n");
-        sb.append("</p>\n");
-        sb.append("</xsl:template>\n");
-
-        sb.append("<xsl:template match=\"srw:description\">\n");     
-        sb.append("<h2><xsl:text>Description:</xsl:text></h2>\n");
-        sb.append("<p>\n");
-        sb.append("<table class=\"display\">\n");
-        sb.append("<xsl:for-each select=\"//mx:description\">\n");
-        sb.append("<tr class=\"odd\">\n");
-        sb.append("<td><xsl:value-of select=\".\"/></td>\n");
-        sb.append("</tr>\n");
-        sb.append("</xsl:for-each>\n");
-        sb.append("</table>\n");
-        sb.append("</p>\n");
-        sb.append("</xsl:template>\n");
-
-        sb.append("<xsl:template match=\"srw:title\">\n");    
-        sb.append("<h2><xsl:text>Title:</xsl:text></h2>\n");
-        sb.append("<p>\n");
-        sb.append("<table class=\"display\">\n");
-        sb.append("<xsl:for-each select=\"//mx:title\">\n");
-        sb.append("<tr class=\"odd\">\n");
-        sb.append("<td><xsl:value-of select=\".\"/></td>\n");
-        sb.append("</tr>\n");
-        sb.append("</xsl:for-each>\n");
-        sb.append("</table>\n");
-        sb.append("</p>\n");
-        sb.append("</xsl:template>\n");
            
         sb.append("<feed xmlns=\"http://www.seasr.org\" xmlns:mx=\"http://www.seasr.org\">\n");
 
-        StringBuffer sbDate = new StringBuffer("<date>\n"), 
-                     sbCopyright = new StringBuffer("<copyright>\n"), 
-                     sbDescription = new StringBuffer("<description>\n"), 
-                     sbTitle = new StringBuffer("<title>\n"), 
-                     sbEntries = new StringBuffer("<entries>\n");
+        StringBuffer sbEntries = new StringBuffer("<entries>\n");
         
-        for(int index=0; index<aggregator.size(); index++) {
-            Object object = aggregator.elementAt(index);
-            /*if(object instanceof SyndFeed) {
-                addDate(((SyndFeed)object).getPublishedDate(), sbDate);
-                addCopyright(((SyndFeed)object).getCopyright(), sbCopyright);
-                addDescription(((SyndFeed)object).getDescription(), sbDescription);
-                addTitle(((SyndFeed)object).getTitle(), sbTitle);
-                List<SyndEntry> entries = ((SyndFeed)object).getEntries();
-                for(int pos=0; pos<entries.size(); pos++)
-                    addEntry(entries.get(pos), sbEntries);
-            } else */
-                addEntry((SyndEntry)object, sbEntries);
-        }
+        for(int index=0; index<aggregator.size(); index++)
+            addEntry((SyndEntry)aggregator.elementAt(index), sbEntries);
         
         sb.append(sbEntries).append("</entries>\n");
-        sb.append(sbDate).append("</date>\n");
-        sb.append(sbCopyright).append("</copyright>\n");
-        sb.append(sbDescription).append("</description>\n");
-        sb.append(sbTitle).append("</title>\n");
         
         sb.append("</feed>\n");
         sb.append("</xsl:stylesheet>\n");
@@ -267,53 +191,6 @@ public class RSSEntryAggregatorViz
      */
     private String getValidValue(String s) {
         return (s == null || s.length() == 0)? "no data available": s;
-    }
-    
-    /**
-     * 
-     * @param s input date
-     * @param b output buffer
-     */
-    private void addDate(Date d, StringBuffer b) {
-        String s = null;
-        if(d != null)
-            s = d.toString();
-        b.append("<mx:date>").
-          append(getValidValue(s)).
-          append("</mx:date>\n");
-    }
-    
-    /**
-     * 
-     * @param s input string
-     * @param b output buffer
-     */
-    private void addDescription(String s, StringBuffer b) {
-            b.append("<mx:description>").
-              append(getValidValue(s)).
-              append("</mx:description>\n");
-    }
-    
-    /**
-     * 
-     * @param s input string
-     * @param b output buffer
-     */
-    private void addCopyright(String s, StringBuffer b) {
-            b.append("<mx:copyright>").
-              append(getValidValue(s)).
-              append("</mx:copyright>\n");
-    }
-    
-    /**
-     * 
-     * @param s input string
-     * @param b output buffer
-     */
-    private void addTitle(String s, StringBuffer b) {
-            b.append("<mx:title>").
-              append(getValidValue(s)).
-              append("</mx:title>\n");
     }
     
     /**

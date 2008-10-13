@@ -63,7 +63,9 @@ import org.meandre.core.ExecutableComponent;
            description="Read any RSS/ATom feed type as stream and " +
            "output it as syndication object.",
            name="RSSReader",
-           tags="RSS")
+           tags="RSS",
+           dependency={"rome-1.0RC1.jar", "jdom-1.0.jar"}
+)
 
 public class RSSReader implements ExecutableComponent {
     @ComponentInput(description="Read content as stream.",

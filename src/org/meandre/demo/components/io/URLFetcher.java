@@ -62,7 +62,7 @@ import org.meandre.core.ExecutableComponent;
         
 public class URLFetcher implements ExecutableComponent {
    
-    @ComponentProperty(defaultValue="http://norma.ncsa.uiuc.edu/public-dav/Datasets/numeric/cpu.arff",
+    @ComponentProperty(defaultValue="http://www.ibm.com/developerworks/views/java/rss/libraryview.jsp?feed_by=rss",
                        description="This property sets the URL.",
                        name="location")
     final static String DATA_PROPERTY = "location";

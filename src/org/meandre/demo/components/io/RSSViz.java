@@ -67,7 +67,7 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
-           description="Display information contained in RSS.",
+           description="Display contents from RSS feed.",
            name="RSSViz",
            tags="RSS, visualization",
            mode=Mode.webui)
@@ -132,10 +132,11 @@ public class RSSViz
         sb.append("<html>\n");
         sb.append("<head>\n");
         sb.append("<style type=\"text/css\">\n");
-        sb.append("body { background-color:#F0F0F0; font: 9pt Verdana, Arial, \"Arial Unicode MS\", Helvetica, sans-serif;}\n");
-        sb.append("table.display { background-color:lightgray; font-size:10pt; position:relative;left:15pt; border:none; padding:0;}\n");
-        sb.append("tr.even { background-color:#f0f0f0;}\n");
-        sb.append("tr.odd { background-color:#f0f0ff;}\n");
+        //sb.append("body { background-color:#F0F0F0; font: 9pt Verdana, Arial, \"Arial Unicode MS\", Helvetica, sans-serif;}\n");
+        sb.append("table.display {font-family:arial; background-color:#CDCDCD; font-size:8pt; position:relative;left:15pt; border:none; padding:0;}\n");
+        sb.append("th.odd {background-color: #e6EEEE;}\n");
+        sb.append("tr.even {background-color:#FFF;}\n");
+        sb.append("tr.odd {background-color:#F0F0F6;}\n");
         sb.append("</style>\n");
         sb.append("</head>\n");
         sb.append("<body>\n");
@@ -163,7 +164,7 @@ public class RSSViz
         sb.append("<h2><xsl:text>Contents of Entries:</xsl:text></h2>\n");
         sb.append("<p>\n");
         sb.append("<table class=\"display\">\n");
-        sb.append("<tr class=\"odd\"><th>Title</th><th class=\"odd\">Content</th></tr>\n");
+        sb.append("<tr><th class=\"odd\">Title</th><th class=\"odd\">Content</th></tr>\n");
         sb.append("<xsl:for-each select=\"//mx:entry\">\n");        
         sb.append("<xsl:choose>\n");
         sb.append("<xsl:when test=\"position() mod 2\">\n");
@@ -188,7 +189,7 @@ public class RSSViz
         sb.append("<h2><xsl:text>Published Date:</xsl:text></h2>\n");
         sb.append("<p>\n");
         sb.append("<table class=\"display\">\n");
-        sb.append("<tr class=\"odd\" >\n");
+        sb.append("<tr class=\"even\">\n");
         sb.append("<td><xsl:value-of select=\".\"/></td>\n");
         sb.append("</tr>\n");
         sb.append("</table>\n");
@@ -199,7 +200,7 @@ public class RSSViz
         sb.append("<h2><xsl:text>Copyright:</xsl:text></h2>\n");
         sb.append("<p>\n");
         sb.append("<table class=\"display\">\n");
-        sb.append("<tr class=\"odd\">\n");
+        sb.append("<tr class=\"even\">\n");
         sb.append("<td><xsl:value-of select=\".\"/></td>\n");
         sb.append("</tr>\n");
         sb.append("</table>\n");
@@ -210,7 +211,7 @@ public class RSSViz
         sb.append("<h2><xsl:text>Description:</xsl:text></h2>\n");
         sb.append("<p>\n");
         sb.append("<table class=\"display\">\n");
-        sb.append("<tr class=\"odd\">\n");
+        sb.append("<tr class=\"even\">\n");
         sb.append("<td><xsl:value-of select=\".\"/></td>\n");
         sb.append("</tr>\n");
         sb.append("</table>\n");
@@ -221,7 +222,7 @@ public class RSSViz
         sb.append("<h2><xsl:text>Title:</xsl:text></h2>\n");
         sb.append("<p>\n");
         sb.append("<table class=\"display\">\n");
-        sb.append("<tr class=\"odd\">\n");
+        sb.append("<tr class=\"even\">\n");
         sb.append("<td><xsl:value-of select=\".\"/></td>\n");
         sb.append("</tr>\n");
         sb.append("</table>\n");
@@ -243,18 +244,34 @@ public class RSSViz
         } 
         sb.append("</entries>\n");
 
-        sb.append("<date>").append(inputFeed.getPublishedDate()).append("</date>\n");
+        String s = null;
+        
+        if(inputFeed.getPublishedDate() != null)
+            s = inputFeed.getPublishedDate().toString();
+        sb.append("<date>").append(s).append("</date>\n");
 
-        sb.append("<copyright>").append(inputFeed.getCopyright()).append("</copyright>\n");
+        s = inputFeed.getCopyright();
+        sb.append("<copyright>").append(getValidValue(s)).append("</copyright>\n");
 
-        sb.append("<description>").append(inputFeed.getDescription()).append("</description>\n");
+        s = inputFeed.getDescription();
+        sb.append("<description>").append(getValidValue(s)).append("</description>\n");
 
-        sb.append("<title>").append(inputFeed.getTitle()).append("</title>\n");
+        s = inputFeed.getTitle();
+        sb.append("<title>").append(getValidValue(s)).append("</title>\n");
         
         sb.append("</feed>\n");
         sb.append("</xsl:stylesheet>\n");
         
         return sb.toString();
+    }
+    
+    /**
+     * 
+     * @param s input value
+     * @return s if s is not null or empty string, otherwise warning information.
+     */
+    private String getValidValue(String s) {
+        return (s == null || s.length() == 0)? "no data available": s;
     }
     
     /** This method gets called when a call with parameters is done to a given component
