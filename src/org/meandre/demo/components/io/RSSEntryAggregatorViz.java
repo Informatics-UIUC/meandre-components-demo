@@ -122,10 +122,11 @@ public class RSSEntryAggregatorViz
         sb.append("<html>\n");
         sb.append("<head>\n");
         sb.append("<style type=\"text/css\">\n");
-        sb.append("body { background-color:#F0F0F0; font: 9pt Verdana, Arial, \"Arial Unicode MS\", Helvetica, sans-serif;}\n");
-        sb.append("table.display { background-color:lightgray; font-size:10pt; position:relative;left:15pt; border:none; padding:0;}\n");
-        sb.append("tr.even { background-color:#f0f0f0;}\n");
-        sb.append("tr.odd { background-color:#f0f0ff;}\n");
+        //sb.append("body { background-color:#F0F0F0; font: 9pt Verdana, Arial, \"Arial Unicode MS\", Helvetica, sans-serif;}\n");
+        sb.append("table.display { font-family:arial; background-color:#CDCDCD; font-size:10pt; position:relative;left:15pt; border:none; padding:0;}\n");
+        sb.append("th.odd {background-color: #e6EEEE;}\n");
+        sb.append("tr.even { background-color:#FFF;}\n");
+        sb.append("tr.odd { background-color:#F0F0F6;}\n");
         sb.append("</style>\n");
         sb.append("</head>\n");
         sb.append("<body>\n");
@@ -148,7 +149,7 @@ public class RSSEntryAggregatorViz
         sb.append("<xsl:template match=\"srw:entries\">\n");      
         sb.append("<p>\n");
         sb.append("<table class=\"display\">\n");
-        sb.append("<tr class=\"odd\"><th>Title</th><th class=\"odd\">Content</th></tr>\n");
+        sb.append("<tr><th class=\"odd\">Title</th><th class=\"odd\">Content</th></tr>\n");
         sb.append("<xsl:for-each select=\"//mx:entry\">\n");        
         sb.append("<xsl:choose>\n");
         sb.append("<xsl:when test=\"position() mod 2\">\n");

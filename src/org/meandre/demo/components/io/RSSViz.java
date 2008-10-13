@@ -133,7 +133,7 @@ public class RSSViz
         sb.append("<head>\n");
         sb.append("<style type=\"text/css\">\n");
         //sb.append("body { background-color:#F0F0F0; font: 9pt Verdana, Arial, \"Arial Unicode MS\", Helvetica, sans-serif;}\n");
-        sb.append("table.display {font-family:arial; background-color:#CDCDCD; font-size:8pt; position:relative;left:15pt; border:none; padding:0;}\n");
+        sb.append("table.display {font-family:arial; background-color:#CDCDCD; font-size:10pt; position:relative;left:15pt; border:none; padding:0;}\n");
         sb.append("th.odd {background-color: #e6EEEE;}\n");
         sb.append("tr.even {background-color:#FFF;}\n");
         sb.append("tr.odd {background-color:#F0F0F6;}\n");
