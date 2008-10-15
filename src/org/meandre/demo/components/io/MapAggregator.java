@@ -85,11 +85,10 @@ public class MapAggregator implements ExecutableComponent {
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-        Object inputObject = (Map)cc.getDataComponentFromInput(DATA_INPUT);
+        Object inputObject = cc.getDataComponentFromInput(DATA_INPUT);
    
-        if(inputObject instanceof StreamInitiator) {//start of stream
-            return;
-        } else if(inputObject instanceof StreamTerminator) {//end of stream      
+        if(inputObject instanceof StreamTerminator) {//end of stream 
+            System.out.println(outputMap.toString());
             cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
         } else if(inputObject instanceof Map) {
             Map inputMap = (Map)inputObject;
