@@ -43,35 +43,38 @@
 package org.meandre.demo.components.io;
 
 import java.util.Map;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.StringTokenizer;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.annotations.ComponentProperty;
 
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
-import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
-           description="Convert CSV to map<key value>. " + 
-           "The key is string and the value is float.",
-           name="CSV2Map",
-           tags="csv, map, converter"
+           description="Remove objects from map<key value>.",
+           name="MapReducer",
+           tags="map, reducer"
 )
 
-public class CSV2Map implements ExecutableComponent {
-    @ComponentInput(description="Read CSV content in vector containing object array.",
-                    name= "inputCsv")
-    public final static String DATA_INPUT = "inputCsv";
+public class MapReducer implements ExecutableComponent {
+    @ComponentInput(description="Read content in map format.",
+                    name= "inputMap")
+    public final static String DATA_INPUT = "inputMap";
 
     @ComponentOutput(description="Output content in map format.",
                      name="outputMap")        
     public final static String DATA_OUTPUT = "outputMap";
+    
+    @ComponentProperty(defaultValue="",
+                       description="Keys to be deleted from map. The keys should be delimited by comma.",
+                       name="keysToBeDeleted")
+    final static String DATA_PROPERTY = "keysToBeDeleted";
     
     /** When ready for execution.
     *
@@ -81,32 +84,18 @@ public class CSV2Map implements ExecutableComponent {
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-        Vector<Object[]> inputCsv = (Vector<Object[]>)cc.getDataComponentFromInput(DATA_INPUT);
-        
-        Map outputMap = new Hashtable();
-        for(int index=0; index<inputCsv.size(); index++) {
-            Object[] data = inputCsv.elementAt(index);
-            if(outputMap.containsKey(data[0])) {
-                float value = 
-                    Float.valueOf(outputMap.get(data[0]).toString()) +
-                    Float.valueOf(data[1].toString());
-                outputMap.put(data[0], new Float(value));
-            } else {
-                Float value = null; 
-                try {
-                    value = Float.valueOf(data[1].toString());
-                }catch(NumberFormatException e) {}
-                if(value != null) //only number is stored in map
-                    outputMap.put(data[0], value);
-            }
+        Map inputMap = (Map)cc.getDataComponentFromInput(DATA_INPUT);
+        String keysToBeDeleted = cc.getProperty(DATA_PROPERTY);
+        StringTokenizer st = new StringTokenizer(keysToBeDeleted, ",");
+        while(st.hasMoreTokens()) {
+            String theKey = st.nextToken();
+            if(inputMap.containsKey(theKey))
+                inputMap.remove(theKey);
         }
-       
-        //System.out.println(outputMap.toString());
         
-        cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
+        System.out.println(inputMap.toString());
         
-        cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
-        cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamTerminator());
+        cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
     }
     
     /**

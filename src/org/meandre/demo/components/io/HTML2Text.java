@@ -93,7 +93,7 @@ public class HTML2Text implements ExecutableComponent {
             throw new ComponentExecutionException(e);
         }
         
-        //System.out.println(sb.toString());
+        System.out.println(sb.toString());
         
         cc.pushDataComponentToOutput(DATA_OUTPUT, sb.toString());
     }
