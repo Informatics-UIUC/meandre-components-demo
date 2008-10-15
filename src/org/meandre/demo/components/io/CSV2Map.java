@@ -58,18 +58,17 @@ import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
-           description="Convert CSV to map<key value>. " + 
-           "The key is string and the value is float.",
+           description="Convert CSV to Map<String, Float>.",
            name="CSV2Map",
            tags="csv, map, converter"
 )
 
 public class CSV2Map implements ExecutableComponent {
-    @ComponentInput(description="Read CSV content in vector containing object array.",
+    @ComponentInput(description="Read CSV content in vector containing Object array.",
                     name= "inputCsv")
     public final static String DATA_INPUT = "inputCsv";
 
-    @ComponentOutput(description="Output content in map format.",
+    @ComponentOutput(description="Output content in Map format.",
                      name="outputMap")        
     public final static String DATA_OUTPUT = "outputMap";
     

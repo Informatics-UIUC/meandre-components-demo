@@ -60,18 +60,17 @@ import org.meandre.core.system.components.ext.StreamInitiator;
 import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
-           description="Aggregate maps<key value>. " +
-           "The key is string and the value is float.",
+           description="Aggregate Maps<String, Float>.",
            name="MapAggregator",
            tags="map, aggregator"
 )
 
 public class MapAggregator implements ExecutableComponent {
-    @ComponentInput(description="Read content in map format.",
+    @ComponentInput(description="Read content in Map format.",
                     name= "inputMap")
     public final static String DATA_INPUT = "inputMap";
 
-    @ComponentOutput(description="Output content in map format.",
+    @ComponentOutput(description="Output content in Map format.",
                      name="outputMap")        
     public final static String DATA_OUTPUT = "outputMap";
     

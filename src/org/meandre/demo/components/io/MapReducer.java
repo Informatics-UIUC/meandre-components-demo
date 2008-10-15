@@ -57,22 +57,22 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Remove objects from map<key value>.",
+           description="Remove objects from Map<String, Float> given keys.",
            name="MapReducer",
            tags="map, reducer"
 )
 
 public class MapReducer implements ExecutableComponent {
-    @ComponentInput(description="Read content in map format.",
+    @ComponentInput(description="Read content in Map format.",
                     name= "inputMap")
     public final static String DATA_INPUT = "inputMap";
 
-    @ComponentOutput(description="Output content in map format.",
+    @ComponentOutput(description="Output content in Map format.",
                      name="outputMap")        
     public final static String DATA_OUTPUT = "outputMap";
     
     @ComponentProperty(defaultValue="",
-                       description="Keys to be deleted from map. The keys should be delimited by comma.",
+                       description="Keys to be deleted from Map. The keys should be delimited by comma.",
                        name="keysToBeDeleted")
     final static String DATA_PROPERTY = "keysToBeDeleted";
     

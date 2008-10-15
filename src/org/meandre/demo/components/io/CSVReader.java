@@ -60,7 +60,7 @@ import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Read a CSV file as stream and " + 
-           "output it as a vector containing object array.",
+           "output it as a vector containing Object array.",
            name="CSVReader",
            tags="CSV")
 
@@ -69,7 +69,7 @@ public class CSVReader implements ExecutableComponent {
                     name= "inputStream")
     public final static String DATA_INPUT = "inputStream";
     
-    @ComponentOutput(description="Output content as vector containing object array.",
+    @ComponentOutput(description="Output content as vector containing Object array.",
                      name="outputObject")        
     public final static String DATA_OUTPUT = "outputObject";
     

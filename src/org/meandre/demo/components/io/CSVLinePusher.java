@@ -62,7 +62,7 @@ import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
            description="Read content as stream and " + 
-           "output it as stream of object array followed by StreamTerminator.",
+           "output it as stream of Object array followed by StreamTerminator.",
            name="CSVLinePusher",
            tags="CSV")
 
@@ -71,7 +71,7 @@ public class CSVLinePusher implements ExecutableComponent {
                     name= "inputStream")
     public final static String DATA_INPUT = "inputStream";
     
-    @ComponentOutput(description="Output content as stream of object array followed by StreamTerminator.",
+    @ComponentOutput(description="Output content as stream of Object array followed by StreamTerminator.",
                      name="outputObject")        
     public final static String DATA_OUTPUT = "outputObject";
     
