@@ -57,8 +57,8 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Convert CSV to map<key value>. " + "" +
-           		"The key is string and the value is float.",
+           description="Convert CSV to map<key value>. " + 
+           "The key is string and the value is float.",
            name="CSV2Map",
            tags="csv, map, converter"
 )
