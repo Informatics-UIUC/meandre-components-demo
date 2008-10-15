@@ -59,7 +59,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Convert HTML to text.",
+           description="Convert HTML to text. Only the content of text node is kept.",
            name="HTML2Text",
            tags="html, text, converter"
 )
