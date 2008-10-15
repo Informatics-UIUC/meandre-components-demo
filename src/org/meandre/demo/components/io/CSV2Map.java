@@ -57,7 +57,8 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Convert CSV to map.",
+           description="Convert CSV to map<key value>. " + "" +
+           		"The key is string and the value is float.",
            name="CSV2Map",
            tags="csv, map, converter"
 )
@@ -99,7 +100,7 @@ public class CSV2Map implements ExecutableComponent {
             }
         }
        
-        System.out.println(outputMap.toString());
+        //System.out.println(outputMap.toString());
         
         cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
     }
