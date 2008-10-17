@@ -42,10 +42,6 @@
 
 package org.meandre.demo.components.io;
 
-import java.util.StringTokenizer;
-import java.util.Map;
-import java.util.Hashtable;
-
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
@@ -57,19 +53,19 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Sum up the occurrences of words and save result in Map<String, Integer>.",
-           name="WordCounter",
-           tags="word, counter"
+           description="Turn text to lower case.",
+           name="ToLowerCase",
+           tags="lower case, text"
 )
 
-public class WordCounter implements ExecutableComponent {
-    @ComponentInput(description="Text to be analyzed.",
+public class ToLowerCase implements ExecutableComponent {
+    @ComponentInput(description="Text to be converted.",
                     name= "inpuText")
     public final static String DATA_INPUT = "inpuText";
 
-    @ComponentOutput(description="Output content in Map format.",
-                     name="outputMap")        
-    public final static String DATA_OUTPUT = "outputMap";
+    @ComponentOutput(description="Text in lower case.",
+                     name="outpuText")        
+    public final static String DATA_OUTPUT = "outpuText";
     
     /** When ready for execution.
     *
@@ -80,24 +76,7 @@ public class WordCounter implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
-        StringTokenizer st = new StringTokenizer(inpuText, " ,\t\n");
-        Map outputMap = new Hashtable();
-        while(st.hasMoreTokens()) {
-            String key = st.nextToken();
-            
-            if(!key.matches("[a-zA-Z]+"))
-                continue;
-                
-            if(outputMap.containsKey(key)) {
-                int value = ((Integer)outputMap.get(key)).intValue();
-                outputMap.put(key, new Integer(++value));
-            } else 
-                outputMap.put(key, new Integer(1));
-        }
-        
-        System.out.println(outputMap.toString());
-        
-        cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
+        cc.pushDataComponentToOutput(DATA_OUTPUT, inpuText.toLowerCase());
     }
     
     /**

@@ -42,14 +42,12 @@
 
 package org.meandre.demo.components.io;
 
-import java.util.StringTokenizer;
-import java.util.Map;
-import java.util.Hashtable;
+import java.io.InputStream;
+import java.net.URL;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
-
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -57,19 +55,18 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Sum up the occurrences of words and save result in Map<String, Integer>.",
-           name="WordCounter",
-           tags="word, counter"
-)
+           description="Fetch content of the specified URL.",
+           name="ActiveURLFetcher",
+           tags="URL, stream")
 
-public class WordCounter implements ExecutableComponent {
-    @ComponentInput(description="Text to be analyzed.",
-                    name= "inpuText")
-    public final static String DATA_INPUT = "inpuText";
-
-    @ComponentOutput(description="Output content in Map format.",
-                     name="outputMap")        
-    public final static String DATA_OUTPUT = "outputMap";
+public class ActiveURLFetcher implements ExecutableComponent {
+    @ComponentInput(description="URL to be fetched.",
+                    name= "inpuUrl")
+    public final static String DATA_INPUT = "inpuUrl";
+    
+    @ComponentOutput(description="Output content of the specified URL as stream.",
+                     name="outputStream")             
+    public final static String DATA_OUTPUT = "outputStream";
     
     /** When ready for execution.
     *
@@ -79,25 +76,27 @@ public class WordCounter implements ExecutableComponent {
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-        String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
-        StringTokenizer st = new StringTokenizer(inpuText, " ,\t\n");
-        Map outputMap = new Hashtable();
-        while(st.hasMoreTokens()) {
-            String key = st.nextToken();
-            
-            if(!key.matches("[a-zA-Z]+"))
-                continue;
-                
-            if(outputMap.containsKey(key)) {
-                int value = ((Integer)outputMap.get(key)).intValue();
-                outputMap.put(key, new Integer(++value));
-            } else 
-                outputMap.put(key, new Integer(1));
+        
+        String inputUrl = (String)cc.getDataComponentFromInput(DATA_INPUT);
+        
+        InputStream is = null;
+        try {
+            URL url = new URL(inputUrl);
+            try {
+                is = url.openConnection().getInputStream();
+                cc.pushDataComponentToOutput(DATA_OUTPUT, is);
+                //is can not be closed here, otherwise java.net.SocketException: socket closed
+                //the final client must close this stream.
+            }catch(java.io.IOException e) {
+                try {
+                    if(is != null) 
+                        is.close();
+                }catch(java.io.IOException ioex) {}
+                throw new ComponentExecutionException(e);
+            }
+        } catch(java.net.MalformedURLException e) {
+            throw new ComponentExecutionException(e);
         }
-        
-        System.out.println(outputMap.toString());
-        
-        cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
     }
     
     /**
@@ -110,5 +109,5 @@ public class WordCounter implements ExecutableComponent {
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }   
+    }
 }

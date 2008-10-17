@@ -68,9 +68,9 @@ public class URLFetcher implements ExecutableComponent {
     final static String DATA_PROPERTY = "location";
     
     @ComponentOutput(description="Output content of the specified URL as stream.",
-                     name="inputStream")
+                     name="outputStream")
                      
-    public final static String DATA_OUTPUT = "inputStream";
+    public final static String DATA_OUTPUT = "outputStream";
     
     /** When ready for execution.
     *

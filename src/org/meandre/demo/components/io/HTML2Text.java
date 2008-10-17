@@ -70,8 +70,8 @@ public class HTML2Text implements ExecutableComponent {
     public final static String DATA_INPUT = "inputHtml";
     
     @ComponentOutput(description="Output content in plain text format.",
-                     name="outputText")        
-    public final static String DATA_OUTPUT = "outputText";
+                     name="outpuText")        
+    public final static String DATA_OUTPUT = "outpuText";
     
     StringBuffer sb;
     
@@ -107,7 +107,7 @@ public class HTML2Text implements ExecutableComponent {
             for(int i=0; i<list.size(); i++) {
                 Node node = list.elementAt(i);
                 if(node instanceof TextNode)
-                    sb.append(((TextNode)node).getText().trim());
+                    sb.append(((TextNode)node).getText().trim()).append("\n");
                 else if(node instanceof TagNode) {
                     NodeList sublist = ((TagNode)node).getChildren();
                     traverse(sublist);
