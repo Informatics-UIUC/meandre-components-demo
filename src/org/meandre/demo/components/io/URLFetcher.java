@@ -56,7 +56,11 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Fetch content of the specified URL.",
+           description="Fetch content of the specified URL." +
+           "For the local file, the URL should be file:///F:/... " +
+           "For the remote file, the URL should be http://... or ftp://..." +
+           "If the access needs authentication, username and password should be provided " +
+           "as the properties, otherwise ignoring them.",
            name="URLFetcher",
            tags="URL, stream")
         

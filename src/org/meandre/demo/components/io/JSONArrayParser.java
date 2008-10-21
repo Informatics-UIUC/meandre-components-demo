@@ -83,8 +83,8 @@ public class JSONArrayParser implements ExecutableComponent {
         JSONObject jo = (JSONObject)JSONSerializer.toJSON(inpuText);
         JSONArray ja = jo.names();
         
-        /*System.out.println(jo.toString());
-        System.out.println(ja.toString());*/
+        System.out.println(jo.toString());
+        System.out.println(ja.toString());
         
         cc.pushDataComponentToOutput(DATA_OUTPUT, ja);
     }

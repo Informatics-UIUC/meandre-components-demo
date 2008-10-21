@@ -80,7 +80,7 @@ public class JSONObjectParser implements ExecutableComponent {
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
         JSONObject jo = (JSONObject)JSONSerializer.toJSON(inpuText);
         
-        //System.out.println(jo.toString());
+        System.out.println(jo.toString());
         
         cc.pushDataComponentToOutput(DATA_OUTPUT, jo);
     }
