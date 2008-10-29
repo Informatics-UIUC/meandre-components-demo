@@ -42,8 +42,6 @@
 
 package org.meandre.demo.components.io;
 
-import java.util.List;
-
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentProperty;
@@ -71,15 +69,15 @@ import com.evernote.edam.userstore.UserStore;
            tags="evernote, note, notebook")
 
 public class EvernoteWriter implements ExecutableComponent {
-    /*@ComponentInput(description="Content to be written to Evernote.",
+    @ComponentInput(description="Content to be written to Evernote.",
                     name= "inputContent")
-    public final static String DATA_INPUT = "inputContent";*/
+    public final static String DATA_INPUT = "inputContent";
     
-    @ComponentProperty(defaultValue="li2",
+    @ComponentProperty(defaultValue="",
                        description="This property sets username.",
                        name="username")
     final static String DATA_PROPERTY_1 = "username";
-    @ComponentProperty(defaultValue="91234567",
+    @ComponentProperty(defaultValue="",
                        description="This property sets password.",
                        name="password")
     final static String DATA_PROPERTY_2 = "password";
@@ -87,6 +85,11 @@ public class EvernoteWriter implements ExecutableComponent {
                        description="This property sets API key.",
                        name="key")
     final static String DATA_PROPERTY_3 = "key";
+    
+    @ComponentProperty(defaultValue="seasr",
+                       description="This property sets title of input content.",
+                       name="title")
+    final static String DATA_PROPERTY_4 = "title";
     
     /** When ready for execution.
     *
@@ -100,7 +103,9 @@ public class EvernoteWriter implements ExecutableComponent {
                password = cc.getProperty(DATA_PROPERTY_2),  
                key = cc.getProperty(DATA_PROPERTY_3);
         
-        //String inputContent = (String)cc.getDataComponentFromInput(DATA_INPUT);
+        String title = cc.getProperty(DATA_PROPERTY_4);
+        
+        String inputContent = (String)cc.getDataComponentFromInput(DATA_INPUT);
         
         String userStoreUrl = "https://lb.evernote.com/edam/user";
         String noteStoreUrlBase = "http://lb.evernote.com/edam/note/";
@@ -132,7 +137,7 @@ public class EvernoteWriter implements ExecutableComponent {
             NoteStore.Client noteStore = 
                 new NoteStore.Client(noteStoreProt, noteStoreProt);
 
-            String content = 
+            /*String content = 
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
                 "<!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml.dtd\">\n" +
                 "<en-note>\n" + 
@@ -143,11 +148,11 @@ public class EvernoteWriter implements ExecutableComponent {
                 "<br/>\n" +
                 "<en-todo/> Set up ENML API wiki\n" + 
                 "<br/>\n" + 
-                "</en-note>\n";
+                "</en-note>\n";*/
             
             Note note = new Note();
-            note.setContent(content);
-            note.setTitle("Winter");
+            note.setContent(inputContent);
+            note.setTitle(title);
             noteStore.createNote(authToken, note);
         } catch(Exception e) {
             throw new ComponentExecutionException(e);

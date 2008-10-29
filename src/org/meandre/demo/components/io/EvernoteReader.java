@@ -72,11 +72,11 @@ import com.evernote.edam.notestore.NoteList;
            tags="evernote, note, notebook")
 
 public class EvernoteReader implements ExecutableComponent {
-    @ComponentProperty(defaultValue="li2",
+    @ComponentProperty(defaultValue="",
                        description="This property sets username.",
                        name="username")
     final static String DATA_PROPERTY_1 = "username";
-    @ComponentProperty(defaultValue="91234567",
+    @ComponentProperty(defaultValue="",
                        description="This property sets password.",
                        name="password")
     final static String DATA_PROPERTY_2 = "password";
