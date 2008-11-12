@@ -137,9 +137,14 @@ public class MIMEContentViz
         }
         else if(mimeType.startsWith("image")) {//type could be jpeg, gif or png
             String s = new sun.misc.BASE64Encoder().encode(inputContent); //convert byte[] to base64 string
+            
+            sb.append("<div align=\"center\">\n");
+            
             sb.append("<img src=\"data:").append(mimeType).append(";base64,");
             sb.append(s).append("\"");
             sb.append(" border=\"0\" />");
+            
+            sb.append("</div>\n");
         }
           
         sb.append("</p>");
