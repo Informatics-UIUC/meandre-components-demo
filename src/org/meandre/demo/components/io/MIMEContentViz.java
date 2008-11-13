@@ -117,7 +117,7 @@ public class MIMEContentViz
         sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
         sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
         sb.append("<head>\n");
-        sb.append("<title>String Visualization</title>\n");
+        sb.append("<title>Content Visualization</title>\n");
         sb.append("<style type=\"text/css\" media=\"screen\">\n");
         sb.append("body {\n");
         sb.append("font-family: Verdana, sans-serif;\n");
