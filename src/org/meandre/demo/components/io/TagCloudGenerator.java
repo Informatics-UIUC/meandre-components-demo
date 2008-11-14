@@ -60,6 +60,7 @@ import java.io.ByteArrayOutputStream;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.annotations.ComponentProperty;
 
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
@@ -69,10 +70,31 @@ import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Display tag cloud.",
-           name="TagCloudViewer",
+           name="TagCloudGenerator",
            tags="tag cloud, visualization")
 
 public class TagCloudGenerator implements ExecutableComponent {
+	@ComponentProperty(defaultValue="1000",
+             		   description="This property sets the width of canvas.",
+             		   name="width")
+    final static String DATA_PROPERTY_1 = "width";
+	@ComponentProperty(defaultValue="1000",
+  		   			   description="This property sets the height of canvas.",
+  		   			   name="height")
+    final static String DATA_PROPERTY_2 = "height";
+	@ComponentProperty(defaultValue="Courier",
+	                   description="This property sets the name of font.",
+	                   name="name")
+    final static String DATA_PROPERTY_3 = "name";
+	@ComponentProperty(defaultValue="100",
+  			           description="This property sets the maximum size of font.",
+  			           name="maxSize")
+    final static String DATA_PROPERTY_4 = "maxSize";
+	@ComponentProperty(defaultValue="20",
+	           		   description="This property sets the minimum size of font.",
+	           		   name="minSize")
+    final static String DATA_PROPERTY_5 = "minSize";
+	
 	@ComponentInput(description="Tags to be analyzed.",
                     name= "inputMap")
     public final static String DATA_INPUT = "inputMap";
@@ -89,8 +111,13 @@ public class TagCloudGenerator implements ExecutableComponent {
     */
     public void execute(ComponentContext cc) 
     	throws ComponentExecutionException, ComponentContextException {
-    	int maxFontSize = 80, //maximum font size
-    	    minFontSize = 20;  //minimum font size
+    	
+    	int width = Integer.parseInt(cc.getProperty(DATA_PROPERTY_1)),
+            height = Integer.parseInt(cc.getProperty(DATA_PROPERTY_2));
+    	
+    	String fontName = cc.getProperty(DATA_PROPERTY_3);
+    	int maxFontSize = Integer.parseInt(cc.getProperty(DATA_PROPERTY_4)), //maximum font size
+    	    minFontSize = Integer.parseInt(cc.getProperty(DATA_PROPERTY_5));  //minimum font size
     	
 		Hashtable table = 
 			(Hashtable)cc.getDataComponentFromInput(DATA_INPUT);
@@ -127,9 +154,6 @@ public class TagCloudGenerator implements ExecutableComponent {
 				          new Color(0x99, 0x99, 0x33),
 				          new Color(0x99, 0xcc, 0x33),
 				          new Color(0x99, 0xff, 0x33)};
-		
-		int width = 1000,
-            height = 1000;
 
 		int increment = 5;
 
@@ -144,7 +168,7 @@ public class TagCloudGenerator implements ExecutableComponent {
 		FontRenderContext frc = g2D.getFontRenderContext();
 
 		for(int k=0; k<text.length; k++) {
-			Font font = new Font("Courier", Font.BOLD, fontSize[k]);					
+			Font font = new Font(fontName, Font.BOLD, fontSize[k]);					
   			TextLayout layout = new TextLayout(text[k], font, frc);
 				
 			int textWidth = (int)layout.getVisibleAdvance(); 
@@ -263,6 +287,8 @@ public class TagCloudGenerator implements ExecutableComponent {
 	    ByteArrayOutputStream os = new ByteArrayOutputStream();
 	    try {
 	    	ImageIO.write(image, "png", os);
+	    	ImageIO.write(image, "png", 
+	    			new java.io.File("E:/Limin/code/javascript/tag_cloud/test.png"));
 	    	os.flush();
 	    }catch(java.io.IOException e) {
 	    	throw new ComponentExecutionException(e);
