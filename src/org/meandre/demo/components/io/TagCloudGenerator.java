@@ -86,7 +86,7 @@ public class TagCloudGenerator implements ExecutableComponent {
 	                   description="This property sets the name of font.",
 	                   name="name")
     final static String DATA_PROPERTY_3 = "name";
-	@ComponentProperty(defaultValue="100",
+	@ComponentProperty(defaultValue="150",
   			           description="This property sets the maximum size of font.",
   			           name="maxSize")
     final static String DATA_PROPERTY_4 = "maxSize";
@@ -287,8 +287,6 @@ public class TagCloudGenerator implements ExecutableComponent {
 	    ByteArrayOutputStream os = new ByteArrayOutputStream();
 	    try {
 	    	ImageIO.write(image, "png", os);
-	    	ImageIO.write(image, "png", 
-	    			new java.io.File("E:/Limin/code/javascript/tag_cloud/test.png"));
 	    	os.flush();
 	    }catch(java.io.IOException e) {
 	    	throw new ComponentExecutionException(e);
