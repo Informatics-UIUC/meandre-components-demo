@@ -42,13 +42,17 @@
 
 package org.meandre.demo.components.io;
 
-import java.util.StringTokenizer;
-import java.util.Map;
+import java.io.FileReader;
+import java.io.BufferedReader;
+
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Comparator;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.annotations.ComponentProperty;
 
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
@@ -57,21 +61,35 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Sum up the occurrences of words and save result in Map<String, Integer>.",
-           name="WordCounter",
-           tags="word, counter"
-)
-
-public class WordCounter implements ExecutableComponent {
-    @ComponentInput(description="Text to be analyzed.",
-                    name= "inpuText")
-    public final static String DATA_INPUT = "inpuText";
-
-    @ComponentOutput(description="Output content in Map format.",
+           description="Filter the unnecessary words in Map.",
+           name="WordFilter",
+           tags="word, filter")
+           
+public class WordFilter implements ExecutableComponent {
+	@ComponentProperty(defaultValue="",
+ 		   			   description="File containing stop words.",
+ 		   			   name="fileName")
+    final static String DATA_PROPERTY_1 = "fileName";
+	
+	@ComponentProperty(defaultValue="false",
+                       description="This property sets whether the number of keys should be limited. " +
+                       			   "If truet, it will be numerated after filtering stop words.",
+                       name="isLimited")
+    final static String DATA_PROPERTY_2 = "isLimited";
+	@ComponentProperty(defaultValue="100",
+                       description="This property sets the maximum number of keys to be kept in output Map.",
+                       name="upperLimit")
+    final static String DATA_PROPERTY_3 = "upperLimit";
+	
+	@ComponentInput(description="Map to be filtered.",
+            	    name= "inputMap")
+    public final static String DATA_INPUT = "inputMap";
+	
+	@ComponentOutput(description="Output filtered content in Map format.",
                      name="outputMap")        
     public final static String DATA_OUTPUT = "outputMap";
-    
-    /** When ready for execution.
+	
+	/** When ready for execution.
     *
     * @param cc The component context
     * @throws ComponentExecutionException An exeception occurred during execution
@@ -79,28 +97,37 @@ public class WordCounter implements ExecutableComponent {
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-        String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
-        StringTokenizer st = new StringTokenizer(inpuText, " ,\t\n");
-        Map<String, Integer> outputMap = new Hashtable<String, Integer>();
-        while(st.hasMoreTokens()) {
-            String key = st.nextToken();
-            
-            if(!key.matches("[a-zA-Z]+"))
-                continue;
-                
-            if(outputMap.containsKey(key)) {
-                int value = ((Integer)outputMap.get(key)).intValue();
-                outputMap.put(key, new Integer(++value));
-            } else 
-                outputMap.put(key, new Integer(1));
-        }
-        
-        System.out.println("Output of WordCounter : " + outputMap.size());
-        
-        cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
+    	Map<String, Integer> inputMap = 
+    		(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
+    	
+    	String fileName = cc.getProperty(DATA_PROPERTY_1);
+    	try {
+    		BufferedReader reader = 
+    			new BufferedReader(new FileReader(fileName));
+    		String word;
+    		while((word=reader.readLine()) != null) {
+    			word = word.trim();
+    			inputMap.remove(word);
+    		}
+    		reader.close();
+    	}catch(java.io.IOException e) {
+    		throw new ComponentExecutionException(e);
+    	}
+    	
+    	boolean isLimited = Boolean.parseBoolean(
+    			cc.getProperty(DATA_PROPERTY_1));
+    	if(isLimited) {
+    		int upperLimit = Integer.parseInt(
+    				cc.getProperty(DATA_PROPERTY_2));
+    		
+    	}
+    	
+    	System.out.println("Output of WordFilter : " + inputMap.size());
+    	
+    	cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
     }
-    
-    /**
+	
+	/**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
@@ -110,5 +137,5 @@ public class WordCounter implements ExecutableComponent {
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }   
+    } 
 }

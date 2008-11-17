@@ -69,7 +69,9 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Display tag cloud.",
+           description="Display tag cloud. If there are many tags to be displayed, " +
+           "reduce the maximum size of font or magnify the size of canvas " +
+           "to accommodate all of tags.",
            name="TagCloudGenerator",
            tags="tag cloud, visualization")
 
@@ -119,14 +121,12 @@ public class TagCloudGenerator implements ExecutableComponent {
     	int maxFontSize = Integer.parseInt(cc.getProperty(DATA_PROPERTY_4)), //maximum font size
     	    minFontSize = Integer.parseInt(cc.getProperty(DATA_PROPERTY_5));  //minimum font size
     	
-		Hashtable table = 
-			(Hashtable)cc.getDataComponentFromInput(DATA_INPUT);
+		Hashtable<String, Integer> table = 
+			(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
 		
 		int length = table.size();
 		String[] text = new String[length];
 		int[] fontSize = new int[length];
-		
-		//System.out.println("length = " + length);
 		
 		Enumeration<String> keys = table.keys();
 		int pos = 0;
