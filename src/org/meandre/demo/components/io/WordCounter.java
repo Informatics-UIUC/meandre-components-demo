@@ -95,7 +95,7 @@ public class WordCounter implements ExecutableComponent {
                 outputMap.put(key, new Integer(1));
         }
         
-        System.out.println("Output of WordCounter : " + outputMap.size());
+        //System.out.println("Output of WordCounter : " + outputMap.size());
         
         cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
     }

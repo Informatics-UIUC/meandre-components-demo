@@ -45,9 +45,12 @@ package org.meandre.demo.components.io;
 import java.io.FileReader;
 import java.io.BufferedReader;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Comparator;
+import java.util.Set;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
@@ -115,16 +118,29 @@ public class WordFilter implements ExecutableComponent {
     	}
     	
     	boolean isLimited = Boolean.parseBoolean(
-    			cc.getProperty(DATA_PROPERTY_1));
+    			cc.getProperty(DATA_PROPERTY_2));
+    	Map<String, Integer> outputMap = null;
     	if(isLimited) {
-    		int upperLimit = Integer.parseInt(
-    				cc.getProperty(DATA_PROPERTY_2));
-    		
+    		int upperLimit = 
+    			Integer.parseInt(cc.getProperty(DATA_PROPERTY_3));
+    		byValueComparator bvc =	
+    			new byValueComparator(inputMap);
+    		TreeMap<String, Integer> sortedMap = 
+    			new TreeMap<String, Integer>(bvc);
+    		sortedMap.putAll(inputMap);
+    		outputMap = new Hashtable<String, Integer>();
+    		while(upperLimit > 0) {
+    			String key = sortedMap.firstKey();
+    			Integer value = (Integer)sortedMap.get(key);
+    			//System.out.println("upperLimit = " + upperLimit + " key = " + key + " value = " + value.intValue());
+    			outputMap.put(key, value);
+    			sortedMap.remove(key);
+    			--upperLimit;
+    		}
     	}
-    	
-    	System.out.println("Output of WordFilter : " + inputMap.size());
-    	
-    	cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
+		
+    	outputMap = (!isLimited)? inputMap: outputMap;
+    	cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);	
     }
 	
 	/**
@@ -137,5 +153,21 @@ public class WordFilter implements ExecutableComponent {
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    } 
+    }
+    
+    class byValueComparator implements Comparator<String> {
+  		Map base_map;
+	
+  		public byValueComparator(Map base_map) {
+    		this.base_map = base_map;
+  		}
+	
+  		public int compare(String arg0, String arg1) {
+  			int result = ((Integer)base_map.get(arg1)).compareTo(
+					(Integer)base_map.get(arg0));
+  			if(result == 0)
+  				result = arg1.compareTo(arg0);
+			return result;
+		}
+	}
 }
