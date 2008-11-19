@@ -123,19 +123,21 @@ public class WordFilter implements ExecutableComponent {
     	if(isLimited) {
     		int upperLimit = 
     			Integer.parseInt(cc.getProperty(DATA_PROPERTY_3));
-    		byValueComparator bvc =	
-    			new byValueComparator(inputMap);
-    		TreeMap<String, Integer> sortedMap = 
-    			new TreeMap<String, Integer>(bvc);
-    		sortedMap.putAll(inputMap);
-    		outputMap = new Hashtable<String, Integer>();
-    		while(upperLimit > 0) {
-    			String key = sortedMap.firstKey();
-    			Integer value = (Integer)sortedMap.get(key);
-    			//System.out.println("upperLimit = " + upperLimit + " key = " + key + " value = " + value.intValue());
-    			outputMap.put(key, value);
-    			sortedMap.remove(key);
-    			--upperLimit;
+    		if(inputMap.size() > upperLimit) {
+    			byValueComparator bvc =	
+    				new byValueComparator(inputMap);
+    			TreeMap<String, Integer> sortedMap = 
+    				new TreeMap<String, Integer>(bvc);
+    			sortedMap.putAll(inputMap);
+    			outputMap = new Hashtable<String, Integer>();
+    			while(upperLimit > 0) {
+    				String key = sortedMap.firstKey();
+    				Integer value = (Integer)sortedMap.get(key);
+    				//System.out.println("upperLimit = " + upperLimit + " key = " + key + " value = " + value.intValue());
+    				outputMap.put(key, value);
+    				sortedMap.remove(key);
+    				--upperLimit;
+    			}
     		}
     	}
 		
