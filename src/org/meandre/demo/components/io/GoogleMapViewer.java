@@ -113,12 +113,49 @@ public class GoogleMapViewer
         sb.append("type=\"text/javascript\"></script>\n");
         sb.append("<script type=\"text/javascript\">\n");
 
+        sb.append("var map = null;\n");
+        sb.append("var geocoder = null;\n");
+        
+        sb.append("var address= new Array();\n");
+        sb.append("address[0] = \"1901 N Moreland Blvd, Champaign, Illinois\";\n");
+        sb.append("address[1] = \"2001 N Moreland Blvd, Champaign, Illinois\";\n");
+         
         sb.append("function initialize() {\n");
         sb.append("if (GBrowserIsCompatible()) {\n");
-        sb.append("var map = new GMap2(document.getElementById(\"map_canvas\"));\n");
+        sb.append("map = new GMap2(document.getElementById(\"map_canvas\"));\n");
         sb.append("map.setCenter(new GLatLng(37.4419, -122.1419), 13);\n");
+        
+        sb.append("geocoder = new GClientGeocoder();\n");
+        
+        sb.append("for(var i=0; i<address.length; i++)\n");
+      	sb.append("showAddress(address[i]);\n");
+        
         sb.append("}\n");
         sb.append("}\n");
+        
+        sb.append("function showAddress(address) {\n");
+        sb.append("if (geocoder) {\n");
+        sb.append("geocoder.getLatLng(\n");
+        sb.append("address,\n");
+        sb.append("function(point) {\n");
+        sb.append("if (!point) {\n");
+        sb.append("alert(address + \" not found\");\n");
+        sb.append("} else {\n");
+        sb.append("map.setCenter(point, 13);\n");
+        sb.append("var marker = new GMarker(point);\n");
+        sb.append("map.addOverlay(marker);\n");
+                    
+      	sb.append("GEvent.addListener(marker,\"click\", function() {\n");
+        sb.append("var myHtml = address;\n");
+        sb.append("map.openInfoWindowHtml(point, myHtml);\n");
+        sb.append("});\n");
+      	sb.append("alert(address + \" found\");\n");
+        sb.append("}\n");
+        sb.append("}\n");
+        sb.append(");\n");
+        sb.append("}\n");
+        sb.append("}\n");
+        
         sb.append("</script>\n");
         sb.append("</head>\n");
 
