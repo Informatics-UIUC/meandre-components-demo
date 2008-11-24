@@ -42,19 +42,32 @@
 
 package org.meandre.demo.components.io;
 
+import java.io.InputStream;
 import java.util.concurrent.Semaphore;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import org.meandre.annotations.Component;
+import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
+
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
+
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
@@ -68,8 +81,12 @@ public class GoogleMapViewer
 	implements ExecutableComponent, WebUIFragmentCallback {
 	@ComponentProperty(defaultValue="ABQIAAAAzuMq2M5--KdBKawoLNQWUxRi_j0U6kJrkFvY4-OX2XYmEAa76BQS61jzrv4ruAIpkFQs5Qp-fiN3hg",
                        description="This property sets Google Maps API key.",
-                       name="type")
-    final static String DATA_PROPERTY = "type";
+                       name="googleKey")
+    final static String DATA_PROPERTY = "googleKey";
+	
+	@ComponentInput(description="Read content as stream.",
+                    name= "inputStream")
+    public final static String DATA_INPUT = "inputStream";
 	
 	/** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
@@ -79,6 +96,9 @@ public class GoogleMapViewer
     
     /** Store Google Maps API key */
     private String apiKey;
+    
+    /** Store addresses */
+    private Vector<String> address;
     
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
@@ -117,13 +137,16 @@ public class GoogleMapViewer
         sb.append("var geocoder = null;\n");
         
         sb.append("var address= new Array();\n");
-        sb.append("address[0] = \"1901 N Moreland Blvd, Champaign, Illinois\";\n");
-        sb.append("address[1] = \"2001 N Moreland Blvd, Champaign, Illinois\";\n");
+        for(int i=0; i<address.size(); i++) {
+        	sb.append("address[").append(i).append("]=\"").
+        	append((String)address.elementAt(i)).append("\";\n");
+        }
+        //sb.append("address[0] = \"1901 N Moreland Blvd, Champaign, Illinois\";\n");
+        //sb.append("address[1] = \"2001 N Moreland Blvd, Champaign, Illinois\";\n");
          
         sb.append("function initialize() {\n");
         sb.append("if (GBrowserIsCompatible()) {\n");
         sb.append("map = new GMap2(document.getElementById(\"map_canvas\"));\n");
-        sb.append("map.setCenter(new GLatLng(37.4419, -122.1419), 13);\n");
         
         sb.append("geocoder = new GClientGeocoder();\n");
         
@@ -141,7 +164,7 @@ public class GoogleMapViewer
         sb.append("if (!point) {\n");
         sb.append("alert(address + \" not found\");\n");
         sb.append("} else {\n");
-        sb.append("map.setCenter(point, 13);\n");
+        sb.append("map.setCenter(point, 10);\n");
         sb.append("var marker = new GMarker(point);\n");
         sb.append("map.addOverlay(marker);\n");
                     
@@ -149,7 +172,7 @@ public class GoogleMapViewer
         sb.append("var myHtml = address;\n");
         sb.append("map.openInfoWindowHtml(point, myHtml);\n");
         sb.append("});\n");
-      	sb.append("alert(address + \" found\");\n");
+      	//sb.append("alert(address + \" found\");\n");
         sb.append("}\n");
         sb.append("}\n");
         sb.append(");\n");
@@ -161,7 +184,7 @@ public class GoogleMapViewer
 
         sb.append("<body onload=\"initialize()\" onunload=\"GUnload()\">\n");
         sb.append("<div align=\"center\">\n");
-        sb.append("<div id=\"map_canvas\" style=\"width: 500px; height: 300px\"></div>\n");
+        sb.append("<div id=\"map_canvas\" style=\"width: 500px; height: 500px\"></div>\n");
         sb.append("</div>\n");
         
         sb.append("<br/>\n");
@@ -205,6 +228,50 @@ public class GoogleMapViewer
         ComponentContextException {
     	apiKey = cc.getProperty(DATA_PROPERTY);
     	
+    	InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
+    	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    	
+    	DocumentBuilder db;
+		try {
+			db = dbf.newDocumentBuilder();
+			Document doc = db.parse(is);
+			doc.getDocumentElement().normalize();
+			System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
+			NodeList nodeLst = doc.getElementsByTagName("location");
+			System.out.println("Information of all addresses");
+
+			for (int s = 0; s < nodeLst.getLength(); s++) {
+				Node fstNode = nodeLst.item(s);
+			    if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
+			    	StringBuffer sb = new StringBuffer();
+			        Element fstElmnt = (Element)fstNode;
+			           
+			        NodeList streetList = fstElmnt.getElementsByTagName("address");
+			        Element streetElement = (Element)streetList.item(0);
+			        NodeList street = streetElement.getChildNodes();
+			        System.out.println("address : "  + ((Node)street.item(0)).getNodeValue());
+			        sb.append(((Node)street.item(0)).getNodeValue()).append(",");
+			        
+			        NodeList cityList = fstElmnt.getElementsByTagName("city");
+			        Element cityElement = (Element)cityList.item(0);
+			        NodeList city = cityElement.getChildNodes();
+			        System.out.println("City : " + ((Node)city.item(0)).getNodeValue());
+			        sb.append(((Node)city.item(0)).getNodeValue()).append(",");   
+			        
+			        NodeList stateList = fstElmnt.getElementsByTagName("state");
+			        Element stateElement = (Element)stateList.item(0);
+			        NodeList state = stateElement.getChildNodes();
+			        System.out.println("State : " + ((Node)state.item(0)).getNodeValue());
+			        sb.append(((Node)state.item(0)).getNodeValue());
+			        
+			        address.add(sb.toString());
+			    }
+			}
+			is.close();
+		} catch (Exception e1) {
+			throw new ComponentExecutionException(e1);
+		}
+    	
     	try {
             sInstanceID = cc.getExecutionInstanceID();
             sem.acquire();
@@ -220,6 +287,7 @@ public class GoogleMapViewer
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
+    	address = new Vector<String>();
     }
     
     /**
