@@ -118,8 +118,8 @@ public class TagCloudGenerator implements ExecutableComponent {
             height = Integer.parseInt(cc.getProperty(DATA_PROPERTY_2));
     	
     	String fontName = cc.getProperty(DATA_PROPERTY_3);
-    	int maxFontSize = Integer.parseInt(cc.getProperty(DATA_PROPERTY_4)), //maximum font size
-    	    minFontSize = Integer.parseInt(cc.getProperty(DATA_PROPERTY_5));  //minimum font size
+    	float maxFontSize = Float.parseFloat(cc.getProperty(DATA_PROPERTY_4)), //maximum font size
+    	      minFontSize = Float.parseFloat(cc.getProperty(DATA_PROPERTY_5));  //minimum font size
     	
 		Hashtable<String, Integer> table = 
 			(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
@@ -140,13 +140,17 @@ public class TagCloudGenerator implements ExecutableComponent {
 			maxValue = (value>maxValue)? value: maxValue;
 			minValue = (value<minValue)? value: minValue;
 		}
+		//System.out.println("maxValue = " + maxValue + " minValue =" + minValue);
 		if(maxValue != minValue) {
-			double slope = (maxFontSize-minFontSize)/(maxValue-minValue);
-			for(int k=0; k<fontSize.length; k++)
+			float slope = (maxFontSize-minFontSize)/(maxValue-minValue);
+			//System.out.println("maxFontSize = " + maxFontSize + " minFontSize = " + minFontSize + "slope = " + slope);
+			for(int k=0; k<fontSize.length; k++) {
 				fontSize[k] = (int)(minFontSize+slope*(fontSize[k]-minValue));
+			    //System.out.print(" fontSize["+k+"]=" + fontSize[k]);
+			}
 		} else {
 			for(int k=0; k<fontSize.length; k++)
-				fontSize[k] = minFontSize;
+				fontSize[k] = (int)minFontSize;
 		}
 		
 		Color[] colors = {new Color(0x99, 0x33, 0x33), 
