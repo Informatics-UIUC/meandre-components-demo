@@ -40,7 +40,7 @@
 *
 */
 
-package org.meandre.demo.components.io;
+package org.meandre.demo.components.viz;
 
 import java.util.Vector;
 import java.util.concurrent.Semaphore;
@@ -64,30 +64,36 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
-           description="Display CSV file.",
-           name="CSViz",
-           tags="CSV, visualization",
+           description="This component provides a table viewer for data sets "+
+           "that where attributes are separated by a delimiter (like the comma). "+
+           "This component can be used with the 'CSV Reader' component.",
+           name="CSV Table Viewer",
+           tags="CSV, table viewer",
            mode=Mode.webui)
 
-public class CSViz 
+public class CSVTableViewer 
     implements ExecutableComponent, WebUIFragmentCallback {
     @ComponentProperty(defaultValue="true",
-                       description="This property sets whether header exists.",
-                       name="header")
-    final static String DATA_PROPERTY_1 = "header";
+                       description="This property indicates whether a header exists " +
+                       		"that contains the attribute (column) labels in the first row of the file. ",
+                       name="Attribute Label Header")
+    final static String DATA_PROPERTY_1 = "Attribute Label Header";
 
     @ComponentProperty(defaultValue="true",
-                       description="This property sets whether type exists.",
-                       name="type")
-    final static String DATA_PROPERTY_2 = "type";
+                       description="This property indicates whether a header exists " +
+                       		"that contains the attribute (column) types in the second row of the file. "+
+                       		"Attribute types such as integer, float, double or String.",
+                       name="Attribute Type Header")
+    final static String DATA_PROPERTY_2 = "Attribute Type Header";
 
-    @ComponentInput(description="Read content as vector holding object array.",
-                    name= "inputContent")
-    public final static String DATA_INPUT = "inputContent";
+    @ComponentInput(description="This input contains the file content stored as a vector with "+
+    		"each attribute (column) stored as an object array.",
+                    name= "CSV Content")
+    public final static String DATA_INPUT = "CSV Content";
 
-    @ComponentOutput(description="Output content as vector containing object array.",
-                     name="outputObject")        
-    public final static String DATA_OUTPUT = "outputObject";
+    @ComponentOutput(description="This output is the original 'CSV Content' that is unchanged.",
+                     name="CSV Content")        
+    public final static String DATA_OUTPUT = "CSV Content";
     
     /**
      * Store the number of rows per page.
