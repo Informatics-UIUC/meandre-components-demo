@@ -91,14 +91,28 @@ public class CSVReader implements ExecutableComponent {
                 line = line.trim();
                 if(line.length() == 0)
                     continue;
-                StringTokenizer st = new StringTokenizer(line, ",");
+                
+                int fromIndex = 0;
+                int index = line.indexOf(',', fromIndex);
+                Vector<String> tokens = new Vector<String>();
+                while(index != -1) {
+                	//System.out.println(line.substring(fromIndex, index));
+                	tokens.add(line.substring(fromIndex, index));
+                	fromIndex = index+1;
+                	index = line.indexOf(',', fromIndex);
+                }
+                //System.out.println(line.substring(fromIndex));
+                tokens.add(line.substring(fromIndex));
+                result.add(tokens.toArray());
+                
+                /*StringTokenizer st = new StringTokenizer(line, ",");
                 Object[] tokens = new Object[st.countTokens()];
                 int pos = 0;
                 while(st.hasMoreTokens()) {
                     String token = st.nextToken().trim();
                     tokens[pos++] = token;
                 }
-                result.add(tokens);
+                result.add(tokens);*/
             }
             /*for(int i=0; i<result.size(); i++) {
                 Object[] tokens = result.elementAt(i);
