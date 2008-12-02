@@ -40,22 +40,19 @@
  * WITH THE SOFTWARE.
  */
 
-package org.meandre.demo.components.io;
+package org.meandre.demo.components.io;  
 
+import java.io.BufferedReader;
 import java.io.InputStream;
-import java.util.concurrent.Semaphore;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Vector;
+import java.util.concurrent.Semaphore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
@@ -67,9 +64,13 @@ import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
-
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 @Component(creator="Lily Dong",
            description="View Google map.",
@@ -77,28 +78,40 @@ import org.meandre.webui.WebUIFragmentCallback;
            tags="google map, visualization",
            mode=Mode.webui)
 
-public class GoogleMapViewer 
+public class GoogleMapViewer
 	implements ExecutableComponent, WebUIFragmentCallback {
 	@ComponentProperty(defaultValue="ABQIAAAAzuMq2M5--KdBKawoLNQWUxRi_j0U6kJrkFvY4-OX2XYmEAa76BQS61jzrv4ruAIpkFQs5Qp-fiN3hg",
                        description="This property sets Google Maps API key.",
                        name="googleKey")
-    final static String DATA_PROPERTY = "googleKey";
+    final static String DATA_PROPERTY_1 = "googleKey";
+	@ComponentProperty(defaultValue="yFUeASDV34FRJWiaM8pxF0eJ7d2MizbUNVB2K6in0Ybwji5YB0D4ZODR2y3LqQ--",
+               		   description="This property sets Yahoo API ID.",
+               		   name="yahooId")
+    final static String DATA_PROPERTY_2 = "yahooId";
 	
-	@ComponentInput(description="Read content as stream.",
-                    name= "inputStream")
-    public final static String DATA_INPUT = "inputStream";
-	
-	/** The blocking semaphore */
+    @ComponentInput(description="Read XML doucment.",
+              		name= "inputDocument")
+    public final static String DATA_INPUT = "inputDocument";
+    
+    /** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
 
     /** The instance ID */
     private String sInstanceID = null;
     
     /** Store Google Maps API key */
-    private String apiKey;
+    private String googleKey;
     
-    /** Store addresses */
-    private Vector<String> address;
+    /** Store latitude, longitude and address */
+    private Vector<String> lat, lon, location;
+    
+    /** Store the average values of latitude and longitude */
+    private float latAverage, lonAverage;
+    
+    /** Store the minimum and maximum values of latitude and longitude */
+    float latMin, latMax, lonMin, lonMax ;
+    
+    private final static String STRING_DELIMITER = "\n";
     
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
@@ -128,61 +141,80 @@ public class GoogleMapViewer
         sb.append("<head>\n");
         sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>\n");
         sb.append("<title>Google Map Viewer</title>\n");
-        sb.append("<script src=\"http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=" +
-        		  apiKey + "\"\n");
+        sb.append("<script src=\"http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key="+
+        		googleKey + "\"\n");
         sb.append("type=\"text/javascript\"></script>\n");
         sb.append("<script type=\"text/javascript\">\n");
 
-        sb.append("var map = null;\n");
-        sb.append("var geocoder = null;\n");
+        sb.append("var lat = new Array();\n");
+        for(int i=0; i<lat.size(); i++) 
+        	sb.append("lat[").append(i).append("]=").append(lat.elementAt(i)).append(";\n");
+
+        sb.append("var lon = new Array();\n");
+        for(int i=0; i<lon.size(); i++)
+        	sb.append("lon[").append(i).append("]=").append(lon.elementAt(i)).append(";\n");
+
+        sb.append("var loc = new Array();\n");
+        for(int i=0; i<location.size(); i++)
+        	sb.append("loc[").append(i).append("]=\"").append(location.elementAt(i)).append("\";\n");
+
+        sb.append("var latAverage=").append(latAverage).append(";\n");
+        sb.append("var lonAverage=").append(lonAverage).append(";\n");
+        sb.append("var latMin=").append(latMin).append(";\n");
+        sb.append("var latMax=").append(latMax).append(";\n");
+        sb.append("var lonMin=").append(lonMin).append(";\n");
+        sb.append("var lonMax=").append(lonMax).append(";\n");
         
-        sb.append("var address= new Array();\n");
-        for(int i=0; i<address.size(); i++) {
-        	sb.append("address[").append(i).append("]=\"").
-        	append((String)address.elementAt(i)).append("\";\n");
-        }
-        //sb.append("address[0] = \"1901 N Moreland Blvd, Champaign, Illinois\";\n");
-        //sb.append("address[1] = \"2001 N Moreland Blvd, Champaign, Illinois\";\n");
-         
+        sb.append("var zooMin=4;\n");
+        sb.append("var zooMax=13;\n");
+
         sb.append("function initialize() {\n");
         sb.append("if (GBrowserIsCompatible()) {\n");
-        sb.append("map = new GMap2(document.getElementById(\"map_canvas\"));\n");
+
+        sb.append("var map = new GMap2(document.getElementById(\"map_canvas\"));\n");
+
+        sb.append("var p1 = new GLatLng(latMin, lonMax);\n");
+ 	    sb.append("var p2 = new GLatLng(latMax, lonMin);\n");		
+ 	    sb.append("var bounds = new GLatLngBounds(p1, p2);\n");
+ 	    sb.append("var zoom = map.getBoundsZoomLevel(bounds);\n");
+ 	    sb.append("if(zoom > zooMax) zoom = zooMax;\n");
+        sb.append("if(zoom < zooMin) zoom = zooMin;\n");
         
-        sb.append("geocoder = new GClientGeocoder();\n");
-        
-        sb.append("for(var i=0; i<address.length; i++)\n");
-      	sb.append("showAddress(address[i]);\n");
-        
-        sb.append("}\n");
-        sb.append("}\n");
-        
-        sb.append("function showAddress(address) {\n");
-        sb.append("if (geocoder) {\n");
-        sb.append("geocoder.getLatLng(\n");
-        sb.append("address,\n");
-        sb.append("function(point) {\n");
-        sb.append("if (!point) {\n");
-        sb.append("alert(address + \" not found\");\n");
-        sb.append("} else {\n");
-        sb.append("map.setCenter(point, 10);\n");
+        sb.append("map.setCenter(new GLatLng(latAverage, lonAverage), zoom);\n");
+        sb.append("map.addControl(new GSmallMapControl());\n");
+        sb.append("map.addControl(new GMapTypeControl());\n");
+
+        sb.append("var baseIcon = new GIcon(G_DEFAULT_ICON);\n");
+        sb.append("baseIcon.shadow = \"http://www.google.com/mapfiles/shadow50.png\";\n");
+        sb.append("baseIcon.iconSize = new GSize(20, 34);\n");
+        sb.append("baseIcon.shadowSize = new GSize(37, 34);\n");
+        sb.append("baseIcon.iconAnchor = new GPoint(9, 34);\n");
+        sb.append("baseIcon.infoWindowAnchor = new GPoint(9, 2);\n");
+
+        sb.append("function createMarker(point, index) {\n");
+        sb.append("var letter = String.fromCharCode(\"A\".charCodeAt(0) + index);\n");
+        sb.append("var letteredIcon = new GIcon(baseIcon);\n");
+        sb.append("letteredIcon.image = \"http://www.google.com/mapfiles/marker\" + letter + \".png\";\n");
+
+        sb.append("markerOptions = { icon:letteredIcon };\n");
         sb.append("var marker = new GMarker(point);\n");
-        sb.append("map.addOverlay(marker);\n");
-                    
-      	sb.append("GEvent.addListener(marker,\"click\", function() {\n");
-        sb.append("var myHtml = address;\n");
-        sb.append("map.openInfoWindowHtml(point, myHtml);\n");
+
+        sb.append("GEvent.addListener(marker, \"click\", function() {\n");
+        sb.append("marker.openInfoWindowHtml(loc[index]);\n");
         sb.append("});\n");
-      	//sb.append("alert(address + \" found\");\n");
+        sb.append("return marker;\n");
+        sb.append("}\n");
+           
+        sb.append("for (var i=0; i<loc.length; i++) {\n");
+        sb.append("var latlng = new GLatLng(lat[i], lon[i]);\n");
+        sb.append("map.addOverlay(createMarker(latlng, i));\n");
         sb.append("}\n");
         sb.append("}\n");
-        sb.append(");\n");
         sb.append("}\n");
-        sb.append("}\n");
-        
         sb.append("</script>\n");
         sb.append("</head>\n");
 
-        sb.append("<body onload=\"initialize()\" onunload=\"GUnload()\">\n");
+        sb.append("<body onload=\"initialize()\">\n");
         sb.append("<div align=\"center\">\n");
         sb.append("<div id=\"map_canvas\" style=\"width: 500px; height: 500px\"></div>\n");
         sb.append("</div>\n");
@@ -199,14 +231,14 @@ public class GoogleMapViewer
 
         return sb.toString();
     }
-	
+    
     /** This method gets called when a call with parameters is done to a given component
      * webUI fragment
      *
      * @param target The target path
      * @param request The request object
      * @param response The response object
-     * @throws WebUIException A problem arised during the call back
+     * @throws WebUIException A problem arose during the call back
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws
             WebUIException {
@@ -217,7 +249,7 @@ public class GoogleMapViewer
         else
             emptyRequest(response);
     }
-    
+	
 	/** When ready for execution.
     *
     * @param cc The component context
@@ -226,52 +258,92 @@ public class GoogleMapViewer
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-    	apiKey = cc.getProperty(DATA_PROPERTY);
+    	googleKey = cc.getProperty(DATA_PROPERTY_1);
+    	String yahooId = cc.getProperty(DATA_PROPERTY_2);
     	
-    	InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
-    	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    	
-    	DocumentBuilder db;
+    	Document doc = (Document)cc.getDataComponentFromInput(DATA_INPUT);
+    	    	    
 		try {
-			db = dbf.newDocumentBuilder();
-			Document doc = db.parse(is);
 			doc.getDocumentElement().normalize();
 			System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
 			NodeList nodeLst = doc.getElementsByTagName("location");
 			System.out.println("Information of all addresses");
-
-			for (int s = 0; s < nodeLst.getLength(); s++) {
-				Node fstNode = nodeLst.item(s);
-			    if (fstNode.getNodeType() == Node.ELEMENT_NODE) {
-			    	StringBuffer sb = new StringBuffer();
-			        Element fstElmnt = (Element)fstNode;
-			           
-			        NodeList streetList = fstElmnt.getElementsByTagName("address");
-			        Element streetElement = (Element)streetList.item(0);
-			        NodeList street = streetElement.getChildNodes();
-			        System.out.println("address : "  + ((Node)street.item(0)).getNodeValue());
-			        sb.append(((Node)street.item(0)).getNodeValue()).append(",");
-			        
-			        NodeList cityList = fstElmnt.getElementsByTagName("city");
-			        Element cityElement = (Element)cityList.item(0);
-			        NodeList city = cityElement.getChildNodes();
-			        System.out.println("City : " + ((Node)city.item(0)).getNodeValue());
-			        sb.append(((Node)city.item(0)).getNodeValue()).append(",");   
-			        
-			        NodeList stateList = fstElmnt.getElementsByTagName("state");
-			        Element stateElement = (Element)stateList.item(0);
-			        NodeList state = stateElement.getChildNodes();
-			        System.out.println("State : " + ((Node)state.item(0)).getNodeValue());
-			        sb.append(((Node)state.item(0)).getNodeValue());
-			        
-			        address.add(sb.toString());
+			for (int k = 0; k < nodeLst.getLength(); k++) {
+				Node fstNode = nodeLst.item(k);
+				StringBuffer sb = new StringBuffer();
+			    sb.append("http://local.yahooapis.com/MapsService/V1/geocode?appid=");
+			    sb.append(yahooId);
+			    String str = fstNode.getTextContent();
+			    str = str.replaceAll(" ", "%20");
+			    sb.append("&location=").append(str);
+			    
+			    URL url = new URL(sb.toString());
+			    BufferedReader br = null;
+			    try {
+		        	br = new BufferedReader(new InputStreamReader(
+		        			url.openConnection().getInputStream()));
+			    }catch(java.io.IOException ex) { 
+			    	System.out.println("bad query : " + str);
+			    	br = null;
 			    }
+			    if(br == null)
+			    	continue;
+		        StringBuffer buffer = new StringBuffer();
+		        String line; 
+		        while((line = br.readLine())!= null) {
+		        	line = line.trim();
+		            if(line.length() == 0)
+		            	continue;
+		            buffer.append(line).append(STRING_DELIMITER);
+		        }
+		        br.close();
+			    
+		        String s = buffer.toString();
+		        float latitude, longitude;
+		        while(true) {//valid location 
+		        	if(s.indexOf("<Latitude>") == -1)
+		        		break;
+		        	
+		        	int beginIndex = s.indexOf("<Latitude>") + 10,
+		        	    endIndex = s.indexOf("</Latitude>");
+		        	latitude = Float.parseFloat(
+		        			s.substring(beginIndex, endIndex));
+		        	latMin = getMin(latMin, latitude);
+		        	latMax = getMax(latMax, latitude);
+		        	latAverage += latitude;
+		        	lat.add(s.substring(beginIndex, endIndex));
+		        	
+		        	beginIndex = s.indexOf("<Longitude>") + 11;
+	        	    endIndex = s.indexOf("</Longitude>");
+	        	    longitude = Float.parseFloat(
+		        			s.substring(beginIndex, endIndex));
+	        	    lonMin = getMin(lonMin, longitude);
+	        	    lonMax = getMax(lonMax, longitude);
+	        	    lonAverage += longitude;
+	        	    lon.add(s.substring(beginIndex, endIndex));
+	        	    
+	        	    location.add(fstNode.getTextContent());
+	        	    
+	        	    s = s.substring(endIndex+12);
+		        }
 			}
-			is.close();
 		} catch (Exception e1) {
 			throw new ComponentExecutionException(e1);
 		}
     	
+		if(location.size() != 0) {
+			latAverage /= location.size();
+			lonAverage /= location.size();
+			System.out.println(latMin + " " + latMax + " " + 
+					           lonMin + " " + lonMax + " " +
+					           latAverage + " " + lonAverage);
+		}
+		
+		for(int k=0; k<location.size(); k++)
+			System.out.println(location.elementAt(k) + "\t" +
+							   lat.elementAt(k)   + "\t" +
+							   lon.elementAt(k));
+		
     	try {
             sInstanceID = cc.getExecutionInstanceID();
             sem.acquire();
@@ -283,11 +355,67 @@ public class GoogleMapViewer
         }
     }
 	
+    /**
+     * 
+     * @param n1 the first number to be compared
+     * @param n2 the second number to be compared 
+     * @return the smaller number between n1 and n2
+     */
+    private float getMin(float n1, float n2) {
+    	if(Float.compare(n1, 0) == 0) //for the first time
+    		return n2;
+    	
+    	if(Float.compare(n1, n2) == 0)
+    		return n1;
+    	else if(n1 < 0 && n2 > 0)
+    		return n1;
+    	else if(n1 > 0 && n2 < 0)
+    		return n2;
+    	else {//same sign
+    		if((new Float(n1).toString().compareTo(new Float(n2).toString())) == -1)
+    			return n1;
+    		else 
+    			return n2;
+    	}
+    }
+    
+    /**
+     * 
+     * @param n1 the first number to be compared
+     * @param n2 the second number to be compared
+     * @return the bigger number between n1 and n2
+     */
+    private float getMax(float n1, float n2) {
+    	if(Float.compare(n1, 0) == 0) //for the first time
+    		return n2;
+    	
+    	if(Float.compare(n1, n2) == 0)
+    		return n1;
+    	else if(n1 < 0 && n2 > 0)
+    		return n2;
+    	else if(n1 > 0 && n2 < 0)
+    		return n1;
+    	else {//same sign
+    		if((new Float(n1).toString().compareTo(new Float(n2).toString())) == -1)
+    			return n2;
+    		else 
+    			return n1;
+    	}
+    }
+	
 	/**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
-    	address = new Vector<String>();
+    	lat = new Vector<String>();
+    	lon = new Vector<String>();
+    	location = new Vector<String>();
+    	latAverage = 0;
+    	lonAverage = 0;
+    	latMin = 0;//Float.MAX_VALUE;
+	    latMax = 0;//-Float.MAX_VALUE;
+	    lonMin = 0;//Float.MAX_VALUE; 
+	    lonMax = 0;//-Float.MAX_VALUE;
     }
     
     /**
