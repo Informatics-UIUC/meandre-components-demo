@@ -146,9 +146,9 @@ public class AnnotationToXML implements ExecutableComponent {
 			if(entities.indexOf(ann.getType()) != -1) {
 				Element child = doc_out.createElement(ann.getType());
 				String s = ann.getContent(doc).trim();
-				Text text = doc_out.createTextNode(s);
 				if(ts.contains(s))
 					continue;
+				Text text = doc_out.createTextNode(s);
 				ts.add(s);
 		        child.appendChild(text);
 		        root.appendChild(child);

@@ -184,19 +184,19 @@ public class GoogleMapViewer
         sb.append("map.addControl(new GSmallMapControl());\n");
         sb.append("map.addControl(new GMapTypeControl());\n");
 
-        sb.append("var baseIcon = new GIcon(G_DEFAULT_ICON);\n");
+        /*sb.append("var baseIcon = new GIcon(G_DEFAULT_ICON);\n");
         sb.append("baseIcon.shadow = \"http://www.google.com/mapfiles/shadow50.png\";\n");
         sb.append("baseIcon.iconSize = new GSize(20, 34);\n");
         sb.append("baseIcon.shadowSize = new GSize(37, 34);\n");
         sb.append("baseIcon.iconAnchor = new GPoint(9, 34);\n");
-        sb.append("baseIcon.infoWindowAnchor = new GPoint(9, 2);\n");
+        sb.append("baseIcon.infoWindowAnchor = new GPoint(9, 2);\n");*/
 
         sb.append("function createMarker(point, index) {\n");
-        sb.append("var letter = String.fromCharCode(\"A\".charCodeAt(0) + index);\n");
+        /*sb.append("var letter = String.fromCharCode(\"A\".charCodeAt(0) + index);\n");
         sb.append("var letteredIcon = new GIcon(baseIcon);\n");
-        sb.append("letteredIcon.image = \"http://www.google.com/mapfiles/marker\" + letter + \".png\";\n");
+        sb.append("letteredIcon.image = \"http://www.google.com/mapfiles/marker\" + letter + \".png\";\n");*/
 
-        sb.append("markerOptions = { icon:letteredIcon };\n");
+        //sb.append("markerOptions = { icon:letteredIcon };\n");
         sb.append("var marker = new GMarker(point);\n");
 
         sb.append("GEvent.addListener(marker, \"click\", function() {\n");
@@ -274,6 +274,8 @@ public class GoogleMapViewer
 			    sb.append("http://local.yahooapis.com/MapsService/V1/geocode?appid=");
 			    sb.append(yahooId);
 			    String str = fstNode.getTextContent();
+			    if(str.contains("\"")) //invalid location
+			    	continue;
 			    str = str.replaceAll(" ", "%20");
 			    sb.append("&location=").append(str);
 			    
