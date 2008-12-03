@@ -86,6 +86,16 @@ public class CSVTableViewer
                        name="Attribute Type Header")
     final static String DATA_PROPERTY_2 = "Attribute Type Header";
 
+    @ComponentProperty(defaultValue="200",
+ 		   			   description="This property sets the number of rows per page to display.",
+ 		   			   name="nrRows")
+    final static String DATA_PROPERTY_3 = "nrRows";
+
+    @ComponentProperty(defaultValue="8",
+ 		   			   description="This property sets the number of columns per page to display.",
+ 		   			   name="nrColumns")
+    final static String DATA_PROPERTY_4 = "nrColumns";
+    
     @ComponentInput(description="This input contains the file content stored as a vector with "+
     		"each attribute (column) stored as an object array.",
                     name= "CSV Content")
@@ -359,6 +369,17 @@ public class CSVTableViewer
         try {
             isHeader = Boolean.valueOf(cc.getProperty(DATA_PROPERTY_1));
             isType = Boolean.valueOf(cc.getProperty(DATA_PROPERTY_2));       
+            
+            try {
+                nrRows = Integer.valueOf(cc.getProperty(DATA_PROPERTY_3));
+                nrColumns = Integer.valueOf(cc.getProperty(DATA_PROPERTY_4));
+            } catch(Exception e) {
+                throw new ComponentExecutionException(e);
+            }
+
+            if(nrRows <= 0 || nrColumns <=0)
+                throw new ComponentExecutionException();
+            
             inputContent = (Vector<Object[]>)cc.getDataComponentFromInput(DATA_INPUT);
     
             int totalRows = inputContent.size(),
