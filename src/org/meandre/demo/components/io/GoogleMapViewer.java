@@ -81,11 +81,11 @@ import org.w3c.dom.NodeList;
 public class GoogleMapViewer
 	implements ExecutableComponent, WebUIFragmentCallback {
 	@ComponentProperty(defaultValue="ABQIAAAAzuMq2M5--KdBKawoLNQWUxRi_j0U6kJrkFvY4-OX2XYmEAa76BQS61jzrv4ruAIpkFQs5Qp-fiN3hg",
-                       description="This property sets Google Maps API key.",
+                       description="This property sets Google Maps API key. The default value is only applicable to 127.0.0.1.",
                        name="googleKey")
     final static String DATA_PROPERTY_1 = "googleKey";
 	@ComponentProperty(defaultValue="yFUeASDV34FRJWiaM8pxF0eJ7d2MizbUNVB2K6in0Ybwji5YB0D4ZODR2y3LqQ--",
-               		   description="This property sets Yahoo API ID.",
+               		   description="This property sets Yahoo API ID. The default value is applicable to all applications.",
                		   name="yahooId")
     final static String DATA_PROPERTY_2 = "yahooId";
 	
