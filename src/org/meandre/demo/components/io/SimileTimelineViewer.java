@@ -58,6 +58,7 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 
 import org.meandre.annotations.Component;
+import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
 
@@ -69,6 +70,9 @@ import org.meandre.core.ExecutableComponent;
 
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 @Component(creator="Lily Dong",
            description="Visualize time-based events.",
@@ -88,6 +92,10 @@ public class SimileTimelineViewer
     		       	   "It must be in the same directory with html file.",
     		       	   name="xml_loc")
     final static String DATA_PROPERTY_2 = "xml_loc";
+	
+	@ComponentInput(description="Read XML doucment.",
+      			    name= "inputDocument")
+    public final static String DATA_INPUT = "inputDocument";
 	
 	/** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
@@ -265,6 +273,26 @@ public class SimileTimelineViewer
         ComponentContextException {  
     	htmLocation = cc.getProperty(DATA_PROPERTY_1);
     	xmLocation = cc.getProperty(DATA_PROPERTY_2);
+    	
+    	Document doc = (Document)cc.getDataComponentFromInput(DATA_INPUT);
+    	StringBuffer buf = new StringBuffer();
+    	buf.append("<data>\n");
+    	try {
+			doc.getDocumentElement().normalize();
+			System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
+			NodeList nodeLst = doc.getElementsByTagName("time");
+			System.out.println("Information of time");
+			for (int k = 0; k < nodeLst.getLength(); k++) {
+				Node fstNode = nodeLst.item(k);
+				String str = fstNode.getTextContent();
+				buf.append("<event start=\"").append(str).append("\" title=\"").append(str).append("\">\n");
+			    buf.append("</event>\n");
+			}
+			buf.append("</data>");
+			System.out.println(buf.toString());
+    	} catch (Exception e1) {
+			throw new ComponentExecutionException(e1);
+		}
     	
         upload();
     	
