@@ -75,8 +75,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 
 public class ActiveURLFetcher implements ExecutableComponent {
     @ComponentInput(description="URL to be fetched.",
-                    name= "inpuUrl")
-    public final static String DATA_INPUT = "inpuUrl";
+                    name= "inputUrl")
+    public final static String DATA_INPUT = "inputUrl";
     
     @ComponentOutput(description="Output content of the specified URL as stream.",
                      name="outputStream")             
