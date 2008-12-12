@@ -274,8 +274,8 @@ public class GoogleMapViewer
 			    sb.append("http://local.yahooapis.com/MapsService/V1/geocode?appid=");
 			    sb.append(yahooId);
 			    String str = fstNode.getTextContent();
-			    if(str.contains("\"")) //invalid location
-			    	continue;
+			    /*if(str.contains("\"")) //invalid location
+			    	continue;*/
 			    str = str.replaceAll(" ", "%20");
 			    sb.append("&location=").append(str);
 			    
