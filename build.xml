@@ -54,11 +54,8 @@
     <property name="lib.devkit.dir" value="${basedir}/lib/devkit"/>
     <property name="build.dir" value="${basedir}/build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
-    <property name="src.gen.dir" value="${build.dir}/src-gen"/>
-    <property name="src.copy.dir" value="${build.dir}/src-copy"/>
     <property name="dist.dir" value="${build.dir}/dist"/>
     <property name="descriptors.dir" value="${build.dir}/descriptors"/>
-    <property name="scripts.gen.dir" value="${build.dir}/scripts"/>
     <property name="javadoc.dir" value="${build.dir}/javadoc"/>
 
 
@@ -70,13 +67,11 @@
 
     <!-- Generated JAR location -->
     <property name="components.jar.file" value="${project.name}-components.jar"/>    
-    <!-- Generated upload script name -->
-    <property name="uploader.file" value="upload-${project.name}-components.sh"/>    
 
     
     <!-- Code locations -->
     <path id="src.code.dirs">
-        <dirset dir="${basedir}" includes="src"/>
+        <dirset dir="${basedir}" includes="src*"/>
     </path>
 
     <!-- Test locations -->
@@ -142,10 +137,7 @@
         <mkdir dir="${classes.dir}"/>
         <mkdir dir="${dist.dir}"/>
         <mkdir dir="${descriptors.dir}"/>
-        <mkdir dir="${src.gen.dir}"/>
-        <mkdir dir="${src.copy.dir}"/>
         <mkdir dir="${javadoc.dir}"/>
-        <mkdir dir="${scripts.gen.dir}"/>
         <mkdir dir="${test.root.dir}"/>
         <mkdir dir="${test.classes.dir}"/>
         <mkdir dir="${test.logs.dir}"/>
@@ -248,7 +240,8 @@
                showoutput="yes">
             <jvmarg value="-Duser.language=en"/>
             <classpath>
-                <path refid="classpath.runtime"/>
+                <path refid="classpath.build"/>
+                <pathelement location="${classes.dir}"/>
                 <pathelement location="${test.classes.dir}"/>
             </classpath>
             <formatter type="xml"/>
@@ -280,9 +273,9 @@
       installs all components (descriptors and java contexts) to a 
       meandre-infrastructure server
     -->
-    <target name="upload-components-alpha"
+    <target name="upload-components"
         depends="compile"
-        description="-> ">
+        description="-> uploads and installs components to a Meandre Infrastructure server running on the local machine">
         <java classname="org.meandre.tools.components.InstallComponentsCMD"
               fork="yes"
               maxmemory="1024m">

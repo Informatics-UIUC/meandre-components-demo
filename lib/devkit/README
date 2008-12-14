@@ -1,0 +1,4 @@
+This directory contains jar files neede by the ant targets in this Component 
+repository's build.xml. They should therefore be in the classpath when the
+meandre specific ant targets are run, but do not need to be considered as
+dependencies of the components that would be uploaded to a meandre server.
