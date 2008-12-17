@@ -153,7 +153,7 @@ public class SimileTimelineViewer
     	sb.append("</body>\n");
     	sb.append("</html>\n");
     	
-    	return sb.toString();
+    	return sb.toString();  
     }
     
     /**
