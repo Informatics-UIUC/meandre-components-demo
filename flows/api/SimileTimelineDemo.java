@@ -58,7 +58,7 @@ public class SimileTimelineDemo {
 		
 		flowBuilder.execute(wflow, true);
 		
-		System.exit(0);
+		System.exit(0); 
 	}
 }
 
