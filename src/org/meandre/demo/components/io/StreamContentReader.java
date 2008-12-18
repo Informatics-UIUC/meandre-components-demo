@@ -118,7 +118,7 @@ public class StreamContentReader implements ExecutableComponent {
             }
             cc.pushDataComponentToOutput(DATA_OUTPUT, sb.toString());
             
-            //System.out.println(sb.toString());
+            System.out.println(sb.toString());
         } else {
             DataInputStream dis = new DataInputStream(is);
             byte[] b = new byte[ARRAY_LENGTH];

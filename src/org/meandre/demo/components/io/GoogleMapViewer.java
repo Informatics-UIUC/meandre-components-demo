@@ -342,7 +342,8 @@ public class GoogleMapViewer
 		}
 		
 		for(int k=0; k<location.size(); k++)
-			System.out.println(location.elementAt(k) + "\t" +
+			System.out.println(k + "\t" +
+							   location.elementAt(k) + "\t" +
 							   lat.elementAt(k)   + "\t" +
 							   lon.elementAt(k));
 		

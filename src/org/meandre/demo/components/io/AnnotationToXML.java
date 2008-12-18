@@ -81,7 +81,8 @@ import org.w3c.dom.Text;
 		description = "<p>Overview:<br> This component extracts the " + 
 		"annotations from the document and outputs them as xml.</p>",
 		name = "AnnotationToXML", 
-		tags = "text document annotation")
+		tags = "text document annotation") 
+		
 
 public class AnnotationToXML implements ExecutableComponent {
 

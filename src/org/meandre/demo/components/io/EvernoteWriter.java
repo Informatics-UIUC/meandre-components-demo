@@ -53,7 +53,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 import com.facebook.thrift.protocol.TBinaryProtocol;
-import com.facebook.thrift.transport.THttpClient;
+import com.facebook.thrift.transport.THttpClient; 
 
 import com.evernote.edam.notestore.NoteStore;
 import com.evernote.edam.type.User;
