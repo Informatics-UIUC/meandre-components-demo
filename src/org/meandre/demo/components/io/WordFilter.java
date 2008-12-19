@@ -44,6 +44,9 @@ package org.meandre.demo.components.io;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -67,13 +70,13 @@ import org.meandre.core.ExecutableComponent;
            description="Filter the unnecessary words in Map.",
            name="WordFilter",
            tags="word, filter")
-           
+
 public class WordFilter implements ExecutableComponent {
-	@ComponentProperty(defaultValue="",
- 		   			   description="File containing stop words.",
- 		   			   name="fileName")
-    final static String DATA_PROPERTY_1 = "fileName";
-	
+	@ComponentProperty(defaultValue="http://norma.ncsa.uiuc.edu/public-dav/applets/common_words.txt",
+ 		   			   description="URL containing stop words.",
+ 		   			   name="loc")
+    final static String DATA_PROPERTY_1 = "loc";
+
 	@ComponentProperty(defaultValue="false",
                        description="This property sets whether the number of keys should be limited. " +
                        			   "If truet, it will be numerated after filtering stop words.",
@@ -83,15 +86,15 @@ public class WordFilter implements ExecutableComponent {
                        description="This property sets the maximum number of keys to be kept in output Map.",
                        name="upperLimit")
     final static String DATA_PROPERTY_3 = "upperLimit";
-	
+
 	@ComponentInput(description="Map to be filtered.",
             	    name= "inputMap")
     public final static String DATA_INPUT = "inputMap";
-	
+
 	@ComponentOutput(description="Output filtered content in Map format.",
-                     name="outputMap")        
+                     name="outputMap")
     public final static String DATA_OUTPUT = "outputMap";
-	
+
 	/** When ready for execution.
     *
     * @param cc The component context
@@ -100,33 +103,51 @@ public class WordFilter implements ExecutableComponent {
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-    	Map<String, Integer> inputMap = 
+    	Map<String, Integer> inputMap =
     		(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
-    	
-    	String fileName = cc.getProperty(DATA_PROPERTY_1);
+
+    	InputStream is = null;
+        try {
+            URL url = new URL(cc.getProperty(DATA_PROPERTY_1));
+            try {
+                is = url.openConnection().getInputStream();
+                //is can not be closed here, otherwise java.net.SocketException: socket closed
+                //the final client must close this stream.
+            }catch(java.io.IOException e) {
+                try {
+                    if(is != null)
+                        is.close();
+                }catch(java.io.IOException ioex) {}
+                throw new ComponentExecutionException(e);
+            }
+        } catch(java.net.MalformedURLException e) {
+            throw new ComponentExecutionException(e);
+        }
+
     	try {
-    		BufferedReader reader = 
-    			new BufferedReader(new FileReader(fileName));
+    		BufferedReader reader =
+    			new BufferedReader(new InputStreamReader(is));
     		String word;
     		while((word=reader.readLine()) != null) {
     			word = word.trim();
     			inputMap.remove(word);
     		}
     		reader.close();
+    		is.close();
     	}catch(java.io.IOException e) {
     		throw new ComponentExecutionException(e);
     	}
-    	
+
     	boolean isLimited = Boolean.parseBoolean(
     			cc.getProperty(DATA_PROPERTY_2));
     	Map<String, Integer> outputMap = null;
     	if(isLimited) {
-    		int upperLimit = 
+    		int upperLimit =
     			Integer.parseInt(cc.getProperty(DATA_PROPERTY_3));
     		if(inputMap.size() > upperLimit) {
-    			byValueComparator bvc =	
+    			byValueComparator bvc =
     				new byValueComparator(inputMap);
-    			TreeMap<String, Integer> sortedMap = 
+    			TreeMap<String, Integer> sortedMap =
     				new TreeMap<String, Integer>(bvc);
     			sortedMap.putAll(inputMap);
     			outputMap = new Hashtable<String, Integer>();
@@ -140,33 +161,33 @@ public class WordFilter implements ExecutableComponent {
     			}
     		}
     	}
-		
+
     	outputMap = (!isLimited)? inputMap: outputMap;
-    	
+
     	System.out.println("Output of WordFilter : " + outputMap.toString());
-    	
-    	cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);	
+
+    	cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
     }
-	
+
 	/**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
     }
-    
+
     class byValueComparator implements Comparator<String> {
   		Map base_map;
-	
+
   		public byValueComparator(Map base_map) {
     		this.base_map = base_map;
   		}
-	
+
   		public int compare(String arg0, String arg1) {
   			int result = ((Integer)base_map.get(arg1)).compareTo(
 					(Integer)base_map.get(arg0));
