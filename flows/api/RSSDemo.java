@@ -1,7 +1,7 @@
 package api;
 
-import org.meandre.tools.components.FlowBuilderAPI;
-import org.meandre.tools.components.FlowBuilderAPI.WorkingFlow;
+import org.meandre.tools.flows.FlowBuilderAPI;
+import org.meandre.tools.flows.FlowBuilderAPI.WorkingFlow;
 
 public class RSSDemo {
 	public static void main(String[] args) {
