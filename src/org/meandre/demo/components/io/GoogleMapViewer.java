@@ -40,7 +40,7 @@
  * WITH THE SOFTWARE.
  */
 
-package org.meandre.demo.components.io;  
+package org.meandre.demo.components.io;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -71,6 +71,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
 
 @Component(creator="Lily Dong",
            description="View Google map.",
@@ -88,31 +89,31 @@ public class GoogleMapViewer
                		   description="This property sets Yahoo API ID. The default value is applicable to all applications.",
                		   name="yahooId")
     final static String DATA_PROPERTY_2 = "yahooId";
-	
+
     @ComponentInput(description="Read XML doucment.",
               		name= "inputDocument")
     public final static String DATA_INPUT = "inputDocument";
-    
+
     /** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
 
     /** The instance ID */
     private String sInstanceID = null;
-    
+
     /** Store Google Maps API key */
     private String googleKey;
-    
+
     /** Store latitude, longitude and address */
     private Vector<String> lat, lon, location;
-    
+
     /** Store the average values of latitude and longitude */
     private float latAverage, lonAverage;
-    
+
     /** Store the minimum and maximum values of latitude and longitude */
     float latMin, latMax, lonMin, lonMax ;
-    
+
     private final static String STRING_DELIMITER = "\n";
-    
+
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
      *
@@ -127,14 +128,14 @@ public class GoogleMapViewer
             throw new WebUIException(e);
         }
     }
-    
+
     /** A simple message.
     *
     * @return The html containing the page
     */
     private String getViz() {
         StringBuffer sb = new StringBuffer();
-        
+
         sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n");
         sb.append("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
         sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\">\n");
@@ -147,7 +148,7 @@ public class GoogleMapViewer
         sb.append("<script type=\"text/javascript\">\n");
 
         sb.append("var lat = new Array();\n");
-        for(int i=0; i<lat.size(); i++) 
+        for(int i=0; i<lat.size(); i++)
         	sb.append("lat[").append(i).append("]=").append(lat.elementAt(i)).append(";\n");
 
         sb.append("var lon = new Array();\n");
@@ -164,7 +165,7 @@ public class GoogleMapViewer
         sb.append("var latMax=").append(latMax).append(";\n");
         sb.append("var lonMin=").append(lonMin).append(";\n");
         sb.append("var lonMax=").append(lonMax).append(";\n");
-        
+
         sb.append("var zooMin=4;\n");
         sb.append("var zooMax=13;\n");
 
@@ -174,12 +175,12 @@ public class GoogleMapViewer
         sb.append("var map = new GMap2(document.getElementById(\"map_canvas\"));\n");
 
         sb.append("var p1 = new GLatLng(latMin, lonMax);\n");
- 	    sb.append("var p2 = new GLatLng(latMax, lonMin);\n");		
+ 	    sb.append("var p2 = new GLatLng(latMax, lonMin);\n");
  	    sb.append("var bounds = new GLatLngBounds(p1, p2);\n");
  	    sb.append("var zoom = map.getBoundsZoomLevel(bounds);\n");
  	    sb.append("if(zoom > zooMax) zoom = zooMax;\n");
         sb.append("if(zoom < zooMin) zoom = zooMin;\n");
-        
+
         sb.append("map.setCenter(new GLatLng(latAverage, lonAverage), zoom);\n");
         sb.append("map.addControl(new GSmallMapControl());\n");
         sb.append("map.addControl(new GMapTypeControl());\n");
@@ -204,7 +205,7 @@ public class GoogleMapViewer
         sb.append("});\n");
         sb.append("return marker;\n");
         sb.append("}\n");
-           
+
         sb.append("for (var i=0; i<loc.length; i++) {\n");
         sb.append("var latlng = new GLatLng(lat[i], lon[i]);\n");
         sb.append("map.addOverlay(createMarker(latlng, i));\n");
@@ -216,22 +217,22 @@ public class GoogleMapViewer
 
         sb.append("<body onload=\"initialize()\">\n");
         sb.append("<div align=\"center\">\n");
-        sb.append("<div id=\"map_canvas\" style=\"width: 500px; height: 500px\"></div>\n");
+        sb.append("<div id=\"map_canvas\" style=\"width: 800px; height: 500px\"></div>\n");
         sb.append("</div>\n");
-        
+
         sb.append("<br/>\n");
-        
+
         sb.append("<div align=\"center\">\n");
         sb.append("<table align=center><font size=2><a id=\"url\" href=\"/" +
                      sInstanceID + "?done=true\">DONE</a></font></table>\n");
         sb.append("</div>\n");
-        
+
         sb.append("</body>\n");
         sb.append("</html>\n");
 
         return sb.toString();
     }
-    
+
     /** This method gets called when a call with parameters is done to a given component
      * webUI fragment
      *
@@ -249,7 +250,7 @@ public class GoogleMapViewer
         else
             emptyRequest(response);
     }
-	
+
 	/** When ready for execution.
     *
     * @param cc The component context
@@ -260,9 +261,9 @@ public class GoogleMapViewer
         ComponentContextException {
     	googleKey = cc.getProperty(DATA_PROPERTY_1);
     	String yahooId = cc.getProperty(DATA_PROPERTY_2);
-    	
+
     	Document doc = (Document)cc.getDataComponentFromInput(DATA_INPUT);
-    	    	    
+
 		try {
 			doc.getDocumentElement().normalize();
 			System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
@@ -278,20 +279,20 @@ public class GoogleMapViewer
 			    	continue;*/
 			    str = str.replaceAll(" ", "%20");
 			    sb.append("&location=").append(str);
-			    
+
 			    URL url = new URL(sb.toString());
 			    BufferedReader br = null;
 			    try {
 		        	br = new BufferedReader(new InputStreamReader(
 		        			url.openConnection().getInputStream()));
-			    }catch(java.io.IOException ex) { 
+			    }catch(java.io.IOException ex) {
 			    	System.out.println("bad query : " + str);
 			    	br = null;
 			    }
 			    if(br == null)
 			    	continue;
 		        StringBuffer buffer = new StringBuffer();
-		        String line; 
+		        String line;
 		        while((line = br.readLine())!= null) {
 		        	line = line.trim();
 		            if(line.length() == 0)
@@ -299,13 +300,13 @@ public class GoogleMapViewer
 		            buffer.append(line).append(STRING_DELIMITER);
 		        }
 		        br.close();
-			    
+
 		        String s = buffer.toString();
 		        float latitude, longitude;
-		        while(true) {//valid location 
+		        while(true) {//valid location
 		        	if(s.indexOf("<Latitude>") == -1)
 		        		break;
-		        	
+
 		        	int beginIndex = s.indexOf("<Latitude>") + 10,
 		        	    endIndex = s.indexOf("</Latitude>");
 		        	latitude = Float.parseFloat(
@@ -314,7 +315,7 @@ public class GoogleMapViewer
 		        	latMax = getMax(latMax, latitude);
 		        	latAverage += latitude;
 		        	lat.add(s.substring(beginIndex, endIndex));
-		        	
+
 		        	beginIndex = s.indexOf("<Longitude>") + 11;
 	        	    endIndex = s.indexOf("</Longitude>");
 	        	    longitude = Float.parseFloat(
@@ -323,30 +324,33 @@ public class GoogleMapViewer
 	        	    lonMax = getMax(lonMax, longitude);
 	        	    lonAverage += longitude;
 	        	    lon.add(s.substring(beginIndex, endIndex));
-	        	    
-	        	    location.add(fstNode.getTextContent());
-	        	    
+
+	        	    NamedNodeMap nnp = fstNode.getAttributes();
+	        	    String value = nnp.getNamedItem("sentence").getNodeValue();
+	        	    System.out.println("value = " + value);
+	        	    location.add(fstNode.getTextContent() + " | " + value);
+
 	        	    s = s.substring(endIndex+12);
 		        }
 			}
 		} catch (Exception e1) {
 			throw new ComponentExecutionException(e1);
 		}
-    	
+
 		if(location.size() != 0) {
 			latAverage /= location.size();
 			lonAverage /= location.size();
-			System.out.println(latMin + " " + latMax + " " + 
+			System.out.println(latMin + " " + latMax + " " +
 					           lonMin + " " + lonMax + " " +
 					           latAverage + " " + lonAverage);
 		}
-		
+
 		for(int k=0; k<location.size(); k++)
 			System.out.println(k + "\t" +
 							   location.elementAt(k) + "\t" +
 							   lat.elementAt(k)   + "\t" +
 							   lon.elementAt(k));
-		
+
     	try {
             sInstanceID = cc.getExecutionInstanceID();
             sem.acquire();
@@ -357,17 +361,17 @@ public class GoogleMapViewer
             throw new ComponentExecutionException(e);
         }
     }
-	
+
     /**
-     * 
+     *
      * @param n1 the first number to be compared
-     * @param n2 the second number to be compared 
+     * @param n2 the second number to be compared
      * @return the smaller number between n1 and n2
      */
     private float getMin(float n1, float n2) {
     	if(Float.compare(n1, 0) == 0) //for the first time
     		return n2;
-    	
+
     	if(Float.compare(n1, n2) == 0)
     		return n1;
     	else if(n1 < 0 && n2 > 0)
@@ -377,13 +381,13 @@ public class GoogleMapViewer
     	else {//same sign
     		if((new Float(n1).toString().compareTo(new Float(n2).toString())) == -1)
     			return n1;
-    		else 
+    		else
     			return n2;
     	}
     }
-    
+
     /**
-     * 
+     *
      * @param n1 the first number to be compared
      * @param n2 the second number to be compared
      * @return the bigger number between n1 and n2
@@ -391,7 +395,7 @@ public class GoogleMapViewer
     private float getMax(float n1, float n2) {
     	if(Float.compare(n1, 0) == 0) //for the first time
     		return n2;
-    	
+
     	if(Float.compare(n1, n2) == 0)
     		return n1;
     	else if(n1 < 0 && n2 > 0)
@@ -401,11 +405,11 @@ public class GoogleMapViewer
     	else {//same sign
     		if((new Float(n1).toString().compareTo(new Float(n2).toString())) == -1)
     			return n2;
-    		else 
+    		else
     			return n1;
     	}
     }
-	
+
 	/**
      * Call at the end of an execution flow.
      */
@@ -417,13 +421,13 @@ public class GoogleMapViewer
     	lonAverage = 0;
     	latMin = 0;//Float.MAX_VALUE;
 	    latMax = 0;//-Float.MAX_VALUE;
-	    lonMin = 0;//Float.MAX_VALUE; 
+	    lonMin = 0;//Float.MAX_VALUE;
 	    lonMax = 0;//-Float.MAX_VALUE;
     }
-    
+
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    } 
+    }
 }

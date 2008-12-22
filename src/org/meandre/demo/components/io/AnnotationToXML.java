@@ -45,8 +45,9 @@ package org.meandre.demo.components.io;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.logging.Logger;
+import java.util.Enumeration;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -74,34 +75,35 @@ import org.seasr.components.text.datatype.corpora.AnnotationSet;
 import org.seasr.components.text.datatype.corpora.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
+import org.w3c.dom.Attr;
 
 
 @Component(creator = "Loretta Auvil & Lily Dong",
 
-		description = "<p>Overview:<br> This component extracts the " + 
+		description = "<p>Overview:<br> This component extracts the " +
 		"annotations from the document and outputs them as xml.</p>",
-		name = "AnnotationToXML", 
-		tags = "text document annotation") 
-		
+		name = "AnnotationToXML",
+		tags = "text document annotation")
+
 
 public class AnnotationToXML implements ExecutableComponent {
 
-	@ComponentProperty(description = "Verbose output? A boolean value " + 
+	@ComponentProperty(description = "Verbose output? A boolean value " +
 					   "(true or false).",
-					   name = "verbose", 
+					   name = "verbose",
 					   defaultValue = "false")
 	final static String DATA_PROPERTY_VERBOSE = "verbose";
 
-	@ComponentProperty(description = "Entity types (comma delimited list).", 
-					   name = "entities", 
+	@ComponentProperty(description = "Entity types (comma delimited list).",
+					   name = "entities",
 					   defaultValue =  "person,organization,location,time,money,percentage,date")
 	final static String DATA_PROPERTY_ENTITIES = "entities";
 
-	@ComponentInput(description = "Input document.", 
+	@ComponentInput(description = "Input document.",
 			 		name = "document_in")
 	public final static String DATA_INPUT_DOC_IN = "document_in";
 
-	@ComponentOutput(description = "Extracted annotations as XML.", 
+	@ComponentOutput(description = "Extracted annotations as XML.",
 					 name = "annot_xml")
 	public final static String DATA_OUTPUT_ANNOTATIONS = "annot_xml";
 
@@ -117,11 +119,11 @@ public class AnnotationToXML implements ExecutableComponent {
 	}
 
 	public void execute(ComponentContext ctx)
-	throws ComponentExecutionException, ComponentContextException {		
+	throws ComponentExecutionException, ComponentContextException {
 		_logger.fine("execute() called");
-		Document doc = (Document)  
+		Document doc_in = (Document)
 		ctx.getDataComponentFromInput(DATA_INPUT_DOC_IN);
-		
+
 		DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
 		try {
@@ -130,31 +132,54 @@ public class AnnotationToXML implements ExecutableComponent {
         	throw new ComponentExecutionException(e);
         }
         org.w3c.dom.Document doc_out = docBuilder.newDocument();
-		
-		AnnotationSet as = doc
+
+		AnnotationSet as = doc_in
 			.getAnnotations(AnnotationConstants.ANNOTATION_SET_ENTITIES);
 		Iterator<Annotation> itty = as.iterator();
-		
+
+		AnnotationSet as2 = doc_in.
+			getAnnotations(AnnotationConstants.ANNOTATION_SET_SENTENCES);
+
 		Element root = doc_out.createElement("root");
         doc_out.appendChild(root);
-        root.setAttribute("docID", doc.getDocID());
-		System.out.println("docID: " + doc.getDocID());
-		
-		Set<String> ts = new TreeSet<String>();
-		
+        root.setAttribute("docID", doc_in.getDocID());
+		System.out.println("docID: " + doc_in.getDocID());
+
+		Hashtable<String, Element> ht = new Hashtable<String, Element>();
+
 		while (itty.hasNext()) {
 			Annotation ann = itty.next();
 			if(entities.indexOf(ann.getType()) != -1) {
-				Element child = doc_out.createElement(ann.getType());
-				String s = ann.getContent(doc).trim();
-				if(ts.contains(s))
+				AnnotationSet subSet =
+					as2.get(ann.getStartNodeOffset(),
+							ann.getEndNodeOffset());
+				Iterator<Annotation> itty2 = subSet.iterator();
+				StringBuffer buf = new StringBuffer();
+				while(itty2.hasNext()) {
+					Annotation item = itty2.next();
+					buf.append(item.getContent(doc_in).trim());
+				}
+				String value = buf.toString();
+				value = value.replaceAll("\"", " ");
+
+				String s = ann.getContent(doc_in).trim().toLowerCase();
+				if(ht.containsKey(s)) {
+					Element child = ht.get(s);
+					Attr attr = child.getAttributeNode("sentence");
+					attr.setNodeValue(attr.getNodeValue() + " | " + value);
 					continue;
+				}
+
+				Element child = doc_out.createElement(ann.getType());
 				Text text = doc_out.createTextNode(s);
-				ts.add(s);
+				Attr attr = doc_out.createAttribute("sentence");
+				attr.setNodeValue(value);
 		        child.appendChild(text);
+		        child.setAttributeNode(attr);
 		        root.appendChild(child);
-				System.out.println("Entity: " + ann.getContent(doc) + " <"
-						+ ann.getType() + ">");
+		        ht.put(s, child);
+				/*System.out.println("Entity: " + ann.getContent(doc_in) + " <"
+						+ ann.getType() + ">");*/
 			}
 		}
 
@@ -175,7 +200,7 @@ public class AnnotationToXML implements ExecutableComponent {
         //print xml
         System.out.println("Here's the xml:\n\n" + xmlString);
 		} catch(Exception e) {}
-		
+
 		// if statement to check ann.getType() to the property DATA_PROPERTY_ENTITIES
 		// write xml output including doc.getDocID(), ann.getContent(doc), and ann.getType()
 		ctx.pushDataComponentToOutput(DATA_OUTPUT_ANNOTATIONS, doc_out);
