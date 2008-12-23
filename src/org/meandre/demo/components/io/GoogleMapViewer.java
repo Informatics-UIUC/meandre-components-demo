@@ -104,7 +104,7 @@ public class GoogleMapViewer
     private String googleKey;
 
     /** Store latitude, longitude and address */
-    private Vector<String> lat, lon, location;
+    private Vector<String> lat, lon, location, context;
 
     /** Store the average values of latitude and longitude */
     private float latAverage, lonAverage;
@@ -159,6 +159,10 @@ public class GoogleMapViewer
         for(int i=0; i<location.size(); i++)
         	sb.append("loc[").append(i).append("]=\"").append(location.elementAt(i)).append("\";\n");
 
+        sb.append("var cxt = new Array();\n");
+        for(int i=0; i<context.size(); i++)
+        	sb.append("cxt[").append(i).append("]=\"").append(context.elementAt(i)).append("\";\n");
+
         sb.append("var latAverage=").append(latAverage).append(";\n");
         sb.append("var lonAverage=").append(lonAverage).append(";\n");
         sb.append("var latMin=").append(latMin).append(";\n");
@@ -174,6 +178,10 @@ public class GoogleMapViewer
 
         sb.append("var map = new GMap2(document.getElementById(\"map_canvas\"));\n");
 
+        //-------------
+        sb.append("var bounds = new GLatLngBounds();\n");
+        //-------------
+
         sb.append("var p1 = new GLatLng(latMin, lonMax);\n");
  	    sb.append("var p2 = new GLatLng(latMax, lonMin);\n");
  	    sb.append("var bounds = new GLatLngBounds(p1, p2);\n");
@@ -181,35 +189,40 @@ public class GoogleMapViewer
  	    sb.append("if(zoom > zooMax) zoom = zooMax;\n");
         sb.append("if(zoom < zooMin) zoom = zooMin;\n");
 
-        sb.append("map.setCenter(new GLatLng(latAverage, lonAverage), zoom);\n");
+        //sb.append("map.setCenter(new GLatLng(latAverage, lonAverage), zoom);\n");
+
+        //-------------
+        sb.append("map.setCenter(new GLatLng(0,0),0);\n");
+        //-------------
+
         sb.append("map.addControl(new GSmallMapControl());\n");
         sb.append("map.addControl(new GMapTypeControl());\n");
 
-        /*sb.append("var baseIcon = new GIcon(G_DEFAULT_ICON);\n");
-        sb.append("baseIcon.shadow = \"http://www.google.com/mapfiles/shadow50.png\";\n");
-        sb.append("baseIcon.iconSize = new GSize(20, 34);\n");
-        sb.append("baseIcon.shadowSize = new GSize(37, 34);\n");
-        sb.append("baseIcon.iconAnchor = new GPoint(9, 34);\n");
-        sb.append("baseIcon.infoWindowAnchor = new GPoint(9, 2);\n");*/
-
         sb.append("function createMarker(point, index) {\n");
-        /*sb.append("var letter = String.fromCharCode(\"A\".charCodeAt(0) + index);\n");
-        sb.append("var letteredIcon = new GIcon(baseIcon);\n");
-        sb.append("letteredIcon.image = \"http://www.google.com/mapfiles/marker\" + letter + \".png\";\n");*/
-
-        //sb.append("markerOptions = { icon:letteredIcon };\n");
         sb.append("var marker = new GMarker(point);\n");
 
         sb.append("GEvent.addListener(marker, \"click\", function() {\n");
-        sb.append("marker.openInfoWindowHtml(loc[index]);\n");
+        sb.append("var maxContent = cxt[index];\n");
+        sb.append("marker.openInfoWindowHtml(loc[index], {maxContent:maxContent});\n");
         sb.append("});\n");
         sb.append("return marker;\n");
         sb.append("}\n");
 
         sb.append("for (var i=0; i<loc.length; i++) {\n");
         sb.append("var latlng = new GLatLng(lat[i], lon[i]);\n");
+
+        //-------------
+        sb.append("bounds.extend(latlng);\n");
+        //-------------
+
         sb.append("map.addOverlay(createMarker(latlng, i));\n");
         sb.append("}\n");
+
+        //-------------
+        sb.append("map.setZoom(map.getBoundsZoomLevel(bounds));\n");
+        sb.append("map.setCenter(bounds.getCenter());\n");
+        //-------------
+
         sb.append("}\n");
         sb.append("}\n");
         sb.append("</script>\n");
@@ -326,9 +339,12 @@ public class GoogleMapViewer
 	        	    lon.add(s.substring(beginIndex, endIndex));
 
 	        	    NamedNodeMap nnp = fstNode.getAttributes();
-	        	    String value = nnp.getNamedItem("sentence").getNodeValue();
-	        	    System.out.println("value = " + value);
-	        	    location.add(fstNode.getTextContent() + " | " + value);
+	        	    String sentence = nnp.getNamedItem("sentence").getNodeValue();
+	        	    sentence = "<p align=left>" + sentence;
+	        	    sentence = sentence.replaceAll("[|]", "</p><br><p align=left>");
+	        	    sentence = sentence + "</p>";
+	        	    location.add(fstNode.getTextContent());
+	        	    context.add(sentence);
 
 	        	    s = s.substring(endIndex+12);
 		        }
@@ -417,6 +433,7 @@ public class GoogleMapViewer
     	lat = new Vector<String>();
     	lon = new Vector<String>();
     	location = new Vector<String>();
+    	context = new Vector<String>();
     	latAverage = 0;
     	lonAverage = 0;
     	latMin = 0;//Float.MAX_VALUE;
