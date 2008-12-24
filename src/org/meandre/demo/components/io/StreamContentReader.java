@@ -69,19 +69,19 @@ public class StreamContentReader implements ExecutableComponent {
                        "The type could be string or binary.",
                        name="contentType")
     final static String DATA_PROPERTY = "contentType";
-    
+
     @ComponentInput(description="Read content as stream.",
                     name= "inputStream")
     public final static String DATA_INPUT = "inputStream";
-    
+
     @ComponentOutput(description="Output content as string or byte array.",
-                     name="outputObject")        
+                     name="outputObject")
     public final static String DATA_OUTPUT = "outputObject";
-    
+
     private final static String STRING_DELIMITER = "\n";
     private final static int ARRAY_LENGTH = 4096;
     private final static int BYTE_LENGTH = 1024;
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -92,12 +92,12 @@ public class StreamContentReader implements ExecutableComponent {
         ComponentContextException {
         String type = cc.getProperty(DATA_PROPERTY);
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         BufferedReader br = null;
         if(type.equals("string")) {
             br = new BufferedReader(new InputStreamReader(is));
             StringBuffer sb = new StringBuffer();
-            String line; 
+            String line;
             try {
                 while((line = br.readLine())!= null) {
                     line = line.trim();
@@ -117,8 +117,8 @@ public class StreamContentReader implements ExecutableComponent {
                 throw new ComponentExecutionException(e);
             }
             cc.pushDataComponentToOutput(DATA_OUTPUT, sb.toString());
-            
-            System.out.println(sb.toString());
+
+            //System.out.println(sb.toString());
         } else {
             DataInputStream dis = new DataInputStream(is);
             byte[] b = new byte[ARRAY_LENGTH];
@@ -138,7 +138,7 @@ public class StreamContentReader implements ExecutableComponent {
                 cc.pushDataComponentToOutput(DATA_OUTPUT, tmp);
                 is.close();
                 dis.close();
-                
+
                 //System.out.println(new String(tmp));
             }catch(java.io.IOException e) {
                 try {
@@ -151,9 +151,9 @@ public class StreamContentReader implements ExecutableComponent {
             }
         }
     }
-    
+
     /**
-     * 
+     *
      * @param totalBytes_ The total bytes read from stream so far.
      * @param length_ The length of array holding data.
      * @return false if there are not enough bytes, otherwise true.
@@ -161,13 +161,13 @@ public class StreamContentReader implements ExecutableComponent {
     private boolean bytesAvailable(int totalBytes_, int length_) {
         return totalBytes_+BYTE_LENGTH >= length_?false: true;
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */

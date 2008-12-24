@@ -178,14 +178,14 @@ public class SimileTimelineViewer
         sb.append("eventSource:    eventSource,\n");
               sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
               sb.append("width:          \"70%\",\n");
-              sb.append("intervalUnit:   Timeline.DateTime.MONTH,\n");
+              sb.append("intervalUnit:   Timeline.DateTime.YEAR,\n");
               sb.append("intervalPixels: 100\n");
         sb.append("}),\n");
         sb.append("Timeline.createBandInfo({\n");
         sb.append("eventSource:    eventSource,\n");
               sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
               sb.append("width:          \"30%\",\n");
-              sb.append("intervalUnit:   Timeline.DateTime.YEAR,\n");
+              sb.append("intervalUnit:   Timeline.DateTime.CENTURY,\n");
               sb.append("intervalPixels: 200\n");
         sb.append("})\n");
         sb.append("];\n");
@@ -281,6 +281,9 @@ public class SimileTimelineViewer
     * @throws ComponentExecutionException An exeception occurred during execution
     * @throws ComponentContextException Illigal access to context
     */
+    /* (non-Javadoc)
+     * @see org.meandre.core.ExecutableComponent#execute(org.meandre.core.ComponentContext)
+     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
     	htmLocation = cc.getProperty(DATA_PROPERTY_1);
@@ -302,8 +305,8 @@ public class SimileTimelineViewer
 				System.out.println("time : " + aDate);
 
 				String month = null,
-				       day = null,
-				       year = null;
+				       day   = null,
+				       year  = null;
 
 				Pattern datePattern = Pattern.compile("(January|Jan|Feburary|Feb|March|Mar|" + //look for month
 						"April|Apr|May|June|July|August|Aug|September|Sept|October|Oct|"+
@@ -311,20 +314,20 @@ public class SimileTimelineViewer
 				Matcher dateMatcher = datePattern.matcher(aDate);
 				if(dateMatcher.find()) {
 					month = dateMatcher.group(1);
-					System.out.println("\tMonth is:  " + dateMatcher.group(1));
+					//System.out.println("\tMonth is:  " + dateMatcher.group(1));
 				}
 
 				datePattern = Pattern.compile("(\\b\\d{1}\\b)"); //look for day	like 5
 				dateMatcher = datePattern.matcher(aDate);
 				if(dateMatcher.find()) {
 					day = dateMatcher.group(1);
-					System.out.println("\tDay is:  " + dateMatcher.group(1));
+					//System.out.println("\tDay is:  " + dateMatcher.group(1));
 				} else {
 					datePattern = Pattern.compile("(\\b\\d{2}\\b)"); //look for day	like 21
 					dateMatcher = datePattern.matcher(aDate);
 					if(dateMatcher.find()) {
 						day = dateMatcher.group(1);
-						System.out.print("\tDay is:  " + dateMatcher.group(1) + "\n");
+						//System.out.print("\tDay is:  " + dateMatcher.group(1) + "\n");
 					}
 				}
 
@@ -332,34 +335,35 @@ public class SimileTimelineViewer
 				dateMatcher = datePattern.matcher(aDate);
 				if(dateMatcher.find()) {
 					NamedNodeMap nnp = fstNode.getAttributes();
-		        	String value = nnp.getNamedItem("sentence").getNodeValue();
-		        	System.out.println("value = " + value);
+		        	String sentence = nnp.getNamedItem("sentence").getNodeValue();
+		        	sentence = sentence.replaceAll("[|]", "&lt;br&gt;&lt;hr&gt;");
+		        	//System.out.println("sentence = " + sentence);
 
 					year = dateMatcher.group(1);
 					minYear = Math.min(minYear, Integer.parseInt(year));
-					System.out.println("\tYear is:  " + dateMatcher.group(1));
+					//System.out.println("\tYear is:  " + dateMatcher.group(1));
 					//year or month year or month day year
 					if(day == null) //month year
 						if(month == null) {//year
-							buf.append("<event start=\"").append(year).append("\" title=\"").append(year+" | "+value).append("\">\n");
+							buf.append("<event start=\"").append(year).append("\" title=\"").append(year).append("\">\n").append(sentence).append("\n");
 				    		buf.append("</event>\n");
 						} else { //month year
-							buf.append("<event start=\"").append(month + " " + year).append("\" title=\"").append(month + " " + year+" | "+value).append("\">\n");
+							buf.append("<event start=\"").append(month + " " + year).append("\" title=\"").append(month + " " + year).append("\">\n").append(sentence).append("\n");
 				    		buf.append("</event>\n");
 						}
 					else {
 						if(month == null) {//year
-							buf.append("<event start=\"").append(year).append("\" title=\"").append(year+" | "+value).append("\">\n");
+							buf.append("<event start=\"").append(year).append("\" title=\"").append(year).append("\">\n").append(sentence).append("\n");
 							buf.append("</event>\n");
 						} else { //month day month
-							buf.append("<event start=\"").append(month + " " + day + " " + year).append("\" title=\"").append(month + " " + day + " " + year+" | "+value).append("\">\n");
+							buf.append("<event start=\"").append(month + " " + day + " " + year).append("\" title=\"").append(month + " " + day + " " + year).append("\">\n").append(sentence).append("\n");
 							buf.append("</event>\n");
 						}
 					}
 				}
 			}
 			buf.append("</data>");
-			System.out.println(buf.toString());
+			//System.out.println(buf.toString());
     	} catch (Exception e1) {
 			throw new ComponentExecutionException(e1);
 		}

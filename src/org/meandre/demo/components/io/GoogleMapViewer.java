@@ -341,7 +341,7 @@ public class GoogleMapViewer
 	        	    NamedNodeMap nnp = fstNode.getAttributes();
 	        	    String sentence = nnp.getNamedItem("sentence").getNodeValue();
 	        	    sentence = "<p align=left>" + sentence;
-	        	    sentence = sentence.replaceAll("[|]", "</p><br><p align=left>");
+	        	    sentence = sentence.replaceAll("[|]", "</p><hr><p align=left>");
 	        	    sentence = sentence + "</p>";
 	        	    location.add(fstNode.getTextContent());
 	        	    context.add(sentence);
