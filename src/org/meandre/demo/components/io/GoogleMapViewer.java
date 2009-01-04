@@ -81,7 +81,9 @@ import org.w3c.dom.NamedNodeMap;
 
 public class GoogleMapViewer
 	implements ExecutableComponent, WebUIFragmentCallback {
-	@ComponentProperty(defaultValue="ABQIAAAAzuMq2M5--KdBKawoLNQWUxRi_j0U6kJrkFvY4-OX2XYmEAa76BQS61jzrv4ruAIpkFQs5Qp-fiN3hg",
+	@ComponentProperty(defaultValue=//"",
+		//"ABQIAAAAzuMq2M5--KdBKawoLNQWUxQKQLDP3-h3gXPk25Qansm9VUoOPBRzc41cGNCHCFTWrlzNJCHE5Y_9AA", //demo.seasr.org
+		"ABQIAAAAzuMq2M5--KdBKawoLNQWUxRi_j0U6kJrkFvY4-OX2XYmEAa76BQS61jzrv4ruAIpkFQs5Qp-fiN3hg", //127.0.0.1
                        description="This property sets Google Maps API key. The default value is only applicable to 127.0.0.1.",
                        name="googleKey")
     final static String DATA_PROPERTY_1 = "googleKey";
@@ -203,7 +205,7 @@ public class GoogleMapViewer
 
         sb.append("GEvent.addListener(marker, \"click\", function() {\n");
         sb.append("var maxContent = cxt[index];\n");
-        sb.append("marker.openInfoWindowHtml(loc[index], {maxContent:maxContent});\n");
+        sb.append("marker.openInfoWindowHtml('<b>'+loc[index]+'</b>', {maxContent:maxContent, maxTitle:loc[index]});\n");
         sb.append("});\n");
         sb.append("return marker;\n");
         sb.append("}\n");
@@ -273,6 +275,9 @@ public class GoogleMapViewer
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
     	googleKey = cc.getProperty(DATA_PROPERTY_1);
+
+    	System.out.println(googleKey);
+
     	String yahooId = cc.getProperty(DATA_PROPERTY_2);
 
     	Document doc = (Document)cc.getDataComponentFromInput(DATA_INPUT);
