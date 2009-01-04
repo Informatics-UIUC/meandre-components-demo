@@ -109,6 +109,9 @@ public class SimileTimelineViewer
     /** The instance ID */
     private String sInstanceID = null;
 
+    /** Store doc title */
+    private String title;
+
     /** Store URLs */
     private String htmLocation, xmLocation;
 
@@ -141,6 +144,11 @@ public class SimileTimelineViewer
     	StringBuffer sb = new StringBuffer();
 
     	sb.append("<html>\n");
+
+    	sb.append("<title>\n");
+    	sb.append(title);
+    	sb.append("</title>\n");
+
     	sb.append("<body>\n");
 
     	sb.append("<iframe src=\"").append(htmLocation).append("\" width=\"100%\" height=\"30%\" FRAMEBORDER=0>\n");
@@ -294,7 +302,8 @@ public class SimileTimelineViewer
     	buf.append("<data>\n");
     	try {
 			doc.getDocumentElement().normalize();
-			System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
+			title = doc.getDocumentElement().getAttribute("docID");
+			System.out.println("Root element : " + title);
 			NodeList nodeLst = doc.getElementsByTagName("date");
 			System.out.println("Information of date");
 			for (int k = 0; k < nodeLst.getLength(); k++) {
