@@ -82,7 +82,7 @@ import org.w3c.dom.NodeList;
 
 @Component(creator="Lily Dong",
            description="Visualize time-based events.",
-           name="TimelineViewer",
+           name="SimileTimelineViewer",
            tags="simile, timeline",
            mode=Mode.webui)
 
@@ -336,6 +336,7 @@ public class SimileTimelineViewer
 				if(dateMatcher.find()) {
 					NamedNodeMap nnp = fstNode.getAttributes();
 		        	String sentence = nnp.getNamedItem("sentence").getNodeValue();
+		        	sentence = sentence.replaceAll("[&]", "&amp;");
 		        	sentence = sentence.replaceAll("[|]", "&lt;br&gt;&lt;hr&gt;");
 		        	//System.out.println("sentence = " + sentence);
 
