@@ -303,7 +303,7 @@ public class SimileTimelineViewer
     	try {
 			doc.getDocumentElement().normalize();
 			docTitle = doc.getDocumentElement().getAttribute("docID");
-			System.out.println("Root element : " + title);
+			System.out.println("Root element : " + docTitle);
 			NodeList nodeLst = doc.getElementsByTagName("date");
 			System.out.println("Information of date");
 			for (int k = 0; k < nodeLst.getLength(); k++) {
