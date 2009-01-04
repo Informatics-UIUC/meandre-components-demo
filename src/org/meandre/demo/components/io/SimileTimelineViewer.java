@@ -110,7 +110,7 @@ public class SimileTimelineViewer
     private String sInstanceID = null;
 
     /** Store doc title */
-    private String title;
+    private String docTitle;
 
     /** Store URLs */
     private String htmLocation, xmLocation;
@@ -146,7 +146,7 @@ public class SimileTimelineViewer
     	sb.append("<html>\n");
 
     	sb.append("<title>\n");
-    	sb.append(title);
+    	sb.append(docTitle);
     	sb.append("</title>\n");
 
     	sb.append("<body>\n");
@@ -302,7 +302,7 @@ public class SimileTimelineViewer
     	buf.append("<data>\n");
     	try {
 			doc.getDocumentElement().normalize();
-			title = doc.getDocumentElement().getAttribute("docID");
+			docTitle = doc.getDocumentElement().getAttribute("docID");
 			System.out.println("Root element : " + title);
 			NodeList nodeLst = doc.getElementsByTagName("date");
 			System.out.println("Information of date");
