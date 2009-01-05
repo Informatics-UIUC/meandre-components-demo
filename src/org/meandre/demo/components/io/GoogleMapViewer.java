@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Vector;
+import java.util.StringTokenizer;
 import java.util.concurrent.Semaphore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -148,6 +149,18 @@ public class GoogleMapViewer
         		googleKey + "\"\n");
         sb.append("type=\"text/javascript\"></script>\n");
         sb.append("<script type=\"text/javascript\">\n");
+
+        //------------
+        sb.append("function toggleVisibility(me){\n");
+        	sb.append("var child = me.childNodes.item(1);\n");
+        	sb.append("if (child.style.display=='none'){\n");
+        		sb.append("child.style.display='';\n");
+        	sb.append("}\n");
+        	sb.append("else {\n");
+        		sb.append("child.style.display='none';\n");
+        	sb.append("}\n");
+        sb.append("}\n");
+        //------------
 
         sb.append("var lat = new Array();\n");
         for(int i=0; i<lat.size(); i++)
@@ -276,8 +289,6 @@ public class GoogleMapViewer
         ComponentContextException {
     	googleKey = cc.getProperty(DATA_PROPERTY_1);
 
-    	System.out.println(googleKey);
-
     	String yahooId = cc.getProperty(DATA_PROPERTY_2);
 
     	Document doc = (Document)cc.getDataComponentFromInput(DATA_INPUT);
@@ -344,12 +355,24 @@ public class GoogleMapViewer
 	        	    lon.add(s.substring(beginIndex, endIndex));
 
 	        	    NamedNodeMap nnp = fstNode.getAttributes();
+
 	        	    String sentence = nnp.getNamedItem("sentence").getNodeValue();
-	        	    sentence = "<p align=left>" + sentence;
+	        	    //------------
+	        	    StringTokenizer st = new StringTokenizer(sentence, "|");
+	        	    StringBuffer buf = new StringBuffer();
+	        	    int nr = 0;
+	        	    while(st.hasMoreTokens()) {
+	        	    	String nt = st.nextToken();
+	        	    	buf.append("<div onclick='toggleVisibility(this)' style='position:relative' ALIGN='LEFT'>Sentence ").append(++nr);
+	        	    	buf.append("<span style='display: none; background-color: #ffff00' ALIGN='LEFT'><br/>").append(nt).append("</span></div>");
+	        	    }
+	        	    //------------
+	        	    /*sentence = "<p align=left>" + sentence;
 	        	    sentence = sentence.replaceAll("[|]", "</p><hr><p align=left>");
-	        	    sentence = sentence + "</p>";
+	        	    sentence = sentence + "</p>";*/
+
 	        	    location.add(fstNode.getTextContent());
-	        	    context.add(sentence);
+	        	    context.add(buf.toString());//sentence);
 
 	        	    s = s.substring(endIndex+12);
 		        }
