@@ -364,7 +364,7 @@ public class GoogleMapViewer
 	        	    while(st.hasMoreTokens()) {
 	        	    	String nt = st.nextToken();
 	        	    	buf.append("<div onclick='toggleVisibility(this)' style='position:relative' ALIGN='LEFT'>Sentence ").append(++nr);
-	        	    	buf.append("<span style='display: none; background-color: #ffff00' ALIGN='LEFT'><br/>").append(nt).append("</span></div>");
+	        	    	buf.append("<span style='display: none' ALIGN='LEFT'><table bgcolor='yellow'><tr><td>").append(nt).append("</td></tr></table></span></div>");
 	        	    }
 	        	    //------------
 	        	    /*sentence = "<p align=left>" + sentence;
