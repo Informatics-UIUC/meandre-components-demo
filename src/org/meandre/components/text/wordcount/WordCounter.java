@@ -66,19 +66,19 @@ import org.meandre.core.ExecutableComponent;
 public class WordCounter implements ExecutableComponent {
     @ComponentInput(description="Text to be analyzed." +
             "<br>TYPE: java.lang.String",
-                    name= "inpuText")
-    public final static String DATA_INPUT = "inpuText";
+                    name= "Text")
+    public final static String DATA_INPUT = "Text";
 
     @ComponentOutput(description="Output content in Map format." +
             "TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                     name="outputMap")        
-    public final static String DATA_OUTPUT = "outputMap";
+                     name="Map")        
+    public final static String DATA_OUTPUT = "Map";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

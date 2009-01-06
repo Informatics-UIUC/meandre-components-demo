@@ -73,19 +73,19 @@ public class CSV2WordCount implements ExecutableComponent {
     @ComponentInput(description="A tokenized csv table. Each Object[] " +
     		"contains a row of data from a csv file." +
             "<br>TYPE: java.util.Vector<java.lang.Object[]>",
-                    name= "inputCsv")
-    public final static String DATA_INPUT = "inputCsv";
+                    name= "Csv")
+    public final static String DATA_INPUT = "Csv";
 
     @ComponentOutput(description="Output content in Map format." +
             "java.util.Map<java.lang.String, java.lang.Float>",
-                     name="outputMap")        
-    public final static String DATA_OUTPUT = "outputMap";
+                     name="Map")        
+    public final static String DATA_OUTPUT = "Map";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

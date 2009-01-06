@@ -97,19 +97,19 @@ public class Annotation2XML implements ExecutableComponent {
 	final static String DATA_PROPERTY_VERBOSE = "verbose";
 
 	@ComponentProperty(description = "Entity types (comma delimited list).",
-					   name = "entities",
+					   name = "Entities",
 					   defaultValue =  "person,organization,location,time,money,percentage,date")
-	final static String DATA_PROPERTY_ENTITIES = "entities";
+	final static String DATA_PROPERTY_ENTITIES = "Entities";
 
 	@ComponentInput(description = "Input document." +
 	        "<br>TYPE: org.seasr.components.text.datatype.corpora.Document ",
-			 		name = "document_in")
-	public final static String DATA_INPUT_DOC_IN = "document_in";
+			 		name = "Document")
+	public final static String DATA_INPUT_DOC_IN = "Document";
 
 	@ComponentOutput(description = "Extracted annotations as XML." +
 	            "<br>TYPE: org.w3c.dom.Document",
-					 name = "annot_xml")
-	public final static String DATA_OUTPUT_ANNOTATIONS = "annot_xml";
+					 name = "Annotation_xml")
+	public final static String DATA_OUTPUT_ANNOTATIONS = "Annotation_xml";
 
 	private static Logger _logger = Logger.getLogger("AnnotationToXML");
 

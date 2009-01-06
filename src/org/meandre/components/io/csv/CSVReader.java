@@ -69,20 +69,20 @@ import org.meandre.core.ExecutableComponent;
 public class CSVReader implements ExecutableComponent {
     @ComponentInput(description="Read content as stream." +
             "<br>TYPE: java.io.InputStream",
-                    name= "inputStream")
-    public final static String DATA_INPUT = "inputStream";
+                    name= "Stream")
+    public final static String DATA_INPUT = "Stream";
     
     @ComponentOutput(description="Output content as vector containing " +
     		"Object array." +
             "<br>TYPE: java.lang.Vector<java.lang.Object[]>",
-                     name="outputObject")        
-    public final static String DATA_OUTPUT = "outputObject";
+                     name="Object")        
+    public final static String DATA_OUTPUT = "Object";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

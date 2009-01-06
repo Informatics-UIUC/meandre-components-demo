@@ -72,8 +72,8 @@ import com.evernote.edam.userstore.UserStore;
 public class EvernoteWriter implements ExecutableComponent {
     @ComponentInput(description="Content to be written to Evernote."+
             "<br>TYPE: java.lang.String",
-                    name= "inputContent")
-    public final static String DATA_INPUT = "inputContent";
+                    name= "Content")
+    public final static String DATA_INPUT = "Content";
     
     @ComponentProperty(defaultValue="",
                        description="This property sets username.",
@@ -96,8 +96,8 @@ public class EvernoteWriter implements ExecutableComponent {
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

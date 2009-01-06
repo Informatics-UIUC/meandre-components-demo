@@ -90,12 +90,12 @@ public class RSSAggregatorViz
             "<br>com.sun.syndication.feed.synd.SyndFeed" +
             "<br>    THEN:" +
             "<br>org.meandre.core.system.components.ext.StreamTerminator",
-                    name= "inputObject")
-    public final static String DATA_INPUT = "inputObject";
+                    name= "Object")
+    public final static String DATA_INPUT = "Object";
     
     @ComponentOutput(description="Output a vector of RSS feeds or entries.",
-                     name="outputObject")        
-    public final static String DATA_OUTPUT = "outputObject";
+                     name="Object")        
+    public final static String DATA_OUTPUT = "Object";
     
     /** 
      * The blocking semaphore 
@@ -260,8 +260,8 @@ public class RSSAggregatorViz
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

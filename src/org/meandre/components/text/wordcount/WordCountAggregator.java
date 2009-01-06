@@ -75,13 +75,13 @@ public class WordCountAggregator implements ExecutableComponent {
             "<br>java.util.Map<java.lang.String, java.lang.Float> (multiple times)" +
             "<br>      THEN" +
             "<br>import org.meandre.core.system.components.ext.StreamTerminator",
-                    name= "inputMap")
-    public final static String DATA_INPUT = "inputMap";
+                    name= "Map")
+    public final static String DATA_INPUT = "Map";
 
     @ComponentOutput(description="Output content in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Float>",
-                     name="outputMap")        
-    public final static String DATA_OUTPUT = "outputMap" +
+                     name="Map")        
+    public final static String DATA_OUTPUT = "Map" +
         "<br>TYPE: java.util.Map<java.lang.String, java.lang.Float>";
     
     private Map outputMap;
@@ -89,8 +89,8 @@ public class WordCountAggregator implements ExecutableComponent {
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

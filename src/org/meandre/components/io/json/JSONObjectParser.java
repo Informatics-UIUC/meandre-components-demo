@@ -64,17 +64,17 @@ public class JSONObjectParser implements ExecutableComponent {
     @ComponentInput(description="Text to be parsed." +
             "<br>TYPE: java.lang.String",
                     name= "inputText")
-    public final static String DATA_INPUT = "inputText";
+    public final static String DATA_INPUT = "Text";
 
     @ComponentOutput(description="JSONObject converted from input text.",
                      name="outputObject")             
-    public final static String DATA_OUTPUT = "outputObject";
+    public final static String DATA_OUTPUT = "Object";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

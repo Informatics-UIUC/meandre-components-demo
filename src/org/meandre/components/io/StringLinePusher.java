@@ -69,8 +69,8 @@ import org.meandre.core.system.components.ext.*;
 public class StringLinePusher implements ExecutableComponent {
     @ComponentInput(description="Read content as stream." +
                         "<br>TYPE:java.io.InputStream",
-                    name= "inputStream")
-    public final static String DATA_INPUT = "inputStream";
+                    name= "Stream")
+    public final static String DATA_INPUT = "Stream";
     
     @ComponentOutput(description="Output content as string stream followed by StreamTerminator." +
                 "<br>TYPE: <br>org.meandre.core.system.components.ext.StreamInitiator" +
@@ -78,14 +78,14 @@ public class StringLinePusher implements ExecutableComponent {
                 "<br>java.lang.String (multiple times)" +
                 "<br>   THEN" +
                 "<br>org.meandre.core.system.components.ext.StreamTerminator",
-                     name="outputObject")        
-    public final static String DATA_OUTPUT = "outputObject";
+                     name="Object")        
+    public final static String DATA_OUTPUT = "Object";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
@@ -99,7 +99,6 @@ public class StringLinePusher implements ExecutableComponent {
                 line = line.trim();
                 if(line.length() == 0)
                     continue;
-                //System.out.println(line);
                 cc.pushDataComponentToOutput(DATA_OUTPUT, line);
             }
             cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamTerminator());

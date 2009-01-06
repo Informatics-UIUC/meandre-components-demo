@@ -78,14 +78,14 @@ import org.meandre.core.ExecutableComponent;
 public class WordCountFilterAdvanced implements ExecutableComponent {
 	@ComponentProperty(defaultValue="http://norma.ncsa.uiuc.edu/public-dav/applets/common_words.txt",
  		   			   description="URL containing stop words.",
- 		   			   name="loc")
-    final static String DATA_PROPERTY_1 = "loc";
+ 		   			   name="URL_for_Stop_Words")
+    final static String DATA_PROPERTY_1 = "URL_for_Stop_Words";
 
 	@ComponentProperty(defaultValue="false",
                        description="This property sets whether the number of keys should be limited. " +
-                       			   "If truet, it will be numerated after filtering stop words.",
-                       name="isLimited")
-    final static String DATA_PROPERTY_2 = "isLimited";
+                       			   "If true, it will filter stop words.",
+                       name="is_Limited")
+    final static String DATA_PROPERTY_2 = "is_Limited";
 	@ComponentProperty(defaultValue="100",
                        description="This property sets the maximum number of keys to be kept in output Map.",
                        name="upperLimit")
@@ -93,19 +93,19 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
 
 	@ComponentInput(description="A word count summary in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-            	    name= "inputMap")
-    public final static String DATA_INPUT = "inputMap";
+            	    name= "Map")
+    public final static String DATA_INPUT = "Map";
 
 	@ComponentOutput(description="Filtered word count in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                     name="outputMap")
-    public final static String DATA_OUTPUT = "outputMap";
+                     name="Map")
+    public final static String DATA_OUTPUT = "Map";
 
 	/** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

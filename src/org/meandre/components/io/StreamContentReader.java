@@ -72,13 +72,13 @@ public class StreamContentReader implements ExecutableComponent {
 
     @ComponentInput(description="A raw byte stream to be read. " +
                     "<br>TYPE: java.io.InputStream",
-                    name= "inputStream")
-    public final static String DATA_INPUT = "inputStream";
+                    name= "Stream")
+    public final static String DATA_INPUT = "Stream";
 
     @ComponentOutput(description="Output content as string or byte array." +
                     "<br>TYPE: java.lang.String OR byte[]",
-                     name="outputObject")
-    public final static String DATA_OUTPUT = "outputObject";
+                     name="Object")
+    public final static String DATA_OUTPUT = "Object";
 
     private final static String STRING_DELIMITER = "\n";
     private final static int ARRAY_LENGTH = 4096;
@@ -87,8 +87,8 @@ public class StreamContentReader implements ExecutableComponent {
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
@@ -119,8 +119,6 @@ public class StreamContentReader implements ExecutableComponent {
                 throw new ComponentExecutionException(e);
             }
             cc.pushDataComponentToOutput(DATA_OUTPUT, sb.toString());
-
-            //System.out.println(sb.toString());
         } else {
             DataInputStream dis = new DataInputStream(is);
             byte[] b = new byte[ARRAY_LENGTH];
@@ -140,8 +138,6 @@ public class StreamContentReader implements ExecutableComponent {
                 cc.pushDataComponentToOutput(DATA_OUTPUT, tmp);
                 is.close();
                 dis.close();
-
-                //System.out.println(new String(tmp));
             }catch(java.io.IOException e) {
                 try {
                     if(is != null)

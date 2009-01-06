@@ -64,19 +64,19 @@ import org.meandre.core.ExecutableComponent;
 public class JSONArrayParser implements ExecutableComponent {
     @ComponentInput(description="Text to be parsed." +
             "<br>TYPE: java.lang.String",
-                    name= "inputText")
-    public final static String DATA_INPUT = "inputText";
+                    name= "Text")
+    public final static String DATA_INPUT = "Text";
 
     @ComponentOutput(description="JSONArray converted from input text." +
             "<br>TYPE: net.sf.json.JSONArray",
-                     name="outputArray")             
-    public final static String DATA_OUTPUT = "outputArray";
+                     name="Array")             
+    public final static String DATA_OUTPUT = "Array";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

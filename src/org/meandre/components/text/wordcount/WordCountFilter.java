@@ -67,24 +67,24 @@ import org.meandre.core.ExecutableComponent;
 public class WordCountFilter implements ExecutableComponent {
     @ComponentInput(description="A word count summary in Map format." +
                 "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                    name= "inputMap")
-    public final static String DATA_INPUT = "inputMap";
+                    name= "Map")
+    public final static String DATA_INPUT = "Map";
 
     @ComponentOutput(description="Filtered word count in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                     name="outputMap")        
-    public final static String DATA_OUTPUT = "outputMap";
+                     name="Map")        
+    public final static String DATA_OUTPUT = "Map";
     
     @ComponentProperty(defaultValue="",
                        description="Keys to be deleted from Map. The keys should be delimited by comma.",
-                       name="keysToBeDeleted")
-    final static String DATA_PROPERTY = "keysToBeDeleted";
+                       name="Keys_To_Be_Deleted")
+    final static String DATA_PROPERTY = "Keys_To_Be_Deleted";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

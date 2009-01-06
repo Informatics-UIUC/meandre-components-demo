@@ -72,8 +72,8 @@ public class RawContentViz
     implements ExecutableComponent, WebUIFragmentCallback {
     @ComponentInput(description="String to Display" + 
             "<br>TYPE: java.lang.String",
-                    name= "inputString")
-    public final static String DATA_INPUT = "inputString";
+                    name= "String")
+    public final static String DATA_INPUT = "String";
     
     /** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
@@ -88,7 +88,7 @@ public class RawContentViz
      * component webui fragment.
      *
      * @param response The response object
-     * @throws WebUIException Some problem arised during execution and something went wrong
+     * @throws WebUIException Some problem arose during execution and something went wrong
      */
     public void emptyRequest(HttpServletResponse response) throws
             WebUIException {
@@ -158,8 +158,8 @@ public class RawContentViz
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

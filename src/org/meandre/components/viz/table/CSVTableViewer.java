@@ -79,35 +79,35 @@ public class CSVTableViewer
     @ComponentProperty(defaultValue="true",
                        description="This property indicates whether a header exists " +
                        		"that contains the attribute (column) labels in the first row of the file. ",
-                       name="Attribute Label Header")
-    final static String DATA_PROPERTY_1 = "Attribute Label Header";
+                       name="Attribute_Label_Header")
+    final static String DATA_PROPERTY_1 = "Attribute_Label_Header";
 
     @ComponentProperty(defaultValue="true",
                        description="This property indicates whether a header exists " +
                        		"that contains the attribute (column) types in the second row of the file. "+
                        		"Attribute types such as integer, float, double or String.",
-                       name="Attribute Type Header")
-    final static String DATA_PROPERTY_2 = "Attribute Type Header";
+                       name="Attribute_Type_Header")
+    final static String DATA_PROPERTY_2 = "Attribute_Type_Header";
 
     @ComponentProperty(defaultValue="200",
  		   			   description="This property sets the number of rows per page to display.",
- 		   			   name="nrRows")
-    final static String DATA_PROPERTY_3 = "nrRows";
+ 		   			   name="Num_Rows_to_Display")
+    final static String DATA_PROPERTY_3 = "Num_Rows_to_Display";
 
     @ComponentProperty(defaultValue="8",
  		   			   description="This property sets the number of columns per page to display.",
- 		   			   name="nrColumns")
-    final static String DATA_PROPERTY_4 = "nrColumns";
+ 		   			   name="Num_Columns_to_Display")
+    final static String DATA_PROPERTY_4 = "Num_Columns_to_Display";
     
     @ComponentInput(description="This input contains the file content stored as a vector with "+
     		"each attribute (column) stored as an object array." +
     		"<br>TYPE: java.util.Vector<java.lang.Object[]>",
-                    name= "CSV Content")
-    public final static String DATA_INPUT = "CSV Content";
+                    name= "CSV_Content")
+    public final static String DATA_INPUT = "CSV_Content";
 
     @ComponentOutput(description="This output is the original 'CSV Content' that is unchanged.",
-                     name="CSV Content")        
-    public final static String DATA_OUTPUT = "CSV Content";
+                     name="CSV_Content")        
+    public final static String DATA_OUTPUT = "CSV_Content";
     
     /**
      * Store the number of rows per page.
@@ -177,7 +177,7 @@ public class CSVTableViewer
      * component webui fragment.
      *
      * @param response The response object
-     * @throws WebUIException Some problem arised during execution and something went wrong
+     * @throws WebUIException Some problem arose during execution and something went wrong
      */
     public void emptyRequest(HttpServletResponse response) throws
             WebUIException {

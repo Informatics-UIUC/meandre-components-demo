@@ -79,14 +79,14 @@ import org.apache.commons.httpclient.methods.GetMethod;
 public class URLFetcherAuthenticated implements ExecutableComponent {
     @ComponentInput(description="URL to be fetched." +
                     "<br> TYPE: java.lang.String",
-                    name= "inputUrl")
-    public final static String DATA_INPUT = "inputUrl";
+                    name= "Url")
+    public final static String DATA_INPUT = "Url";
     
     @ComponentOutput(description="Output content of the specified URL as " +
     		"stream." +
     		"<br>TYPE: java.io.InputStream",
-                     name="outputStream")             
-    public final static String DATA_OUTPUT = "outputStream";
+                     name="Stream")             
+    public final static String DATA_OUTPUT = "Stream";
     
     @ComponentProperty(defaultValue="",
                        description="This property sets username.",
@@ -100,8 +100,8 @@ public class URLFetcherAuthenticated implements ExecutableComponent {
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

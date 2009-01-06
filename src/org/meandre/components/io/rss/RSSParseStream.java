@@ -77,8 +77,8 @@ import com.sun.syndication.io.XmlReader;
 public class RSSParseStream implements ExecutableComponent {
     @ComponentInput(description="Read content as stream." +
             "<br>TYPE: java.io.InputStream",
-                    name= "inputStream")
-    public final static String DATA_INPUT = "inputStream";
+                    name= "Stream")
+    public final static String DATA_INPUT = "Stream";
     
     @ComponentOutput(description="Output content as stream of syndication entry " +
                      "followed by StreamTerminator." +
@@ -94,8 +94,8 @@ public class RSSParseStream implements ExecutableComponent {
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

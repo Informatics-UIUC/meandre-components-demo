@@ -100,19 +100,19 @@ public class TagCloudImageMaker implements ExecutableComponent {
 	
 	@ComponentInput(description="Tags to be analyzed." +
 	            "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                    name= "inputMap")
-    public final static String DATA_INPUT = "inputMap";
+                    name= "Map")
+    public final static String DATA_INPUT = "Map";
 	
 	@ComponentOutput(description="Output a png image as byte array." +
 	            "<br>TYPE: byte[]",
-                     name="outputObject")        
-    public final static String DATA_OUTPUT = "outputObject";
+                     name="Object")        
+    public final static String DATA_OUTPUT = "Object";
 	
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) 
     	throws ComponentExecutionException, ComponentContextException {

@@ -61,19 +61,19 @@ import org.meandre.core.ExecutableComponent;
 public class ToLowerCase implements ExecutableComponent {
     @ComponentInput(description="Text to be converted." +
             "<br>TYPE:java.lang.String",
-                    name= "inputText")
-    public final static String DATA_INPUT = "inputText";
+                    name= "Text")
+    public final static String DATA_INPUT = "Text";
 
     @ComponentOutput(description="Text in lower case." +
             "<br>TYPE:java.lang.String",
-                     name="outputText")        
-    public final static String DATA_OUTPUT = "outputText";
+                     name="Text")        
+    public final static String DATA_OUTPUT = "Text";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

@@ -76,13 +76,13 @@ public class MIMEContentViz
     implements ExecutableComponent, WebUIFragmentCallback {
     @ComponentProperty(defaultValue="text/plain",
                        description="This property sets MIME type.",
-                       name="type")
-    final static String DATA_PROPERTY = "type";
+                       name="MIME_type")
+    final static String DATA_PROPERTY = "MIME_type";
     
     @ComponentInput(description="Read content as byte array." +
             "<br>TYPE: byte[]",
-                    name= "inputContent")
-    public final static String DATA_INPUT = "inputContent";
+                    name= "Content")
+    public final static String DATA_INPUT = "Content";
     
     /** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
@@ -185,8 +185,8 @@ public class MIMEContentViz
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

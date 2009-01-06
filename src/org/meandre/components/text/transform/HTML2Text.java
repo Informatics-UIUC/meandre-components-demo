@@ -69,21 +69,21 @@ import org.meandre.core.ExecutableComponent;
 public class HTML2Text implements ExecutableComponent {
     @ComponentInput(description="Read content in HTML format." +
                     "<br>TYPE: java.lang.String",
-                    name= "inputHtml")
-    public final static String DATA_INPUT = "inputHtml";
+                    name= "Html")
+    public final static String DATA_INPUT = "Html";
     
     @ComponentOutput(description="Output content in plain text format."+
             "<br>TYPE: java.lang.String",
-                     name="outputText")        
-    public final static String DATA_OUTPUT = "outputText";
+                     name="Text")        
+    public final static String DATA_OUTPUT = "Text";
     
     StringBuffer sb;
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) 
         throws ComponentExecutionException, ComponentContextException {

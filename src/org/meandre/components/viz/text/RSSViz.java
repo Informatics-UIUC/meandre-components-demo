@@ -76,12 +76,12 @@ public class RSSViz
     implements ExecutableComponent, WebUIFragmentCallback {
     @ComponentInput(description="Read RSS content as SyndFeed." +
                 "<br>TYPE: com.sun.syndication.feed.synd.SyndFeed",
-                    name= "inputFeed")
-    public final static String DATA_INPUT = "inputFeed";
+                    name= "RSS_Feed")
+    public final static String DATA_INPUT = "RSS_Feed";
     
     @ComponentOutput(description="Output content as SyndFeed.",
-                     name="outputFeed")        
-    public final static String DATA_OUTPUT = "outputFeed";
+                     name="RSS_Feed")        
+    public final static String DATA_OUTPUT = "RSS_Feed";
     
     /** 
      * The blocking semaphore 
@@ -100,7 +100,7 @@ public class RSSViz
      * component webui fragment.
      *
      * @param response The response object
-     * @throws WebUIException Some problem arised during execution and something went wrong
+     * @throws WebUIException Some problem arose during execution and something went wrong
      */
     public void emptyRequest(HttpServletResponse response) throws
             WebUIException {
@@ -296,8 +296,8 @@ public class RSSViz
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

@@ -74,15 +74,15 @@ public class URLFetcher implements ExecutableComponent {
     
     @ComponentOutput(description="Output content of the specified URL as stream." +
             "<br>TYPE: java.io.InputStream",
-                     name="outputStream")
+                     name="Stream")
                      
-    public final static String DATA_OUTPUT = "outputStream";
+    public final static String DATA_OUTPUT = "Stream";
     
     /** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {

@@ -96,8 +96,8 @@ public class GoogleMapRegionViewer
 
     @ComponentInput(description="Read XML document." +
                 "<br>TYPE: org.w3c.dom.Document",
-              		name= "inputDocument")
-    public final static String DATA_INPUT = "inputDocument";
+              		name= "Document")
+    public final static String DATA_INPUT = "Document";
 
     /** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
@@ -284,8 +284,8 @@ public class GoogleMapRegionViewer
 	/** When ready for execution.
     *
     * @param cc The component context
-    * @throws ComponentExecutionException An exeception occurred during execution
-    * @throws ComponentContextException Illigal access to context
+    * @throws ComponentExecutionException An exception occurred during execution
+    * @throws ComponentContextException Illegal access to context
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
