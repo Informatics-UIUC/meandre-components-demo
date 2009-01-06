@@ -88,8 +88,8 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
     final static String DATA_PROPERTY_2 = "is_Limited";
 	@ComponentProperty(defaultValue="100",
                        description="This property sets the maximum number of keys to be kept in output Map.",
-                       name="upperLimit")
-    final static String DATA_PROPERTY_3 = "upperLimit";
+                       name="upper_Limit")
+    final static String DATA_PROPERTY_3 = "upper_Limit";
 
 	@ComponentInput(description="A word count summary in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",

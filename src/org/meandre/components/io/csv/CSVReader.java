@@ -75,8 +75,8 @@ public class CSVReader implements ExecutableComponent {
     @ComponentOutput(description="Output content as vector containing " +
     		"Object array." +
             "<br>TYPE: java.lang.Vector<java.lang.Object[]>",
-                     name="Object")        
-    public final static String DATA_OUTPUT = "Object";
+                     name="CSV_Content")        
+    public final static String DATA_OUTPUT = "CSV_Content";
     
     /** When ready for execution.
     *

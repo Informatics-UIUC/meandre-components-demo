@@ -79,8 +79,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 public class URLFetcherAuthenticated implements ExecutableComponent {
     @ComponentInput(description="URL to be fetched." +
                     "<br> TYPE: java.lang.String",
-                    name= "Url")
-    public final static String DATA_INPUT = "Url";
+                    name= "URL")
+    public final static String DATA_INPUT = "URL";
     
     @ComponentOutput(description="Output content of the specified URL as " +
     		"stream." +

@@ -63,11 +63,11 @@ import org.meandre.core.ExecutableComponent;
 public class JSONObjectParser implements ExecutableComponent {
     @ComponentInput(description="Text to be parsed." +
             "<br>TYPE: java.lang.String",
-                    name= "inputText")
+                    name= "Text")
     public final static String DATA_INPUT = "Text";
 
     @ComponentOutput(description="JSONObject converted from input text.",
-                     name="outputObject")             
+                     name="Object")             
     public final static String DATA_OUTPUT = "Object";
     
     /** When ready for execution.

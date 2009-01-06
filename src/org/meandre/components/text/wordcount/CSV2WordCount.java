@@ -73,8 +73,8 @@ public class CSV2WordCount implements ExecutableComponent {
     @ComponentInput(description="A tokenized csv table. Each Object[] " +
     		"contains a row of data from a csv file." +
             "<br>TYPE: java.util.Vector<java.lang.Object[]>",
-                    name= "Csv")
-    public final static String DATA_INPUT = "Csv";
+                    name= "CSV_Content")
+    public final static String DATA_INPUT = "CSV_Content";
 
     @ComponentOutput(description="Output content in Map format." +
             "java.util.Map<java.lang.String, java.lang.Float>",
