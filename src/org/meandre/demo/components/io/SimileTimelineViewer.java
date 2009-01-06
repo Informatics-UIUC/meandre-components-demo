@@ -42,12 +42,9 @@
 
 package org.meandre.demo.components.io;
 
-import java.io.File;
 import java.net.URL;
 import java.util.concurrent.Semaphore;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -79,6 +76,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import sun.misc.UCEncoder;
 
 @Component(creator="Lily Dong",
            description="Visualize time-based events.",
@@ -345,7 +344,14 @@ public class SimileTimelineViewer
 				if(dateMatcher.find()) {
 					NamedNodeMap nnp = fstNode.getAttributes();
 		        	String sentence = nnp.getNamedItem("sentence").getNodeValue();
-		        	sentence = sentence.replaceAll("[&]", "&amp;");
+
+		        	//escape invalid xml characters
+		        	sentence = sentence.replaceAll("[&]",  "&amp;");
+		        	sentence = sentence.replaceAll("[<]",  "&lt;");
+		        	sentence = sentence.replaceAll("[>]",  "&gt;");
+		        	sentence = sentence.replaceAll("[\"]", "&quot; ");
+		        	sentence = sentence.replaceAll("[\']", "&#39;");
+
 		        	sentence = sentence.replaceAll("[|]", "&lt;br&gt;&lt;hr&gt;");
 		        	//System.out.println("sentence = " + sentence);
 
