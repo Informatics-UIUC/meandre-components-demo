@@ -42,12 +42,9 @@
 
 package org.meandre.components.viz.temporal;
 
-import java.io.File;
 import java.net.URL;
 import java.util.concurrent.Semaphore;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -80,6 +77,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import sun.misc.UCEncoder;
+
 @Component(creator="Lily Dong",
            description="Visualizes temporal data from an XML document.",
            name="SimileTimelineViewer",
@@ -99,7 +98,7 @@ public class SimileTimelineViewer
     		       	   name="xml_loc")
     final static String DATA_PROPERTY_2 = "xml_loc";
 
-	@ComponentInput(description="Read XML doucment." +
+	@ComponentInput(description="Read XML document." +
 	            "<br>TYPE: org.w3c.dom.Document",
       			    name= "inputDocument")
     public final static String DATA_INPUT = "inputDocument";
@@ -346,7 +345,14 @@ public class SimileTimelineViewer
 				if(dateMatcher.find()) {
 					NamedNodeMap nnp = fstNode.getAttributes();
 		        	String sentence = nnp.getNamedItem("sentence").getNodeValue();
-		        	sentence = sentence.replaceAll("[&]", "&amp;");
+
+		        	//escape invalid xml characters
+		        	sentence = sentence.replaceAll("[&]",  "&amp;");
+		        	sentence = sentence.replaceAll("[<]",  "&lt;");
+		        	sentence = sentence.replaceAll("[>]",  "&gt;");
+		        	sentence = sentence.replaceAll("[\"]", "&quot; ");
+		        	sentence = sentence.replaceAll("[\']", "&#39;");
+
 		        	sentence = sentence.replaceAll("[|]", "&lt;br&gt;&lt;hr&gt;");
 		        	//System.out.println("sentence = " + sentence);
 
