@@ -170,8 +170,6 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
 
     	outputMap = (!isLimited)? inputMap: outputMap;
 
-    	System.out.println("Output of WordFilter : " + outputMap.toString());
-
     	cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
     }
 

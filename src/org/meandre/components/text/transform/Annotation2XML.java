@@ -80,7 +80,7 @@ import org.w3c.dom.Attr;
 
 @Component(creator = "Loretta Auvil & Lily Dong",
 
-		description = "<p>Overview: <br> This component extracts the" + 
+		description = "<p>Overview: <br> This component extracts the" +
             "annotations from an annotated text document and outputs them " +
             "as xml.Only those entity types specified in this Components " +
             "properties will be included in the output XML.</p>",
@@ -119,7 +119,6 @@ public class Annotation2XML implements ExecutableComponent {
 	public void dispose(ComponentContextProperties ccp)
 	throws ComponentExecutionException, ComponentContextException {
 		// TODO Auto-generated method stub
-
 	}
 
 	public void execute(ComponentContext ctx)
@@ -182,12 +181,10 @@ public class Annotation2XML implements ExecutableComponent {
 		        child.setAttributeNode(attr);
 		        root.appendChild(child);
 		        ht.put(s, child);
-				/*System.out.println("Entity: " + ann.getContent(doc_in) + " <"
-						+ ann.getType() + ">");*/
 			}
 		}
 
-		 //set up a transformer
+		//set up a transformer
 		try {
         TransformerFactory transfac = TransformerFactory.newInstance();
         Transformer trans = transfac.newTransformer();

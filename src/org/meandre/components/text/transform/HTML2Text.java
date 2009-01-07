@@ -71,39 +71,37 @@ public class HTML2Text implements ExecutableComponent {
                     "<br>TYPE: java.lang.String",
                     name= "Html")
     public final static String DATA_INPUT = "Html";
-    
+
     @ComponentOutput(description="Output content in plain text format."+
             "<br>TYPE: java.lang.String",
-                     name="Text")        
+                     name="Text")
     public final static String DATA_OUTPUT = "Text";
-    
+
     StringBuffer sb;
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) 
+    public void execute(ComponentContext cc)
         throws ComponentExecutionException, ComponentContextException {
         String inputHtml = (String)cc.getDataComponentFromInput(DATA_INPUT);
         Parser parser = new Parser();
         try {
-            parser.setInputHTML(inputHtml); 
-            NodeList list = parser.parse (null); 
+            parser.setInputHTML(inputHtml);
+            NodeList list = parser.parse (null);
             traverse(list);
         }catch(org.htmlparser.util.ParserException e) {
             throw new ComponentExecutionException(e);
         }
-        
-        //System.out.println(sb.toString());
-        
+
         cc.pushDataComponentToOutput(DATA_OUTPUT, sb.toString());
     }
-    
+
     /**
-     * 
+     *
      * @param list to be traversed
      */
     private void traverse(NodeList list) {
@@ -125,10 +123,10 @@ public class HTML2Text implements ExecutableComponent {
     public void initialize(ComponentContextProperties ccp) {
         sb = new StringBuffer();
     }
-    
+
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }   
+    }
 }

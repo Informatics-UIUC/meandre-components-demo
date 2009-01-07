@@ -71,9 +71,9 @@ public class WordCounter implements ExecutableComponent {
 
     @ComponentOutput(description="Output content in Map format." +
             "TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                     name="Map")        
+                     name="Map")
     public final static String DATA_OUTPUT = "Map";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -87,31 +87,29 @@ public class WordCounter implements ExecutableComponent {
         Map<String, Integer> outputMap = new Hashtable<String, Integer>();
         while(st.hasMoreTokens()) {
             String key = st.nextToken();
-            
+
             if(!key.matches("[a-zA-Z]+"))
                 continue;
-                
+
             if(outputMap.containsKey(key)) {
                 int value = ((Integer)outputMap.get(key)).intValue();
                 outputMap.put(key, new Integer(++value));
-            } else 
+            } else
                 outputMap.put(key, new Integer(1));
         }
-        
-        System.out.println("Output of WordCounter : " + outputMap.toString());
-        
+
         cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }   
+    }
 }
