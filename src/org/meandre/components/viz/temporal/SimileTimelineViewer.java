@@ -43,6 +43,7 @@
 package org.meandre.components.viz.temporal;
 
 import java.net.URL;
+import java.util.StringTokenizer;
 import java.util.concurrent.Semaphore;
 
 import java.util.regex.Pattern;
@@ -353,8 +354,19 @@ public class SimileTimelineViewer
 		        	sentence = sentence.replaceAll("[\"]", "&quot; ");
 		        	sentence = sentence.replaceAll("[\']", "&#39;");
 
-		        	sentence = sentence.replaceAll("[|]", "&lt;br&gt;&lt;hr&gt;");
-		        	//System.out.println("sentence = " + sentence);
+		        	//------------
+		        	StringTokenizer st = new StringTokenizer(sentence, "|");
+		        	StringBuffer sb = new StringBuffer();
+		        	int nr = 0;
+		        	while(st.hasMoreTokens()) {
+		        		String nt = st.nextToken();
+		        	    sb.append("&lt;div onclick=&#39;toggleVisibility(this)&#39; style=&#39;position:relative&#39; ALIGN=&#39;LEFT&#39;&gt;Sentence ").append(++nr);
+		        	    sb.append("&lt;span style=&#39;display: none&#39; ALIGN=&#39;LEFT&#39;&gt; &lt;table bgcolor=&#39; yellow&#39; &gt;&lt;tr&gt;&lt;td&gt;").append(nt).append("&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/span&gt;&lt;/div&gt;");
+		        	 }
+		        	sentence = sb.toString();
+		        	//------------
+
+		        	//sentence = sentence.replaceAll("[|]", "&lt;br&gt;&lt;hr&gt;");
 
 					year = dateMatcher.group(1);
 					minYear = Math.min(minYear, Integer.parseInt(year));
