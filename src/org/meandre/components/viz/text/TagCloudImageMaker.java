@@ -73,7 +73,7 @@ import org.meandre.core.ExecutableComponent;
            "of (String, Count) pairs. If there are many tags to be displayed, " +
            "reduce the maximum size of font or magnify the size of canvas " +
            "to accommodate all of tags.",
-           name="TagCloudGenerator",
+           name="Tag Cloud Image Maker",
            tags="tag cloud, visualization")
 
 public class TagCloudImageMaker implements ExecutableComponent {
@@ -97,40 +97,40 @@ public class TagCloudImageMaker implements ExecutableComponent {
 	           		   description="This property sets the minimum size of font.",
 	           		   name="minSize")
     final static String DATA_PROPERTY_5 = "minSize";
-	
+
 	@ComponentInput(description="Tags to be analyzed." +
 	            "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
                     name= "Map")
     public final static String DATA_INPUT = "Map";
-	
+
 	@ComponentOutput(description="Output a png image as byte array." +
 	            "<br>TYPE: byte[]",
-                     name="Object")        
+                     name="Object")
     public final static String DATA_OUTPUT = "Object";
-	
+
     /** When ready for execution.
     *
     * @param cc The component context
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) 
+    public void execute(ComponentContext cc)
     	throws ComponentExecutionException, ComponentContextException {
-    	
+
     	int width = Integer.parseInt(cc.getProperty(DATA_PROPERTY_1)),
             height = Integer.parseInt(cc.getProperty(DATA_PROPERTY_2));
-    	
+
     	String fontName = cc.getProperty(DATA_PROPERTY_3);
     	float maxFontSize = Float.parseFloat(cc.getProperty(DATA_PROPERTY_4)), //maximum font size
     	      minFontSize = Float.parseFloat(cc.getProperty(DATA_PROPERTY_5));  //minimum font size
-    	
-		Hashtable<String, Integer> table = 
+
+		Hashtable<String, Integer> table =
 			(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
-		
+
 		int length = table.size();
 		String[] text = new String[length];
 		int[] fontSize = new int[length];
-		
+
 		Enumeration<String> keys = table.keys();
 		int pos = 0;
 		int maxValue = Integer.MIN_VALUE,
@@ -143,21 +143,20 @@ public class TagCloudImageMaker implements ExecutableComponent {
 			maxValue = (value>maxValue)? value: maxValue;
 			minValue = (value<minValue)? value: minValue;
 		}
-		//System.out.println("maxValue = " + maxValue + " minValue =" + minValue);
+
 		if(maxValue != minValue) {
 			float slope = (maxFontSize-minFontSize)/(maxValue-minValue);
-			//System.out.println("maxFontSize = " + maxFontSize + " minFontSize = " + minFontSize + "slope = " + slope);
+
 			for(int k=0; k<fontSize.length; k++) {
 				fontSize[k] = (int)(minFontSize+slope*(fontSize[k]-minValue));
-			    //System.out.print(" fontSize["+k+"]=" + fontSize[k]);
 			}
 		} else {
 			for(int k=0; k<fontSize.length; k++)
 				fontSize[k] = (int)minFontSize;
 		}
-		
-		Color[] colors = {new Color(0x99, 0x33, 0x33), 
-				          new Color(0x99, 0x66, 0x33), 
+
+		Color[] colors = {new Color(0x99, 0x33, 0x33),
+				          new Color(0x99, 0x66, 0x33),
 				          new Color(0x99, 0x99, 0x33),
 				          new Color(0x99, 0xcc, 0x33),
 				          new Color(0x99, 0xff, 0x33)};
@@ -170,24 +169,24 @@ public class TagCloudImageMaker implements ExecutableComponent {
 				grid[i][j] = false;
 
 		BufferedImage image = new BufferedImage(
-			width, height, BufferedImage.TYPE_INT_ARGB);	
+			width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2D = image.createGraphics();
 		FontRenderContext frc = g2D.getFontRenderContext();
 
 		for(int k=0; k<text.length; k++) {
-			Font font = new Font(fontName, Font.BOLD, fontSize[k]);					
+			Font font = new Font(fontName, Font.BOLD, fontSize[k]);
   			TextLayout layout = new TextLayout(text[k], font, frc);
-				
-			int textWidth = (int)layout.getVisibleAdvance(); 
+
+			int textWidth = (int)layout.getVisibleAdvance();
 			int textHeight = (int)(layout.getBounds().getHeight() +
 								   layout.getDescent());
-			
+
 			int xCoord = 0,
                 yCoord = textHeight;
 
 			textWidth = ((textWidth+4*increment)/increment)*increment;
 			textHeight = ((textHeight+4*increment)/increment)*increment;
-			
+
 			BufferedImage textImage = new BufferedImage(
 				textWidth, textHeight,BufferedImage.TYPE_INT_ARGB);
 			Graphics2D textG2D = textImage.createGraphics();
@@ -220,7 +219,7 @@ public class TagCloudImageMaker implements ExecutableComponent {
      		catch (InterruptedException e) {
         		throw new ComponentExecutionException(e);
      		}
-			
+
 			boolean[][] mask = new boolean[textWidth][textHeight];
 			for(int i=0; i<mask.length; ++i)
 				for(int j=0; j<mask[0].length; ++j)
@@ -247,7 +246,7 @@ public class TagCloudImageMaker implements ExecutableComponent {
 							break;
 					}//ii
 				}//i
-			}//j	
+			}//j
 
 			double a = Math.random() * Math.PI;
   			double d = Math.random() * (Math.max(textWidth, textHeight)/4);
@@ -257,27 +256,25 @@ public class TagCloudImageMaker implements ExecutableComponent {
 			while (true) {
 				x = (int)(Math.floor((width + (Math.cos(a)*d*2) - (textWidth/2))/5)*5);
     			y = (int)(Math.floor((height + (Math.sin(a)*d) - (textHeight/2))/5)*5);
-    
+
 				x = (x<0)?0: x;
 				y = (y<0)?0: y;
-								
+
     			boolean fail = false;
     			for (int xt=0; xt<textWidth && !fail; xt+=increment) {
-      				for (int yt=0; yt<textHeight && !fail; yt+=increment) {					
-						if(xt+x>=width || 
+      				for (int yt=0; yt<textHeight && !fail; yt+=increment) {
+						if(xt+x>=width ||
 						   yt+y>=height ||
 					       (mask[xt][yt] && grid[xt + x][yt + y]))
           						fail = true;
       				}
     			}
-    			if (!fail) 
+    			if (!fail)
       				break;
     			a += da;
     			d += dd;
   			}
-			
-			//System.out.println(" x = " + x + " y = " + y);
-			
+
 			for (int xt=0; xt<textWidth; xt+= increment) {
     			for (int yt = 0; yt<textHeight; yt+= increment)
       				if (mask[xt][yt])
@@ -289,8 +286,8 @@ public class TagCloudImageMaker implements ExecutableComponent {
     				if(mask[(i/increment)*increment][(j/increment)*increment])
     					image.setRGB(x+i, y+j, textImage.getRGB(i, j));
 		}//k
-		//g.drawImage(image, 0, 0, this);	
-		
+		//g.drawImage(image, 0, 0, this);
+
 	    ByteArrayOutputStream os = new ByteArrayOutputStream();
 	    try {
 	    	ImageIO.write(image, "png", os);
@@ -298,22 +295,22 @@ public class TagCloudImageMaker implements ExecutableComponent {
 	    }catch(java.io.IOException e) {
 	    	throw new ComponentExecutionException(e);
 	    }
-	    
+
  		cc.pushDataComponentToOutput(DATA_OUTPUT, os.toByteArray());
-    
+
  		try {
  			os.close();
  		}catch(java.io.IOException e) {
  			throw new ComponentExecutionException(e);
  		}
     }
-	
+
 	/**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */

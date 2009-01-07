@@ -79,7 +79,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
            tags="RSS, visualization",
            mode=Mode.webui)
 
-public class RSSAggregatorViz 
+public class RSSAggregatorViz
     implements ExecutableComponent, WebUIFragmentCallback{
     @ComponentInput(description="Read RSS content as SyndFeed or SyndEntry." +
             "<br>TYPE:" +
@@ -92,33 +92,33 @@ public class RSSAggregatorViz
             "<br>org.meandre.core.system.components.ext.StreamTerminator",
                     name= "Object")
     public final static String DATA_INPUT = "Object";
-    
+
     @ComponentOutput(description="Output a vector of RSS feeds or entries.",
-                     name="Object")        
+                     name="Object")
     public final static String DATA_OUTPUT = "Object";
-    
-    /** 
-     * The blocking semaphore 
+
+    /**
+     * The blocking semaphore
      */
     private Semaphore sem = new Semaphore(1,true);
 
-    /** 
-     * The instance ID 
+    /**
+     * The instance ID
      */
     private String sInstanceID = null;
-    
+
     /**
      * Aggregator for output
      */
     private Vector<SyndEntry> aggregator;
-    
+
     /** A simple message.
     *
     * @return The html containing the page
     */
     private String getViz() {
         StringBuffer sb = new StringBuffer();
-        
+
         sb.append("<?xml-stylesheet type=\"text/xsl\"  href=\"#\"?>\n");
         sb.append("<xsl:stylesheet\n");
         sb.append("xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"\n");
@@ -133,7 +133,6 @@ public class RSSAggregatorViz
         sb.append("<html>\n");
         sb.append("<head>\n");
         sb.append("<style type=\"text/css\">\n");
-        //sb.append("body { background-color:#F0F0F0; font: 9pt Verdana, Arial, \"Arial Unicode MS\", Helvetica, sans-serif;}\n");
         sb.append("table.display { font-family:arial; background-color:#CDCDCD; font-size:10pt; position:relative;left:15pt; border:none; padding:0;}\n");
         sb.append("th.odd {background-color: #e6EEEE;}\n");
         sb.append("tr.even { background-color:#FFF;}\n");
@@ -141,27 +140,27 @@ public class RSSAggregatorViz
         sb.append("</style>\n");
         sb.append("</head>\n");
         sb.append("<body>\n");
-        
+
         sb.append("<div align=\"center\">\n");
         sb.append("<h1>Contents of Entries</h1>\n");
         sb.append("</div>\n");
-        
-        sb.append("<xsl:apply-templates select=\"srw:entries\"/>\n"); 
-                    
+
+        sb.append("<xsl:apply-templates select=\"srw:entries\"/>\n");
+
         sb.append("<div align=\"center\">\n");
         sb.append("<table align=\"center\"><font size=\"2\"><a id=\"url\" href=\"/" +
                 sInstanceID + "?done=true\">DONE</a></font></table>\n");
         sb.append("</div>\n");
-           
+
         sb.append("</body>\n");
         sb.append("</html>\n");
         sb.append("</xsl:template>\n");
 
-        sb.append("<xsl:template match=\"srw:entries\">\n");      
+        sb.append("<xsl:template match=\"srw:entries\">\n");
         sb.append("<p>\n");
         sb.append("<table class=\"display\">\n");
         sb.append("<tr><th class=\"odd\">Title</th><th class=\"odd\">Content</th></tr>\n");
-        sb.append("<xsl:for-each select=\"//mx:entry\">\n");        
+        sb.append("<xsl:for-each select=\"//mx:entry\">\n");
         sb.append("<xsl:choose>\n");
         sb.append("<xsl:when test=\"position() mod 2\">\n");
         sb.append("<tr class=\"even\">\n");
@@ -175,54 +174,69 @@ public class RSSAggregatorViz
         sb.append("<td><xsl:value-of select=\"./mx:content\"/></td>\n");
         sb.append("</tr>\n");
         sb.append("</xsl:otherwise>\n");
-        sb.append("</xsl:choose>\n");             
-        sb.append("</xsl:for-each>\n");       
+        sb.append("</xsl:choose>\n");
+        sb.append("</xsl:for-each>\n");
         sb.append("</table>\n");
         sb.append("</p>\n");
         sb.append("</xsl:template>\n");
-           
+
         sb.append("<feed xmlns=\"http://www.seasr.org\" xmlns:mx=\"http://www.seasr.org\">\n");
 
         StringBuffer sbEntries = new StringBuffer("<entries>\n");
-        
+
         for(int index=0; index<aggregator.size(); index++)
             addEntry((SyndEntry)aggregator.elementAt(index), sbEntries);
-        
+
         sb.append(sbEntries).append("</entries>\n");
-        
+
         sb.append("</feed>\n");
         sb.append("</xsl:stylesheet>\n");
-        
+
         return sb.toString();
     }
-    
+
     /**
-     * 
+     *
      * @param s input string
      * @return s if s is not null or empty string, otherwise warning information.
      */
     private String getValidValue(String s) {
         return (s == null || s.length() == 0)? "no data available": s;
     }
-    
+
     /**
-     * 
+     *
      * @param e input entry
      * @param b output buffer
      */
     private void addEntry(SyndEntry e, StringBuffer b) {
         b.append("<mx:entry>\n");
         String title = e.getTitle();
-        title = (title.indexOf("&") != -1)? title.replaceAll("&", "and") : title;
+
+        //escape invalid xml characters
+        title = title.replaceAll("[&]",  "&amp;");
+        title = title.replaceAll("[<]",  "&lt;");
+        title = title.replaceAll("[>]",  "&gt;");
+        title = title.replaceAll("[\"]", "&quot; ");
+        title = title.replaceAll("[\']", "&#39;");
+
+        String str = e.getDescription().getValue();
+        str = str.replaceAll("[&]",  "&amp;");
+        str = str.replaceAll("[<]",  "&lt;");
+        str = str.replaceAll("[>]",  "&gt;");
+        str = str.replaceAll("[\"]", "&quot; ");
+        str = str.replaceAll("[\']", "&#39;");
+
+        //title = (title.indexOf("&") != -1)? title.replaceAll("&", "and") : title;
         b.append("<mx:title>").
           append(title).
           append("</mx:title>\n");
         b.append("<mx:content>").
-          append(e.getDescription().getValue()).
+          append(str).//e.getDescription().getValue()).
           append("</mx:content>\n");
         b.append("</mx:entry>\n");
     }
-    
+
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
      *
@@ -238,7 +252,7 @@ public class RSSAggregatorViz
             throw new WebUIException(e);
         }
     }
-    
+
     /** This method gets called when a call with parameters is done to a given component
      * webUI fragment
      *
@@ -256,7 +270,7 @@ public class RSSAggregatorViz
         else
             emptyRequest(response);
     }
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -266,10 +280,10 @@ public class RSSAggregatorViz
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         Object inputObject = cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         if(inputObject instanceof StreamInitiator) //start of stream
             return;
-        else if(inputObject instanceof StreamTerminator) {//end of stream      
+        else if(inputObject instanceof StreamTerminator) {//end of stream
             try {
                 sInstanceID = cc.getExecutionInstanceID();
                 sem.acquire();
@@ -278,23 +292,23 @@ public class RSSAggregatorViz
                 cc.stopWebUIFragment(this);
             } catch (Exception e) {
                 throw new ComponentExecutionException(e);
-            }  
+            }
             cc.pushDataComponentToOutput(DATA_OUTPUT, aggregator);
-        } else if(inputObject instanceof SyndFeed) {   
+        } else if(inputObject instanceof SyndFeed) {
             List<SyndEntry> list= ((SyndFeed)inputObject).getEntries();
             for(final Iterator it = list.iterator(); it.hasNext();)
                 aggregator.add((SyndEntry)it.next());
         } else if(inputObject instanceof SyndEntry)
             aggregator.add((SyndEntry)inputObject);
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
         aggregator = new Vector<SyndEntry>();
     }
-    
+
     /**
      * Called when a flow is started.
      */

@@ -77,7 +77,7 @@ import org.w3c.dom.NamedNodeMap;
 @Component(creator="Lily Dong",
            description="Displays rectangular areas defined by latitude/longitude " +
            		"coordinates in an XML document.",
-           name="GoogleMapViewer",
+           name="Google Map Viewer",
            tags="google map, visualization",
            mode=Mode.webui)
 
@@ -152,7 +152,6 @@ public class GoogleMapRegionViewer
         sb.append("type=\"text/javascript\"></script>\n");
         sb.append("<script type=\"text/javascript\">\n");
 
-        //------------
         sb.append("function toggleVisibility(me){\n");
         	sb.append("var child = me.childNodes.item(1);\n");
         	sb.append("if (child.style.display=='none'){\n");
@@ -162,7 +161,6 @@ public class GoogleMapRegionViewer
         		sb.append("child.style.display='none';\n");
         	sb.append("}\n");
         sb.append("}\n");
-        //------------
 
         sb.append("var lat = new Array();\n");
         for(int i=0; i<lat.size(); i++)
@@ -359,6 +357,7 @@ public class GoogleMapRegionViewer
 	        	    NamedNodeMap nnp = fstNode.getAttributes();
 
 	        	    String sentence = nnp.getNamedItem("sentence").getNodeValue();
+
 	        	    //------------
 	        	    StringTokenizer st = new StringTokenizer(sentence, "|");
 	        	    StringBuffer buf = new StringBuffer();
@@ -369,6 +368,7 @@ public class GoogleMapRegionViewer
 	        	    	buf.append("<span style='display: none' ALIGN='LEFT'><table bgcolor='yellow'><tr><td>").append(nt).append("</td></tr></table></span></div>");
 	        	    }
 	        	    //------------
+
 	        	    /*sentence = "<p align=left>" + sentence;
 	        	    sentence = sentence.replaceAll("[|]", "</p><hr><p align=left>");
 	        	    sentence = sentence + "</p>";*/
@@ -466,10 +466,10 @@ public class GoogleMapRegionViewer
     	context = new Vector<String>();
     	latAverage = 0;
     	lonAverage = 0;
-    	latMin = 0;//Float.MAX_VALUE;
-	    latMax = 0;//-Float.MAX_VALUE;
-	    lonMin = 0;//Float.MAX_VALUE;
-	    lonMax = 0;//-Float.MAX_VALUE;
+    	latMin = 0;
+	    latMax = 0;
+	    lonMin = 0;
+	    lonMax = 0;
     }
 
     /**

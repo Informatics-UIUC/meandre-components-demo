@@ -178,6 +178,17 @@ public class SimileTimelineViewer
         sb.append("<script src=\"http://simile.mit.edu/timeline/api/timeline-api.js\" type=\"text/javascript\"></script>\n");
 
       	sb.append("<script type=\"text/javascript\">\n");
+
+      	sb.append("function toggleVisibility(me){\n");
+     	sb.append("var child = me.childNodes.item(1);\n");
+     	sb.append("if (child.style.display=='none'){\n");
+     	sb.append("child.style.display='';\n");
+     	sb.append("}\n");
+     	sb.append("else {\n");
+     	sb.append("child.style.display='none';\n");
+     	sb.append("}\n");
+     	sb.append("}\n");
+
       	sb.append("var tl;\n");
         sb.append("function onLoad() {\n");
         sb.append("var eventSource = new Timeline.DefaultEventSource();\n");
@@ -225,21 +236,6 @@ public class SimileTimelineViewer
 
         sb.append("</body>\n");
         sb.append("</html>\n");
-
-        /*StringBuffer buf = new StringBuffer();
-        buf.append("<data>\n");
-        buf.append("<event start=\"May 28 2006 09:00:00 GMT\" end=\"Jun 15 2006 09:00:00 GMT\" isDuration=\"true\" title=\"Writing Timeline documentation\" image=\"http://simile.mit.edu/images/csail-logo.gif\">\n");
-        buf.append("A few days to write some documentation for &lt;a href=\"http://simile.mit.edu/timeline/\"&gt;Timeline&lt;/a&gt;.\n");
-        buf.append("</event>\n");
-
-        buf.append("<event start=\"Jun 16 2006 00:00:00 GMT\" end=\"Jun 26 2006 00:00:00 GMT\" title=\"Friend's wedding\">\n");
-        buf.append("I'm not sure precisely when my friend's wedding is.\n");
-        buf.append("</event>\n");
-
-        buf.append("<event start=\"Aug 02 2006 00:00:00 GMT\" title=\"Trip to Illinois\" link=\"http://travel.yahoo.com/\">\n");
-        buf.append("Woohoo!\n");
-        buf.append("</event>\n");
-        buf.append("</data>\n");*/
 
         try {
         	String inputUrl = htmLocation;
@@ -324,20 +320,17 @@ public class SimileTimelineViewer
 				Matcher dateMatcher = datePattern.matcher(aDate);
 				if(dateMatcher.find()) {
 					month = dateMatcher.group(1);
-					//System.out.println("\tMonth is:  " + dateMatcher.group(1));
 				}
 
 				datePattern = Pattern.compile("(\\b\\d{1}\\b)"); //look for day	like 5
 				dateMatcher = datePattern.matcher(aDate);
 				if(dateMatcher.find()) {
 					day = dateMatcher.group(1);
-					//System.out.println("\tDay is:  " + dateMatcher.group(1));
 				} else {
 					datePattern = Pattern.compile("(\\b\\d{2}\\b)"); //look for day	like 21
 					dateMatcher = datePattern.matcher(aDate);
 					if(dateMatcher.find()) {
 						day = dateMatcher.group(1);
-						//System.out.print("\tDay is:  " + dateMatcher.group(1) + "\n");
 					}
 				}
 
@@ -354,7 +347,6 @@ public class SimileTimelineViewer
 		        	sentence = sentence.replaceAll("[\"]", "&quot; ");
 		        	sentence = sentence.replaceAll("[\']", "&#39;");
 
-		        	//------------
 		        	StringTokenizer st = new StringTokenizer(sentence, "|");
 		        	StringBuffer sb = new StringBuffer();
 		        	int nr = 0;
@@ -364,13 +356,11 @@ public class SimileTimelineViewer
 		        	    sb.append("&lt;span style=&#39;display: none&#39; ALIGN=&#39;LEFT&#39;&gt; &lt;table bgcolor=&#39; yellow&#39; &gt;&lt;tr&gt;&lt;td&gt;").append(nt).append("&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/span&gt;&lt;/div&gt;");
 		        	 }
 		        	sentence = sb.toString();
-		        	//------------
 
 		        	//sentence = sentence.replaceAll("[|]", "&lt;br&gt;&lt;hr&gt;");
 
 					year = dateMatcher.group(1);
 					minYear = Math.min(minYear, Integer.parseInt(year));
-					//System.out.println("\tYear is:  " + dateMatcher.group(1));
 					//year or month year or month day year
 					if(day == null) //month year
 						if(month == null) {//year
@@ -392,7 +382,6 @@ public class SimileTimelineViewer
 				}
 			}
 			buf.append("</data>");
-			//System.out.println(buf.toString());
     	} catch (Exception e1) {
 			throw new ComponentExecutionException(e1);
 		}
