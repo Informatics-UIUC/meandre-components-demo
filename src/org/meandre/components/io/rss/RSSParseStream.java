@@ -79,7 +79,7 @@ public class RSSParseStream implements ExecutableComponent {
             "<br>TYPE: java.io.InputStream",
                     name= "Stream")
     public final static String DATA_INPUT = "Stream";
-    
+
     @ComponentOutput(description="Output content as stream of syndication entry " +
                      "followed by StreamTerminator." +
                      "<br>TYPES:"+
@@ -88,9 +88,9 @@ public class RSSParseStream implements ExecutableComponent {
                      "<br>com.sun.syndication.feed.synd.SyndEntry (multiple times)"+
                      "<br>    THEN"+
                      "<br>org.meandre.core.system.components.ext.StreamTerminator",
-                     name="outputObject")        
+                     name="outputObject")
     public final static String DATA_OUTPUT = "outputObject";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -108,7 +108,7 @@ public class RSSParseStream implements ExecutableComponent {
             throw new ComponentExecutionException(e);
         }
         List entries = feed.getEntries();
-        //System.out.println("entries.size: " + entries.size());
+
         int i = 0;
         cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamInitiator());
         for(final Iterator iter = entries.iterator(); iter.hasNext();) {
@@ -123,7 +123,7 @@ public class RSSParseStream implements ExecutableComponent {
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */

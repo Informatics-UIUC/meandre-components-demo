@@ -63,7 +63,7 @@ import org.meandre.core.ExecutableComponent;
            "and converts it into a Vector of Object arrays, where each Object " +
            "is a String representation of a cell from the .csv table. Each " +
            "Object array corresponds to a line/row in the csv table.",
-           name="CSVReader",
+           name="CSV Reader",
            tags="CSV")
 
 public class CSVReader implements ExecutableComponent {
@@ -71,13 +71,13 @@ public class CSVReader implements ExecutableComponent {
             "<br>TYPE: java.io.InputStream",
                     name= "Stream")
     public final static String DATA_INPUT = "Stream";
-    
+
     @ComponentOutput(description="Output content as vector containing " +
     		"Object array." +
             "<br>TYPE: java.lang.Vector<java.lang.Object[]>",
-                     name="CSV_Content")        
+                     name="CSV_Content")
     public final static String DATA_OUTPUT = "CSV_Content";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -87,47 +87,31 @@ public class CSVReader implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line; 
+        String line;
         Vector<Object[]> result = new Vector<Object[]> ();
         try {
             while((line = br.readLine())!= null) {
                 line = line.trim();
                 if(line.length() == 0)
                     continue;
-                
+
                 int fromIndex = 0;
                 int index = line.indexOf(',', fromIndex);
                 Vector<String> tokens = new Vector<String>();
                 while(index != -1) {
-                	//System.out.println(line.substring(fromIndex, index));
+
                 	tokens.add(line.substring(fromIndex, index));
                 	fromIndex = index+1;
                 	index = line.indexOf(',', fromIndex);
                 }
-                //System.out.println(line.substring(fromIndex));
+
                 tokens.add(line.substring(fromIndex));
                 result.add(tokens.toArray());
-                
-                /*StringTokenizer st = new StringTokenizer(line, ",");
-                Object[] tokens = new Object[st.countTokens()];
-                int pos = 0;
-                while(st.hasMoreTokens()) {
-                    String token = st.nextToken().trim();
-                    tokens[pos++] = token;
-                }
-                result.add(tokens);*/
+
             }
-            /*for(int i=0; i<result.size(); i++) {
-                Object[] tokens = result.elementAt(i);
-                for(int j=0; j<tokens.length; j++) {
-                    System.out.print(tokens[j].toString());
-                    if(j != tokens.length-1)
-                        System.out.print(" ");
-                }
-                System.out.println();
-            }*/
+
             cc.pushDataComponentToOutput(DATA_OUTPUT, result);
             is.close();
             br.close();
@@ -141,13 +125,13 @@ public class CSVReader implements ExecutableComponent {
                 throw new ComponentExecutionException(e);
         }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */

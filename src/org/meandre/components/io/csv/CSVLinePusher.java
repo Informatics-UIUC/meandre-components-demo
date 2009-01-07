@@ -77,7 +77,7 @@ public class CSVLinePusher implements ExecutableComponent {
             "<br>TYPE: java.io.InputStream",
                     name= "Stream")
     public final static String DATA_INPUT = "Stream";
-    
+
     @ComponentOutput(description="Output content as stream of Object array " +
     		"followed by StreamTerminator." +
     		"<br>TYPE: <br>org.meandre.core.system.components.ext.StreamInitiator" +
@@ -85,9 +85,9 @@ public class CSVLinePusher implements ExecutableComponent {
             "<br>java.lang.Object[] (multiple times)" +
             "<br>   THEN" +
             "<br>org.meandre.core.system.components.ext.StreamTerminator",
-                     name="Object")        
+                     name="Object")
     public final static String DATA_OUTPUT = "Object";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -97,36 +97,28 @@ public class CSVLinePusher implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line; 
+        String line;
         cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamInitiator());
         try {
             while((line = br.readLine())!= null) {
                 line = line.trim();
                 if(line.length() == 0)
                     continue;
-                
+
                 int fromIndex = 0;
                 int index = line.indexOf(',', fromIndex);
                 Vector<String> tokens = new Vector<String>();
                 while(index != -1) {
-                	//System.out.println(line.substring(fromIndex, index));
+
                 	tokens.add(line.substring(fromIndex, index));
                 	fromIndex = index+1;
                 	index = line.indexOf(',', fromIndex);
                 }
-                //System.out.println(line.substring(fromIndex));
+
                 tokens.add(line.substring(fromIndex));
-                
-                /*StringTokenizer st = new StringTokenizer(line, ",");
-                Object[] tokens = new Object[st.countTokens()];
-                int pos = 0;
-                while(st.hasMoreTokens()) {
-                    String token = st.nextToken().trim();
-                    tokens[pos++] = token;
-                }*/
-              
+
                 cc.pushDataComponentToOutput(DATA_OUTPUT, tokens.toArray());
             }
             cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamTerminator());
@@ -142,13 +134,13 @@ public class CSVLinePusher implements ExecutableComponent {
                 throw new ComponentExecutionException(e);
         }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
