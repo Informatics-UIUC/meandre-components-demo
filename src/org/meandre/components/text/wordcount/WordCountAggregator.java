@@ -66,8 +66,8 @@ import org.meandre.core.system.components.ext.StreamTerminator;
            		"The aggregate map is pushed out when a StreamTerminator " +
            		"object is input instead of a map.",
            name="WordCountAggregator",
-           tags="map, aggregator"
-)
+           tags="map, aggregator",
+           baseURL="meandre://seasr.org/components/")
 
 public class WordCountAggregator implements ExecutableComponent {
     @ComponentInput(description="Read content in Map format." +

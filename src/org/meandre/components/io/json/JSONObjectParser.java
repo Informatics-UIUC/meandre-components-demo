@@ -58,7 +58,8 @@ import org.meandre.core.ExecutableComponent;
 @Component(creator="Lily Dong",
            description="Parses a string of text into a JSON object.",
            name="JSONObjectParser",
-           tags="json, converter")
+           tags="json, converter",
+           baseURL="meandre://seasr.org/components/")
 
 public class JSONObjectParser implements ExecutableComponent {
     @ComponentInput(description="Text to be parsed." +

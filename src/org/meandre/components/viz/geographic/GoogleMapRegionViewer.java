@@ -79,7 +79,8 @@ import org.w3c.dom.NamedNodeMap;
            		"coordinates in an XML document.",
            name="Google Map Viewer",
            tags="google map, visualization",
-           mode=Mode.webui)
+           mode=Mode.webui,
+           baseURL="meandre://seasr.org/components/")
 
 public class GoogleMapRegionViewer
 	implements ExecutableComponent, WebUIFragmentCallback {

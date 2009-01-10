@@ -66,7 +66,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            		"html body is the string that is input into this Component.",
            name="RawContentViz",
            tags="string, visualization",
-           mode=Mode.webui)
+           mode=Mode.webui,
+           baseURL="meandre://seasr.org/components/")
 
 public class RawContentViz 
     implements ExecutableComponent, WebUIFragmentCallback {

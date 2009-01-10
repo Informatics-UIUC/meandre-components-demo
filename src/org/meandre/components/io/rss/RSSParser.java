@@ -65,8 +65,8 @@ import org.meandre.core.ExecutableComponent;
            "type as stream.",
            name="RSSParser",
            tags="RSS",
-           dependency={"rome-1.0RC1.jar", "jdom-1.0.jar"}
-)
+           dependency={"rome-1.0RC1.jar", "jdom-1.0.jar"},
+           baseURL="meandre://seasr.org/components/")
 
 public class RSSParser implements ExecutableComponent {
     @ComponentInput(description="Read content as stream."+

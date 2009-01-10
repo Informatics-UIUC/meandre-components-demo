@@ -64,7 +64,8 @@ import org.meandre.core.system.components.ext.*;
            		"newline characters. When the InputStream is consumed, it will " +
            		"output a StreamTerminator. First output is a StreamInitiator.",
            name="StringLinePusher",
-           tags="string")
+           tags="string",
+           baseURL="meandre://seasr.org/components/")
 
 public class StringLinePusher implements ExecutableComponent {
     @ComponentInput(description="Read content as stream." +

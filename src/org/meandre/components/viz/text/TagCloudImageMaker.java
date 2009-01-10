@@ -74,7 +74,8 @@ import org.meandre.core.ExecutableComponent;
            "reduce the maximum size of font or magnify the size of canvas " +
            "to accommodate all of tags.",
            name="Tag Cloud Image Maker",
-           tags="tag cloud, visualization")
+           tags="tag cloud, visualization",
+           baseURL="meandre://seasr.org/components/")
 
 public class TagCloudImageMaker implements ExecutableComponent {
 	@ComponentProperty(defaultValue="1000",

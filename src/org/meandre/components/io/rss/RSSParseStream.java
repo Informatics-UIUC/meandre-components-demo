@@ -71,7 +71,8 @@ import com.sun.syndication.io.XmlReader;
            		"the stream and pushes them individually, then pushes a " +
            		"StreamTerminator object. Accepts any RSS/ATom feed format.",
            name="RSSParseStream",
-           tags="RSS")
+           tags="RSS",
+           baseURL="meandre://seasr.org/components/")
 
 
 public class RSSParseStream implements ExecutableComponent {

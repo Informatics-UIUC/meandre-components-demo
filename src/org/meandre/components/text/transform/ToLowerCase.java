@@ -55,8 +55,8 @@ import org.meandre.core.ExecutableComponent;
 @Component(creator="Lily Dong",
            description="Converts a text String to all lowercase.",
            name="ToLowerCase",
-           tags="lower case, text"
-)
+           tags="lower case, text",
+           baseURL="meandre://seasr.org/components/")
 
 public class ToLowerCase implements ExecutableComponent {
     @ComponentInput(description="Text to be converted." +

@@ -77,7 +77,8 @@ import com.sun.syndication.feed.synd.SyndFeed;
            		"stream can be a StreamInitiator.",
            name="RSSEntryAggregatorViz",
            tags="RSS, visualization",
-           mode=Mode.webui)
+           mode=Mode.webui,
+           baseURL="meandre://seasr.org/components/")
 
 public class RSSAggregatorViz
     implements ExecutableComponent, WebUIFragmentCallback{

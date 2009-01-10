@@ -70,7 +70,8 @@ import org.meandre.core.system.components.ext.StreamTerminator;
                "and outputs multiple Object[]'s, one for each line in the " +
                "csv file being streamed in.",
            name="CSVLinePusher",
-           tags="CSV")
+           tags="CSV",
+           baseURL="meandre://seasr.org/components/")
 
 public class CSVLinePusher implements ExecutableComponent {
     @ComponentInput(description="Read content as stream." +

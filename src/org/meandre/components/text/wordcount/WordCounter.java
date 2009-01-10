@@ -60,8 +60,8 @@ import org.meandre.core.ExecutableComponent;
            description="Sums the occurences of words in a string of text and " +
            		"outputs the result in a Map<String, Integer>.",
            name="WordCounter",
-           tags="word, counter"
-)
+           tags="word, counter",
+           baseURL="meandre://seasr.org/components/")
 
 public class WordCounter implements ExecutableComponent {
     @ComponentInput(description="Text to be analyzed." +

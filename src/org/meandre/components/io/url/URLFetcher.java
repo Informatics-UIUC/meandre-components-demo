@@ -63,7 +63,8 @@ import org.meandre.core.ExecutableComponent;
            		"should be file:///F:/...  For a remote file, the URL should " +
            		"be http://... or ftp://...  ",
            name="URLFetcher",
-           tags="URL, stream")
+           tags="URL, stream",
+           baseURL="meandre://seasr.org/components/")
         
 public class URLFetcher implements ExecutableComponent {
    

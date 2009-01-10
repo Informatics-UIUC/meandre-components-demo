@@ -85,7 +85,8 @@ import org.w3c.dom.Attr;
             "as xml.Only those entity types specified in this Components " +
             "properties will be included in the output XML.</p>",
 		name = "Annotation2XML",
-		tags = "text document annotation")
+		tags = "text, document, annotation",
+        baseURL="meandre://seasr.org/components/")
 
 
 public class Annotation2XML implements ExecutableComponent {

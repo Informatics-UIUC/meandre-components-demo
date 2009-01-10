@@ -72,7 +72,8 @@ import org.meandre.webui.WebUIFragmentCallback;
                "'CSV Reader' component.",
            name="CSV Table Viewer",
            tags="CSV, table viewer",
-           mode=Mode.webui)
+           mode=Mode.webui,
+           baseURL="meandre://seasr.org/components/")
 
 public class CSVTableViewer 
     implements ExecutableComponent, WebUIFragmentCallback {

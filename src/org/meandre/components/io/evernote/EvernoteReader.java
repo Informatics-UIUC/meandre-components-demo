@@ -70,7 +70,8 @@ import com.evernote.edam.notestore.NoteList;
            description="Download the notes on a Evernote account. Returns it " +
            		"as a NoteStore object.",
            name="EvernoteReader",
-           tags="evernote, note, notebook")
+           tags="evernote, note, notebook",
+           baseURL="meandre://seasr.org/components/")
 
 public class EvernoteReader implements ExecutableComponent {
     @ComponentProperty(defaultValue="",

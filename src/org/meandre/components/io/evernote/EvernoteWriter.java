@@ -67,7 +67,8 @@ import com.evernote.edam.userstore.UserStore;
            "(ENML) to an account on Evernote.com. The contents must strictly" + 
            "comply with Evernote Markup Language(ENML) " ,
            name="EvernoteWriter",
-           tags="evernote, note, notebook")
+           tags="evernote, note, notebook",
+           baseURL="meandre://seasr.org/components/")
 
 public class EvernoteWriter implements ExecutableComponent {
     @ComponentInput(description="Content to be written to Evernote."+

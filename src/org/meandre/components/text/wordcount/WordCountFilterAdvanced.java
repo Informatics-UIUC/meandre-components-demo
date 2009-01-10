@@ -73,7 +73,8 @@ import org.meandre.core.ExecutableComponent;
            		"Properties. This component can also optionally only keep " +
            		"the N words with the highest word counts.",
            name="WordFilter",
-           tags="word, filter")
+           tags="word, filter",
+           baseURL="meandre://seasr.org/components/")
 
 public class WordCountFilterAdvanced implements ExecutableComponent {
 	@ComponentProperty(defaultValue="http://norma.ncsa.uiuc.edu/public-dav/applets/common_words.txt",

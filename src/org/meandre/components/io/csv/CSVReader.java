@@ -64,7 +64,8 @@ import org.meandre.core.ExecutableComponent;
            "is a String representation of a cell from the .csv table. Each " +
            "Object array corresponds to a line/row in the csv table.",
            name="CSV Reader",
-           tags="CSV")
+           tags="CSV",
+           baseURL="meandre://seasr.org/components/")
 
 public class CSVReader implements ExecutableComponent {
     @ComponentInput(description="Read content as stream." +

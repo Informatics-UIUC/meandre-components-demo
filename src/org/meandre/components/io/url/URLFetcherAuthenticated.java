@@ -74,7 +74,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
            		"authentication, username and password should be provided as " +
            		"the properties, otherwise ignoring them.",
            name="URLFetcherAuthenticated",
-           tags="URL, stream")
+           tags="URL, stream",
+           baseURL="meandre://seasr.org/components/")
 
 public class URLFetcherAuthenticated implements ExecutableComponent {
     @ComponentInput(description="URL to be fetched." +

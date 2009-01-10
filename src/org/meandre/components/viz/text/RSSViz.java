@@ -70,7 +70,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            description="Displays an RSS entry collection represented by a SyndFeed object.",
            name="RSSViz",
            tags="RSS, visualization",
-           mode=Mode.webui)
+           mode=Mode.webui,
+           baseURL="meandre://seasr.org/components/")
 
 public class RSSViz
     implements ExecutableComponent, WebUIFragmentCallback {

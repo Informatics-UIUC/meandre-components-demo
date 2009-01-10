@@ -66,8 +66,8 @@ import org.meandre.core.system.components.ext.StreamTerminator;
            "be added together to form the final float value in the output " +
            "HashMap.Read CSV content in vector containing Object array.",
            name="CSV2WordCount",
-           tags="csv, map, converter"
-)
+           tags="csv, map, converter",
+           baseURL="meandre://seasr.org/components/")
 
 public class CSV2WordCount implements ExecutableComponent {
     @ComponentInput(description="A tokenized csv table. Each Object[] " +

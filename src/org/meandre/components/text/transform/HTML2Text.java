@@ -63,8 +63,8 @@ import org.meandre.core.ExecutableComponent;
            		"the dom tree that are plain text nodes are appended " +
            		"together and returned as a string.",
            name="HTML2Text",
-           tags="html, text, converter"
-)
+           tags="html, text, converter",
+           baseURL="meandre://seasr.org/components/")
 
 public class HTML2Text implements ExecutableComponent {
     @ComponentInput(description="Read content in HTML format." +

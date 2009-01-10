@@ -84,7 +84,8 @@ import sun.misc.UCEncoder;
            description="Visualizes temporal data from an XML document.",
            name="SimileTimelineViewer",
            tags="simile, timeline",
-           mode=Mode.webui)
+           mode=Mode.webui,
+           baseURL="meandre://seasr.org/components/")
 
 public class SimileTimelineViewer
 	implements ExecutableComponent, WebUIFragmentCallback {

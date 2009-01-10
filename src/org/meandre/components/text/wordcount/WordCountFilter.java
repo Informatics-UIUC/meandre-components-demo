@@ -61,8 +61,8 @@ import org.meandre.core.ExecutableComponent;
            		"whose key is one of the keys to delete. The keys to delete " +
            		"are specified in this component's properties.",
            name="WordCountFilter",
-           tags="map, reducer"
-)
+           tags="map, reducer",
+           baseURL="meandre://seasr.org/components/")
 
 public class WordCountFilter implements ExecutableComponent {
     @ComponentInput(description="A word count summary in Map format." +

@@ -69,8 +69,9 @@ import org.meandre.webui.WebUIFragmentCallback;
            		"properties. \"text/plain\" is the default, \"image/<EXT>\" is " +
            		"also supported for standard image types.",
            name="MIMEContentViz",
-           tags="multipurpose internet mail extensions, visualization",
-           mode=Mode.webui)
+           tags="multipurpose, internet, mail, extensions, visualization",
+           mode=Mode.webui,
+           baseURL="meandre://seasr.org/components/")
 
 public class MIMEContentViz 
     implements ExecutableComponent, WebUIFragmentCallback {

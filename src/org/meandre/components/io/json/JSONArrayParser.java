@@ -59,7 +59,8 @@ import org.meandre.core.ExecutableComponent;
 @Component(creator="Lily Dong",
            description="Parse an input string into a JSONArray.",
            name="JSONArrayParser",
-           tags="json, converter")
+           tags="json, converter",
+           baseURL="meandre://seasr.org/components/")
 
 public class JSONArrayParser implements ExecutableComponent {
     @ComponentInput(description="Text to be parsed." +
