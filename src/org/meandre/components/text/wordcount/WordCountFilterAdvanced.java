@@ -161,15 +161,14 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
     			while(upperLimit > 0) {
     				String key = sortedMap.firstKey();
     				Integer value = (Integer)sortedMap.get(key);
-    				//System.out.println("upperLimit = " + upperLimit + " key = " + key + " value = " + value.intValue());
     				outputMap.put(key, value);
     				sortedMap.remove(key);
     				--upperLimit;
     			}
-    		}
-    	}
-
-    	outputMap = (!isLimited)? inputMap: outputMap;
+    		} else
+    			outputMap = inputMap;
+    	} else
+    		outputMap = inputMap;
 
     	cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
     }
