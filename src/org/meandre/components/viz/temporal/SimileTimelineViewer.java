@@ -365,18 +365,18 @@ public class SimileTimelineViewer
 					//year or month year or month day year
 					if(day == null) //month year
 						if(month == null) {//year
-							buf.append("<event start=\"").append(year).append("\" title=\"").append(year).append("\">\n").append(sentence).append("\n");
+							buf.append("<event start=\"").append(year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
 				    		buf.append("</event>\n");
 						} else { //month year
-							buf.append("<event start=\"").append(month + " " + year).append("\" title=\"").append(month + " " + year).append("\">\n").append(sentence).append("\n");
+							buf.append("<event start=\"").append(month + " " + year).append("\" title=\"").append(/*month + " " + year*/aDate).append("\">\n").append(sentence).append("\n");
 				    		buf.append("</event>\n");
 						}
 					else {
 						if(month == null) {//year
-							buf.append("<event start=\"").append(year).append("\" title=\"").append(year).append("\">\n").append(sentence).append("\n");
+							buf.append("<event start=\"").append(year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
 							buf.append("</event>\n");
 						} else { //month day month
-							buf.append("<event start=\"").append(month + " " + day + " " + year).append("\" title=\"").append(month + " " + day + " " + year).append("\">\n").append(sentence).append("\n");
+							buf.append("<event start=\"").append(month + " " + day + " " + year).append("\" title=\"").append(/*month + " " + day + " " + year*/aDate).append("\">\n").append(sentence).append("\n");
 							buf.append("</event>\n");
 						}
 					}
