@@ -75,7 +75,7 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class CSVTableViewer 
+public class CSVTableViewer
     implements ExecutableComponent, WebUIFragmentCallback {
     @ComponentProperty(defaultValue="true",
                        description="This property indicates whether a header exists " +
@@ -99,7 +99,7 @@ public class CSVTableViewer
  		   			   description="This property sets the number of columns per page to display.",
  		   			   name="Num_Columns_to_Display")
     final static String DATA_PROPERTY_4 = "Num_Columns_to_Display";
-    
+
     @ComponentInput(description="This input contains the file content stored as a vector with "+
     		"each attribute (column) stored as an object array." +
     		"<br>TYPE: java.util.Vector<java.lang.Object[]>",
@@ -107,9 +107,9 @@ public class CSVTableViewer
     public final static String DATA_INPUT = "CSV_Content";
 
     @ComponentOutput(description="This output is the original 'CSV Content' that is unchanged.",
-                     name="CSV_Content")        
+                     name="CSV_Content")
     public final static String DATA_OUTPUT = "CSV_Content";
-    
+
     /**
      * Store the number of rows per page.
      */
@@ -119,7 +119,7 @@ public class CSVTableViewer
      * Store the number of columns per page.
      */
     private int nrColumns = 8;
-    
+
     /**
      * Store the row indices of every page.
      */
@@ -155,25 +155,25 @@ public class CSVTableViewer
      */
     private boolean isFirst;
 
-    /** 
-     * The blocking semaphore 
+    /**
+     * The blocking semaphore
      */
     private Semaphore sem = new Semaphore(1,true);
 
-    /** 
-     * The instance ID 
+    /**
+     * The instance ID
      */
     private String sInstanceID = null;
-    
+
     /** Store the input vector */
     private Vector<Object[]> inputContent;
-    
+
     /** Store whether header exists in CSV file */
     private boolean isHeader;
-    
+
     /** Store whether type exists in CSV file */
     private boolean isType;
-    
+
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
      *
@@ -189,7 +189,7 @@ public class CSVTableViewer
         }
     }
 
-    
+
     /** A simple message.
     *
     * @return The html containing the page
@@ -244,7 +244,8 @@ public class CSVTableViewer
             sb.append("if(xmlHttp.status  == 200)\n");
 
             sb.append("document.getElementById(\"myTable\").innerHTML=xmlHttp.responseText;\n");
-            sb.append("$(\"table\").tablesorter();\n");
+            //sb.append("$(\"table\").tablesorter();\n");
+            sb.append("$(\"table\").tablesorter({widgets:['zebra']});\n");
 
             sb.append("}\n");
             sb.append("}\n");
@@ -281,7 +282,7 @@ public class CSVTableViewer
             }
         } else {
             for(int column=currentColumn[theBar]; column<=nextColumn[theBar]; column++)
-                sb.append("<th>").append(" ").append("</th>\n");  
+                sb.append("<th>").append(" ").append("</th>\n");
         }
         sb.append("</tr>\n");
         sb.append("</thead>\n");
@@ -340,7 +341,7 @@ public class CSVTableViewer
 
         return sb.toString();
     }
-    
+
     /** This method gets called when a call with parameters is done to a given component
      * webUI fragment
      *
@@ -362,7 +363,7 @@ public class CSVTableViewer
             emptyRequest(response);
     }
 
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -373,8 +374,8 @@ public class CSVTableViewer
         ComponentContextException {
         try {
             isHeader = Boolean.valueOf(cc.getProperty(DATA_PROPERTY_1));
-            isType = Boolean.valueOf(cc.getProperty(DATA_PROPERTY_2));       
-            
+            isType = Boolean.valueOf(cc.getProperty(DATA_PROPERTY_2));
+
             try {
                 nrRows = Integer.valueOf(cc.getProperty(DATA_PROPERTY_3));
                 nrColumns = Integer.valueOf(cc.getProperty(DATA_PROPERTY_4));
@@ -384,12 +385,12 @@ public class CSVTableViewer
 
             if(nrRows <= 0 || nrColumns <=0)
                 throw new ComponentExecutionException();
-            
+
             inputContent = (Vector<Object[]>)cc.getDataComponentFromInput(DATA_INPUT);
-    
+
             int totalRows = inputContent.size(),
                 totalColumns = inputContent.elementAt(0).length;
-            
+
             totalRows = (isHeader)? totalRows-1: totalRows; //exclude header row
             totalRows = (isType)? totalRows-1: totalRows; //exclude type row
 
@@ -458,16 +459,16 @@ public class CSVTableViewer
         } catch (Exception e) {
             throw new ComponentExecutionException(e);
         }
-        
+
         cc.pushDataComponentToOutput(DATA_OUTPUT, inputContent);
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
