@@ -88,8 +88,8 @@ public class TagCloudImageMaker implements ExecutableComponent {
     final static String DATA_PROPERTY_2 = "height";
 	@ComponentProperty(defaultValue="Courier",
 	                   description="This property sets the name of font.",
-	                   name="name")
-    final static String DATA_PROPERTY_3 = "name";
+	                   name="fontName")
+    final static String DATA_PROPERTY_3 = "fontName";
 	@ComponentProperty(defaultValue="150",
   			           description="This property sets the maximum size of font.",
   			           name="maxSize")
@@ -98,6 +98,12 @@ public class TagCloudImageMaker implements ExecutableComponent {
 	           		   description="This property sets the minimum size of font.",
 	           		   name="minSize")
     final static String DATA_PROPERTY_5 = "minSize";
+	@ComponentProperty(defaultValue="false",
+    		           description="If this property is set true, count for each tag will be shown. " +
+    		           "Make sure there is enough space for showing count. In doing so, " +
+    		           "you could increase width or height or both, or reduce font size.",
+    		           name="countVisible")
+    final static String DATA_PROPERTY_6 = "countVisible";
 
 	@ComponentInput(description="Tags to be analyzed." +
 	            "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
@@ -125,12 +131,15 @@ public class TagCloudImageMaker implements ExecutableComponent {
     	float maxFontSize = Float.parseFloat(cc.getProperty(DATA_PROPERTY_4)), //maximum font size
     	      minFontSize = Float.parseFloat(cc.getProperty(DATA_PROPERTY_5));  //minimum font size
 
+    	boolean isVisible = Boolean.parseBoolean(cc.getProperty(DATA_PROPERTY_6));
+
 		Hashtable<String, Integer> table =
 			(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
 
 		int length = table.size();
 		String[] text = new String[length];
 		int[] fontSize = new int[length];
+		int[] count = new int[length];
 
 		Enumeration<String> keys = table.keys();
 		int pos = 0;
@@ -140,6 +149,7 @@ public class TagCloudImageMaker implements ExecutableComponent {
 			String key = keys.nextElement();
 			int value = ((Integer)table.get(key)).intValue();
 			text[pos] = key;
+			count[pos] = value;
 			fontSize[pos++] = value;
 			maxValue = (value>maxValue)? value: maxValue;
 			minValue = (value<minValue)? value: minValue;
@@ -162,7 +172,7 @@ public class TagCloudImageMaker implements ExecutableComponent {
 				          new Color(0x99, 0xcc, 0x33),
 				          new Color(0x99, 0xff, 0x33)};
 
-		int increment = 5;
+		int margin = 5;
 
 		boolean[][] grid = new boolean[width][height];
 		for(int i=0; i<grid.length; i++)
@@ -175,18 +185,19 @@ public class TagCloudImageMaker implements ExecutableComponent {
 		FontRenderContext frc = g2D.getFontRenderContext();
 
 		for(int k=0; k<text.length; k++) {
+			String str = (isVisible)? text[k]+" "+count[k]: text[k];
+
 			Font font = new Font(fontName, Font.BOLD, fontSize[k]);
-  			TextLayout layout = new TextLayout(text[k], font, frc);
+  			TextLayout layout = new TextLayout(/*text[k]*/str, font, frc);
 
-			int textWidth = (int)layout.getVisibleAdvance();
-			int textHeight = (int)(layout.getBounds().getHeight() +
-								   layout.getDescent());
+			int w = (int)layout.getVisibleAdvance(),
+			    h = (int)(layout.getAscent()+layout.getDescent());
 
-			int xCoord = 0,
-                yCoord = textHeight;
+			int textWidth = ((w+2*margin)/margin)*margin,
+			    textHeight = ((h+margin)/margin)*margin;
 
-			textWidth = ((textWidth+4*increment)/increment)*increment;
-			textHeight = ((textHeight+4*increment)/increment)*increment;
+			int xCoord = (textWidth-w)/2,
+			    yCoord = (int)layout.getAscent()+(textHeight-h)/2;
 
 			BufferedImage textImage = new BufferedImage(
 				textWidth, textHeight,BufferedImage.TYPE_INT_ARGB);
@@ -196,7 +207,7 @@ public class TagCloudImageMaker implements ExecutableComponent {
 			textG2D.fillRect(0, 0, textWidth-1, textHeight-1);
 			textG2D.setColor(colors[k%colors.length]);
 			textG2D.setFont(font);
-        	textG2D.drawString(text[k], xCoord, yCoord);
+        	textG2D.drawString(/*text[k]*/str, xCoord, yCoord);
 
 			BufferedImage biFlip = null;
 			if(k%5==0) {
@@ -225,11 +236,11 @@ public class TagCloudImageMaker implements ExecutableComponent {
 			for(int i=0; i<mask.length; ++i)
 				for(int j=0; j<mask[0].length; ++j)
 					mask[i][j] = false;
-			for (int j=0; j<textHeight; j+=increment) {
-	    			for (int i=0; i< textWidth; i+=increment) {
+			for (int j=0; j<textHeight; j+=margin) {
+	    			for (int i=0; i< textWidth; i+=margin) {
 					boolean found = false;
-					for(int ii=i; ii<i+increment&&ii<textWidth-increment; ii++) {
-						for(int jj=j; jj<j+increment&&jj<textHeight-increment; jj++) {
+					for(int ii=i; ii<i+margin&&ii<textWidth-margin; ii++) {
+						for(int jj=j; jj<j+margin&&jj<textHeight-margin; jj++) {
 							int value = pixels[jj * textWidth + ii];
 							byte[] rgb = new byte[3];
 							rgb [0] = (byte) (value & 0xFF);
@@ -262,8 +273,8 @@ public class TagCloudImageMaker implements ExecutableComponent {
 				y = (y<0)?0: y;
 
     			boolean fail = false;
-    			for (int xt=0; xt<textWidth && !fail; xt+=increment) {
-      				for (int yt=0; yt<textHeight && !fail; yt+=increment) {
+    			for (int xt=0; xt<textWidth && !fail; xt+=margin) {
+      				for (int yt=0; yt<textHeight && !fail; yt+=margin) {
 						if(xt+x>=width ||
 						   yt+y>=height ||
 					       (mask[xt][yt] && grid[xt + x][yt + y]))
@@ -276,15 +287,15 @@ public class TagCloudImageMaker implements ExecutableComponent {
     			d += dd;
   			}
 
-			for (int xt=0; xt<textWidth; xt+= increment) {
-    			for (int yt = 0; yt<textHeight; yt+= increment)
+			for (int xt=0; xt<textWidth; xt+=margin) {
+    			for (int yt = 0; yt<textHeight; yt+=margin)
       				if (mask[xt][yt])
         				grid[xt+x][yt+y] = true;
 			}
 
 			for(int i=0; i<textWidth; i++)
     			for(int j=0; j<textHeight; j++)
-    				if(mask[(i/increment)*increment][(j/increment)*increment])
+    				if(mask[(i/margin)*margin][(j/margin)*margin])
     					image.setRGB(x+i, y+j, textImage.getRGB(i, j));
 		}//k
 		//g.drawImage(image, 0, 0, this);
