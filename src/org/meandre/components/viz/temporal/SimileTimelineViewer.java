@@ -199,14 +199,14 @@ public class SimileTimelineViewer
         sb.append("eventSource:    eventSource,\n");
               sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
               sb.append("width:          \"70%\",\n");
-              sb.append("intervalUnit:   Timeline.DateTime.YEAR,\n");
+              sb.append("intervalUnit:   Timeline.DateTime.MONTH,\n");
               sb.append("intervalPixels: 100\n");
         sb.append("}),\n");
         sb.append("Timeline.createBandInfo({\n");
         sb.append("eventSource:    eventSource,\n");
               sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
               sb.append("width:          \"30%\",\n");
-              sb.append("intervalUnit:   Timeline.DateTime.CENTURY,\n");
+              sb.append("intervalUnit:   Timeline.DateTime.YEAR,\n");
               sb.append("intervalPixels: 200\n");
         sb.append("})\n");
         sb.append("];\n");
@@ -315,12 +315,34 @@ public class SimileTimelineViewer
 				       day   = null,
 				       year  = null;
 
-				Pattern datePattern = Pattern.compile("(January|Jan|Feburary|Feb|March|Mar|" + //look for month
-						"April|Apr|May|June|July|August|Aug|September|Sept|October|Oct|"+
-						"November|Nov|December|Dec)");
+				String startMonth = null,
+					   endMonth = null;
+
+				Pattern datePattern = Pattern.compile("(january|jan|feburary|feb|march|mar|" + //look for month
+						"april|apr|may|june|jun|july|jul|august|aug|september|sept|october|oct|"+
+						"november|nov|december|dec)");
 				Matcher dateMatcher = datePattern.matcher(aDate);
-				if(dateMatcher.find()) {
+				if(dateMatcher.find()) { //look for month
 					month = dateMatcher.group(1);
+				} else { //look for season
+					datePattern = Pattern.compile("(spring|summer|fall|winter)");
+					dateMatcher = datePattern.matcher(aDate);
+					if(dateMatcher.find()) {
+						String season = dateMatcher.group(1);
+						if(season.equalsIgnoreCase("spring")) {
+							startMonth = "Apr 01";
+							endMonth = "June 30";
+						} else if(season.equalsIgnoreCase("summer")) {
+							startMonth = "July 01";
+							endMonth = "Sept 30";
+						} else if(season.equalsIgnoreCase("fall")) {
+							startMonth = "Oct 01";
+							endMonth = "Dec 31";
+						} else { //winter
+							startMonth = "Jan 01";
+							endMonth = "Mar 31";
+						}
+					}
 				}
 
 				datePattern = Pattern.compile("(\\b\\d{1}\\b)"); //look for day	like 5
@@ -337,7 +359,7 @@ public class SimileTimelineViewer
 
 				datePattern = Pattern.compile("(\\d{4})"); //look for year
 				dateMatcher = datePattern.matcher(aDate);
-				if(dateMatcher.find()) {
+				if(dateMatcher.find()) { //look for year
 					NamedNodeMap nnp = fstNode.getAttributes();
 		        	String sentence = nnp.getNamedItem("sentence").getNodeValue();
 
@@ -358,17 +380,57 @@ public class SimileTimelineViewer
 		        	 }
 		        	sentence = sb.toString();
 
-		        	//sentence = sentence.replaceAll("[|]", "&lt;br&gt;&lt;hr&gt;");
-
 					year = dateMatcher.group(1);
 					minYear = Math.min(minYear, Integer.parseInt(year));
 					//year or month year or month day year
-					if(day == null) //month year
-						if(month == null) {//year
-							buf.append("<event start=\"").append(year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
-				    		buf.append("</event>\n");
+					if(day == null)
+						if(month == null) { //season year
+							if(startMonth != null) {//spring or summer or fall or winter year
+								buf.append("<event start=\"").append(startMonth + " " + year).append("\" end=\"").append(endMonth + " " + year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
+								buf.append("</event>\n");
+							} else { //year
+								//if(Integer.parseInt(year) != 1832) {
+								buf.append("<event start=\"").append(year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
+								buf.append("</event>\n");//}
+							}
 						} else { //month year
-							buf.append("<event start=\"").append(month + " " + year).append("\" title=\"").append(/*month + " " + year*/aDate).append("\">\n").append(sentence).append("\n");
+							String startDay = month + " 01";
+							int m = 1;
+							if(month.startsWith("feb"))
+								m = 2;
+							else if(month.startsWith("mar"))
+								m = 3;
+							else if(month.startsWith("apr"))
+								m = 4;
+							else if(month.startsWith("may"))
+								m = 5;
+							else if(month.startsWith("jun"))
+								m = 6;
+							else if(month.startsWith("jul"))
+								m = 7;
+							else if(month.startsWith("aug"))
+								m = 8;
+							else if(month.startsWith("sept"))
+								m = 9;
+							else if(month.startsWith("oct"))
+								m = 10;
+							else if(month.startsWith("nov"))
+								m = 11;
+							else if(month.startsWith("dec"))
+								m = 12;
+							int y = Integer.parseInt(year);
+							int numberOfDays = 31;
+							if (m == 4 || m == 6 || m == 9 || m == 11)
+							  numberOfDays = 30;
+							else if (m == 2) {
+								boolean isLeapYear = (y % 4 == 0 && y % 100 != 0 || (y % 400 == 0));
+								if (isLeapYear)
+									numberOfDays = 29;
+								else
+									numberOfDays = 28;
+							}
+							String endDay = month + " " + Integer.toString(numberOfDays);
+							buf.append("<event start=\"").append(startDay + " " + year).append("\" end=\"").append(endDay + " " + year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
 				    		buf.append("</event>\n");
 						}
 					else {
