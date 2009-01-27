@@ -247,6 +247,14 @@ implements ExecutableComponent, WebUIFragmentCallback {
     	                buf.append("uploadManager: \"fluid.swfUploadManager:{uploadURL: '/" + sInstanceID + "'}\"\n");
     	            buf.append("});\n");
     	        buf.append("</script>\n");
+
+    	        buf.append("<br><br>\n");
+
+    	        buf.append("<div align=\"center\">\n");
+    	        buf.append("<table align=center><font size=2><a id=\"url\" href=\"/" +
+    	        		sInstanceID + "?done=true\">DONE</a></font></table>\n");
+    	        buf.append("</div>\n");
+
     	    buf.append("</body>\n");
     	buf.append("</html>\n");
 
