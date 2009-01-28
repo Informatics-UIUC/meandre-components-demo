@@ -45,10 +45,12 @@ import java.util.concurrent.Semaphore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletInputStream;
 
 import java.io.BufferedReader;
 
 import org.meandre.annotations.Component;
+import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.Component.Mode;
 
 import org.meandre.core.ComponentContext;
@@ -68,11 +70,19 @@ import org.meandre.webui.WebUIFragmentCallback;
 
 public class LocalFileUploader
 implements ExecutableComponent, WebUIFragmentCallback {
+	@ComponentOutput(description="Output the file uploaded from local machine."+
+			"<br>TYPE: java.lang.String",
+	         		 name="file")
+	public final static String DATA_OUTPUT = "file";
+
 	/** The blocking semaphore */
 	private Semaphore sem = new Semaphore(1,true);
 
 	/** The instance ID */
 	private String sInstanceID = null;
+
+	/** Store the uploaded file */
+	private String str;
 
 	/** This method gets call when a request with no parameters is made to a
 	 * component webui fragment.
@@ -100,25 +110,25 @@ implements ExecutableComponent, WebUIFragmentCallback {
     	buf.append("<head>\n");
 
     	buf.append("<script language=\"JavaScript\">\n");
-    		buf.append("function LimitAttach(form, file) {\n");
-    		//buf.append("if (!file && file.length!=0)\n");
+    		buf.append("function LimitAttach(form, value) {\n");
+    		buf.append("if (value.length != 0)\n");
     		buf.append("form.submit();\n");
-    		//buf.append("else\n");
-    		//buf.append("alert(\"Please input valid file name and submit again.\");\n");
+    		buf.append("else\n");
+    		buf.append("alert(\"Please input valid file name and submit again.\");\n");
     		buf.append("}\n");
     	buf.append("</script>\n");
     	buf.append("</head>\n");
 
     	buf.append("<body>\n");
-    	//buf.append("<center>\n");
-    		buf.append("<p>\n");
-    		buf.append("Please specify a file:\n");
     		buf.append("<form method=post name=upform enctype=\"multipart/form-data\" action=\"/" + sInstanceID + "\">\n");
-    		buf.append("<input type=file name=uploadfile size=\"40\">\n");
     		buf.append("<p>\n");
+    		buf.append("Please specify a file:<br>\n");
+    		buf.append("<input type=file name=uploadfile size=\"40\">\n");
+    		buf.append("</p>\n");
+    		buf.append("<div>\n");
     		buf.append("<input type=button name=\"Submit\" value=\"Submit\" onclick=\"LimitAttach(this.form, this.form.uploadfile.value)\">\n");
+    		buf.append("</div>\n");
     		buf.append("</form>\n");
-    	//buf.append("</center>\n");
     	buf.append("</body>\n");
     	buf.append("</html>\n");
 
@@ -145,9 +155,20 @@ implements ExecutableComponent, WebUIFragmentCallback {
 			emptyRequest(response);
 		else {
 			try {
-				String line = null;
-				while((line = br.readLine()) != null)
-					System.out.println(line);
+				String line = br.readLine();
+				String boundary = line.trim();
+				StringBuffer buf = new StringBuffer();
+				while((line = br.readLine()) != null) {
+					line = line.trim();
+					if(line.startsWith("Content-Disposition:") ||
+					   line.startsWith("Content-Type:"))
+						continue;
+					if(line.startsWith(boundary))
+						break;
+					buf.append(line).append("\n");
+				}
+				br.close();
+				str = buf.toString();
 			}catch(java.io.IOException e) {
 				throw new WebUIException(e);
 			}
@@ -169,6 +190,8 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	   		cc.startWebUIFragment(this);
 	   		sem.acquire();
 	   		cc.stopWebUIFragment(this);
+
+	   		cc.pushDataComponentToOutput(DATA_OUTPUT, str);
 	   	} catch (Exception e) {
 	   		throw new ComponentExecutionException(e);
 	   	}
