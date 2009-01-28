@@ -160,10 +160,12 @@ implements ExecutableComponent, WebUIFragmentCallback {
 				StringBuffer buf = new StringBuffer();
 				while((line = br.readLine()) != null) {
 					line = line.trim();
+					if(line.length() == 0)
+						continue;
 					if(line.startsWith("Content-Disposition:") ||
 					   line.startsWith("Content-Type:"))
 						continue;
-					if(line.startsWith(boundary))
+					if(line.startsWith(boundary)) //end of file
 						break;
 					buf.append(line).append("\n");
 				}
