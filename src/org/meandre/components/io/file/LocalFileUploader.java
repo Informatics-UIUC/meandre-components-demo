@@ -45,7 +45,7 @@ import java.util.concurrent.Semaphore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletInputStream;
+//import javax.servlet.ServletInputStream;
 
 import java.io.BufferedReader;
 
@@ -72,8 +72,8 @@ public class LocalFileUploader
 implements ExecutableComponent, WebUIFragmentCallback {
 	@ComponentOutput(description="Output the file uploaded from local machine."+
 			"<br>TYPE: java.lang.String",
-	         		 name="file")
-	public final static String DATA_OUTPUT = "file";
+	         		 name="Text")
+	public final static String DATA_OUTPUT = "Text";
 
 	/** The blocking semaphore */
 	private Semaphore sem = new Semaphore(1,true);
@@ -83,6 +83,8 @@ implements ExecutableComponent, WebUIFragmentCallback {
 
 	/** Store the uploaded file */
 	private String str;
+
+	//private ServletInputStream sis = null;
 
 	/** This method gets call when a request with no parameters is made to a
 	 * component webui fragment.
@@ -148,12 +150,15 @@ implements ExecutableComponent, WebUIFragmentCallback {
 		BufferedReader br = null;
 		try {
 			br = request.getReader();
+			//sis = request.getInputStream();
 		}catch(java.io.IOException e) {
 			throw new WebUIException(e);
 		}
-		if(br == null)
+
+		if(br/*sis*/ == null)
 			emptyRequest(response);
 		else {
+			//br = new BufferedReader(new java.io.InputStreamReader(sis));
 			try {
 				String line = br.readLine();
 				String boundary = line.trim();
