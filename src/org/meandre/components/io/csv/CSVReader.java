@@ -46,7 +46,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Vector;
-import java.util.StringTokenizer;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
@@ -88,8 +87,8 @@ public class CSVReader implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
-
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
         String line;
         Vector<Object[]> result = new Vector<Object[]> ();
         try {
