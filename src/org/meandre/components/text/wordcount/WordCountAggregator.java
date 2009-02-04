@@ -81,8 +81,7 @@ public class WordCountAggregator implements ExecutableComponent {
     @ComponentOutput(description="Output content in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Float>",
                      name="Map")        
-    public final static String DATA_OUTPUT = "Map" +
-        "<br>TYPE: java.util.Map<java.lang.String, java.lang.Float>";
+    public final static String DATA_OUTPUT = "Map";
     
     private Map outputMap;
     
