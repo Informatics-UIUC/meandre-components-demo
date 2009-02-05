@@ -40,7 +40,7 @@
 *
 */
 
-package org.meandre.components.io.proxy;
+package org.meandre.components.tapor;
 
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -66,7 +66,7 @@ import org.meandre.core.ExecutableComponent;
            name="Rest Service Client",
            tags="rest service")
 
-public class RestServiceClient implements ExecutableComponent {
+public class ListWords implements ExecutableComponent {
     /** When ready for execution.
      *
      * @param cc The component context
@@ -76,7 +76,7 @@ public class RestServiceClient implements ExecutableComponent {
     public void execute(ComponentContext cc) throws
     ComponentExecutionException,ComponentContextException {
     	try {
-    		String loc = "http://tapor1-dev.mcmaster.ca/~restserv/html/listwords";
+    		String loc = "http://tapor1-dev.mcmaster.ca/~restserv/html/concordance";//"http://tapor1-dev.mcmaster.ca/~restserv/html/listwords";
     		URL url = new URL(loc);
 
     		HostConfiguration hostConfig = new HostConfiguration();
@@ -129,12 +129,19 @@ htmlInput += "</FRAMESET>\n";
 htmlInput += "</HTML>\n";
 
 
-        	postMethod.addParameter("htmlInput", htmlInput);
+        	/*postMethod.addParameter("htmlInput", htmlInput);
         	postMethod.addParameter("htmlTag", "body");
         	postMethod.addParameter("listOption", "all");
         	postMethod.addParameter("optionSelection", "glasgow");
         	postMethod.addParameter("sorting", "2");
-        	postMethod.addParameter("outFormat", "4");
+        	postMethod.addParameter("outFormat", "4");*/
+
+  			postMethod.addParameter("htmlInput", htmlInput);
+  			postMethod.addParameter("htmlTag", "body");;
+			postMethod.addParameter("pattern", "*");
+			postMethod.addParameter("context", "1");
+			postMethod.addParameter("contextlength", "5");
+			postMethod.addParameter("outFormat", "4");
 
         	httpClient.executeMethod(postMethod);
 
