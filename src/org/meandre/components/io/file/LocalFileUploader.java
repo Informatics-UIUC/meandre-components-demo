@@ -113,7 +113,8 @@ implements ExecutableComponent, WebUIFragmentCallback {
 
     	buf.append("<script language=\"JavaScript\">\n");
     		buf.append("function LimitAttach(form, value) {\n");
-    		buf.append("if (value.length != 0)\n");
+    		buf.append("var trimmed = value.replace(/^\\s+|\\s+$/g, '') ;\n");
+    		buf.append("if (trimmed.length != 0)\n");
     		buf.append("form.submit();\n");
     		buf.append("else\n");
     		buf.append("alert(\"Please input valid file name and submit again.\");\n");
