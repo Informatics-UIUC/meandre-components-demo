@@ -49,6 +49,7 @@ import javax.xml.rpc.ParameterMode;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
+import org.meandre.annotations.ComponentOutput;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -64,11 +65,16 @@ import org.meandre.core.ExecutableComponent;
         dependency={"FastInfoset.jar", "jaxrpc-impl.jar", "jaxrpc-spi.jar", "jsr173_api.jar", "saaj-impl.jar"},
         baseURL="meandre://seasr.org/components/")
 
-public class ListWords implements ExecutableComponent{
+public class ListWords implements ExecutableComponent {
 	@ComponentInput(description="Input text to be analyzed." +
             "<br>TYPE: java.lang.String",
                     name= "Text")
     public final static String DATA_INPUT = "Text";
+
+	@ComponentOutput(description="Output the string passed from Tapor." +
+			"<br>TYPE: java.lang.String",
+	                 name="Text")
+	public final static String DATA_OUTPUT = "Text";
 
 	private String qnameService = "TaporwareService";
 	private String qnamePort = "TaporwareService_xml";
@@ -114,14 +120,14 @@ public class ListWords implements ExecutableComponent{
 	    	call.addParameter("sorting", QNAME_TYPE_STRING, ParameterMode.IN);
 	    	call.addParameter("outFormat", QNAME_TYPE_STRING, ParameterMode.IN);
 
-			String[] params = { htmlInput, "body", "all", "glasgow", "2", "4" };
+			String[] params = { htmlInput, "body", "all", "glasgow", "2", "2" };
 		    String result = (String)call.invoke(params);
 		    java.io.PrintWriter pw = new java.io.PrintWriter("result.html");
 			pw.println(result);
 			pw.flush();
 			pw.close();
 
-		    System.out.println(result);
+		    cc.pushDataComponentToOutput(DATA_OUTPUT, result);
 		} catch (Exception ex) {
 			throw new ComponentExecutionException(ex);
 		}
