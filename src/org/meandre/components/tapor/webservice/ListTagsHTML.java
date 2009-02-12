@@ -49,6 +49,7 @@ import javax.xml.rpc.ParameterMode;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
+
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -57,14 +58,14 @@ import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
         description="Demonstrate how to construct a interface to " +
-        "consume web service of list_Words_HTML of Tapor at " +
+        "consume web service of list_Tags_HTML of Tapor at " +
         "http://tada.mcmaster.ca/view/Main/TAPoRware#Using_TAPoRware_as_a_web_service.",
-        name="List Words",
-        tags="word web service",
+        name="List HTML Tags",
+        tags="html tag web service",
         dependency={"FastInfoset.jar", "jaxrpc-impl.jar", "jaxrpc-spi.jar", "jsr173_api.jar", "saaj-impl.jar"},
         baseURL="meandre://seasr.org/components/")
 
-public class ListWords implements ExecutableComponent{
+public class ListTagsHTML implements ExecutableComponent{
 	@ComponentInput(description="Input text to be analyzed." +
             "<br>TYPE: java.lang.String",
                     name= "Text")
@@ -72,7 +73,7 @@ public class ListWords implements ExecutableComponent{
 
 	private String qnameService = "TaporwareService";
 	private String qnamePort = "TaporwareService_xml";
-	private String bodyNamespaceValue =  "http://taporware.mcmaster.ca/~taporware/webservice";
+	private String bodyNamespaceValue = "http://taporware.mcmaster.ca/~taporware/webservice";
 	private String endPoint = "http://taporware.mcmaster.ca:9982";
 
 	private String ENCODING_STYLE_PROPERTY = "javax.xml.rpc.encodingstyle.namespace.uri";
@@ -88,7 +89,6 @@ public class ListWords implements ExecutableComponent{
 	public void execute(ComponentContext cc) throws
 	ComponentExecutionException, ComponentContextException {
 		String htmlInput = (String)cc.getDataComponentFromInput(DATA_INPUT);
-
 	    try {
 	    	ServiceFactory factory = ServiceFactory.newInstance();
 	        Service service = factory.createService(
@@ -105,16 +105,13 @@ public class ListWords implements ExecutableComponent{
 	        QName QNAME_TYPE_STRING = new QName(NS_XSD, "string");
 	        call.setReturnType(QNAME_TYPE_STRING);
 
-	        call.setOperationName(new QName(bodyNamespaceValue,"list_Words_HTML"));
+	        call.setOperationName(new QName(bodyNamespaceValue,"list_Tags_HTML"));
 
 	        call.addParameter("htmlInput", QNAME_TYPE_STRING, ParameterMode.IN);
-	        call.addParameter("htmlTag", QNAME_TYPE_STRING, ParameterMode.IN);
-	    	call.addParameter("listOption", QNAME_TYPE_STRING, ParameterMode.IN);
-	    	call.addParameter("optionSelection", QNAME_TYPE_STRING, ParameterMode.IN);
 	    	call.addParameter("sorting", QNAME_TYPE_STRING, ParameterMode.IN);
 	    	call.addParameter("outFormat", QNAME_TYPE_STRING, ParameterMode.IN);
 
-			String[] params = { htmlInput, "body", "all", "glasgow", "2", "4" };
+			String[] params = { htmlInput, "2", "4" };
 		    String result = (String)call.invoke(params);
 		    java.io.PrintWriter pw = new java.io.PrintWriter("result.html");
 			pw.println(result);
