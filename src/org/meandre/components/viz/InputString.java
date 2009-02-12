@@ -170,8 +170,6 @@ implements ExecutableComponent, WebUIFragmentCallback {
        		cc.stopWebUIFragment(this);
 
        		cc.pushDataComponentToOutput(DATA_OUTPUT, outputText);
-
-       		System.out.println(outputText);
        	} catch (Exception e) {
        		throw new ComponentExecutionException(e);
        	}
