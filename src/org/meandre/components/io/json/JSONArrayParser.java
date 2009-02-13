@@ -57,7 +57,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Parse an input string into a JSONArray.",
+           description="Parse an input string and convert it into a JSONArray.",
            name="JSONArrayParser",
            tags="json, converter",
            baseURL="meandre://seasr.org/components/")
@@ -70,9 +70,9 @@ public class JSONArrayParser implements ExecutableComponent {
 
     @ComponentOutput(description="JSONArray converted from input text." +
             "<br>TYPE: net.sf.json.JSONArray",
-                     name="Array")             
+                     name="Array")
     public final static String DATA_OUTPUT = "Array";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -82,22 +82,22 @@ public class JSONArrayParser implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         JSONObject jo = (JSONObject)JSONSerializer.toJSON(inpuText);
         JSONArray ja = jo.names();
-        
+
         System.out.println(jo.toString());
         System.out.println(ja.toString());
-        
+
         cc.pushDataComponentToOutput(DATA_OUTPUT, ja);
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */

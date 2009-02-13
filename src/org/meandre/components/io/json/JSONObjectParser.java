@@ -56,7 +56,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Parses a string of text into a JSON object.",
+           description="Parse a string of text and convert it into a JSON object.",
            name="JSONObjectParser",
            tags="json, converter",
            baseURL="meandre://seasr.org/components/")
@@ -68,9 +68,9 @@ public class JSONObjectParser implements ExecutableComponent {
     public final static String DATA_INPUT = "Text";
 
     @ComponentOutput(description="JSONObject converted from input text.",
-                     name="Object")             
+                     name="Object")
     public final static String DATA_OUTPUT = "Object";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -81,18 +81,18 @@ public class JSONObjectParser implements ExecutableComponent {
         ComponentContextException {
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
         JSONObject jo = (JSONObject)JSONSerializer.toJSON(inpuText);
-        
+
         System.out.println(jo.toString());
-        
+
         cc.pushDataComponentToOutput(DATA_OUTPUT, jo);
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
