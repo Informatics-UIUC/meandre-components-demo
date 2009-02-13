@@ -59,10 +59,10 @@ import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.*;
 
 @Component(creator="Lily Dong",
-           description="Reads an InputStream and pushes out one String per " +
+           description="Read an InputStream and pushes out one String per " +
            		"line of the stream's content. The lines are delimited by " +
            		"newline characters. When the InputStream is consumed, it will " +
-           		"output a StreamTerminator. First output is a StreamInitiator.",
+           		"output a StreamTerminator. The first output is a StreamInitiator.",
            name="StringLinePusher",
            tags="string",
            baseURL="meandre://seasr.org/components/")
@@ -72,16 +72,16 @@ public class StringLinePusher implements ExecutableComponent {
                         "<br>TYPE:java.io.InputStream",
                     name= "Stream")
     public final static String DATA_INPUT = "Stream";
-    
+
     @ComponentOutput(description="Output content as string stream followed by StreamTerminator." +
                 "<br>TYPE: <br>org.meandre.core.system.components.ext.StreamInitiator" +
-                "<br>   THEN" +
+                "<br>THEN" +
                 "<br>java.lang.String (multiple times)" +
-                "<br>   THEN" +
+                "<br>THEN" +
                 "<br>org.meandre.core.system.components.ext.StreamTerminator",
-                     name="Object")        
-    public final static String DATA_OUTPUT = "Object";
-    
+                     name="object")
+    public final static String DATA_OUTPUT = "object";
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -91,7 +91,7 @@ public class StringLinePusher implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line;
         cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamInitiator());
@@ -115,14 +115,14 @@ public class StringLinePusher implements ExecutableComponent {
                 throw new ComponentExecutionException(e);
         }
     }
-    
-    
+
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
