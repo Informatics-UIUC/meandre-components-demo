@@ -112,7 +112,6 @@ public class CSVLinePusher implements ExecutableComponent {
                 int index = line.indexOf(',', fromIndex);
                 Vector<String> tokens = new Vector<String>();
                 while(index != -1) {
-
                 	tokens.add(line.substring(fromIndex, index));
                 	fromIndex = index+1;
                 	index = line.indexOf(',', fromIndex);
