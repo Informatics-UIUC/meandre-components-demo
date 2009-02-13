@@ -60,9 +60,8 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Parses a raw InputStream into a RSS SyndFeed object " +
-           "containing all the rss entries. Accepts any RSS/ATom feed " +
-           "type as stream.",
+           description="Parse a raw InputStream and convert it into a RSS SyndFeed object " +
+           "containing all the rss entries. Accept any RSS/ATom feed as stream.",
            name="RSSParser",
            tags="RSS",
            dependency={"rome-1.0RC1.jar", "jdom-1.0.jar"},
@@ -73,12 +72,12 @@ public class RSSParser implements ExecutableComponent {
             "<br> TYPE: java.io.InputStream",
                     name= "Stream")
     public final static String DATA_INPUT = "Stream";
-    
+
     @ComponentOutput(description="Output content as syndication feed." +
             "<br> TYPE: com.sun.syndication.feed.synd.SyndFeed",
-                     name="Object")        
-    public final static String DATA_OUTPUT = "Object";
-    
+                     name="object")
+    public final static String DATA_OUTPUT = "object";
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -88,6 +87,7 @@ public class RSSParser implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
+
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed;
         try {
@@ -95,22 +95,22 @@ public class RSSParser implements ExecutableComponent {
         }catch (Exception e) {
             throw new ComponentExecutionException(e);
         }
-        
+
         /*System.out.println("Title: " + feed.getTitle());
         System.out.println("Author: " + feed.getAuthor());
         System.out.println("Description: " + feed.getDescription());
         System.out.println("Pub date: " + feed.getPublishedDate());
         System.out.println("Copyrignt: " + feed.getCopyright());*/
-        
+
         cc.pushDataComponentToOutput(DATA_OUTPUT, feed);
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */

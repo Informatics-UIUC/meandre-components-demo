@@ -66,10 +66,10 @@ import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
 @Component(creator="Lily Dong",
-           description="Parses a raw InputStream into RSS entries. Pushes a " +
-           		"StreamInitiator object, then iterates over all RSS entries in " +
-           		"the stream and pushes them individually, then pushes a " +
-           		"StreamTerminator object. Accepts any RSS/ATom feed format.",
+           description="Parse a raw InputStream and convert it into RSS entries. " +
+           "Push a StreamInitiator object first, then iterate over all RSS entries in " +
+           "the stream and push them individually, finally push a " +
+           "StreamTerminator object. Accept any RSS/ATom feed format.",
            name="RSSParseStream",
            tags="RSS",
            baseURL="meandre://seasr.org/components/")
@@ -85,12 +85,12 @@ public class RSSParseStream implements ExecutableComponent {
                      "followed by StreamTerminator." +
                      "<br>TYPES:"+
                      "<br>org.meandre.core.system.components.ext.StreamInitiator;"+
-                     "<br>    THEN"+
+                     "<br>THEN"+
                      "<br>com.sun.syndication.feed.synd.SyndEntry (multiple times)"+
-                     "<br>    THEN"+
+                     "<br>THEN"+
                      "<br>org.meandre.core.system.components.ext.StreamTerminator",
-                     name="outputObject")
-    public final static String DATA_OUTPUT = "outputObject";
+                     name="object")
+    public final static String DATA_OUTPUT = "object";
 
     /** When ready for execution.
     *
@@ -103,11 +103,13 @@ public class RSSParseStream implements ExecutableComponent {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed;
+
         try {
             feed = input.build(new XmlReader(is));
         }catch (Exception e) {
             throw new ComponentExecutionException(e);
         }
+
         List entries = feed.getEntries();
 
         int i = 0;
