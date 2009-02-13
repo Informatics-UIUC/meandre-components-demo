@@ -38,13 +38,13 @@ import org.meandre.core.ExecutableComponent;
 public class XML2Map implements ExecutableComponent {
 	@ComponentInput(description="Input XML document to be converted." +
             "<br>TYPE: java.lang.String",
-                    name= "Text")
-    public final static String DATA_INPUT = "Text";
+                    name= "text")
+    public final static String DATA_INPUT = "text";
 
 	@ComponentOutput(description="Output content in Map format." +
 			"TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-	                 name="Map")
-	public final static String DATA_OUTPUT = "Map";
+	                 name="map")
+	public final static String DATA_OUTPUT = "map";
 
 	/** When ready for execution.
     *
@@ -55,6 +55,8 @@ public class XML2Map implements ExecutableComponent {
 	public void execute(ComponentContext cc) throws
 	ComponentExecutionException, ComponentContextException {
 		String xmlString = (String)cc.getDataComponentFromInput(DATA_INPUT);
+
+		//DocumentBuilder reports error if not removing the &lt;, &gt;, &quot; <br> and <b>.
 		xmlString = xmlString.replaceAll("&lt;", "<");
 		xmlString = xmlString.replaceAll("&gt;", ">");
 		xmlString = xmlString.replaceAll("&quot;", "\"");
