@@ -84,8 +84,6 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	/** Store the uploaded file */
 	private String str;
 
-	//private ServletInputStream sis = null;
-
 	/** This method gets call when a request with no parameters is made to a
 	 * component webui fragment.
 	 *
@@ -151,15 +149,13 @@ implements ExecutableComponent, WebUIFragmentCallback {
 		BufferedReader br = null;
 		try {
 			br = request.getReader();
-			//sis = request.getInputStream();
 		}catch(java.io.IOException e) {
 			throw new WebUIException(e);
 		}
 
-		if(br/*sis*/ == null)
+		if(br == null)
 			emptyRequest(response);
 		else {
-			//br = new BufferedReader(new java.io.InputStreamReader(sis));
 			try {
 				String line = br.readLine();
 				String boundary = line.trim();
