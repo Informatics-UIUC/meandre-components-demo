@@ -67,8 +67,9 @@ import com.evernote.edam.notestore.NoteFilter;
 import com.evernote.edam.notestore.NoteList;
 
 @Component(creator="Lily Dong",
-           description="Download the notes on a Evernote account. Returns it " +
-           		"as a NoteStore object.",
+           description="This component demomstrates how to write a interface " +
+           "to download the notes on a Evernote account. " +
+           "Output notes as a NoteStore object.",
            name="EvernoteReader",
            tags="evernote, note, notebook",
            baseURL="meandre://seasr.org/components/")
@@ -83,15 +84,16 @@ public class EvernoteReader implements ExecutableComponent {
                        name="password")
     final static String DATA_PROPERTY_2 = "password";
     @ComponentProperty(defaultValue="seasr-fd4932c2",
-                       description="This property sets API key.",
+                       description="This property sets API key. " +
+                       "The default key is for SEASR project only.",
                        name="key")
     final static String DATA_PROPERTY_3 = "key";
-    
+
     @ComponentOutput(description="Output note store on Evernote." +
             "<br>TYPE: com.evernote.edam.notestore.NoteStore",
-                     name="noteStore")             
+                     name="noteStore")
     public final static String DATA_OUTPUT = "noteStore";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -101,18 +103,18 @@ public class EvernoteReader implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         String username = cc.getProperty(DATA_PROPERTY_1),
-               password = cc.getProperty(DATA_PROPERTY_2),  
+               password = cc.getProperty(DATA_PROPERTY_2),
                key = cc.getProperty(DATA_PROPERTY_3);
-        
+
         String userStoreUrl = "https://lb.evernote.com/edam/user";
         String noteStoreUrlBase = "http://lb.evernote.com/edam/note/";
-        
+
         try {
             THttpClient userStoreTrans = new THttpClient(userStoreUrl);
-            TBinaryProtocol userStoreProt = 
+            TBinaryProtocol userStoreProt =
                 new TBinaryProtocol(userStoreTrans);
-            
-            UserStore.Client userStore = 
+
+            UserStore.Client userStore =
                 new UserStore.Client(userStoreProt, userStoreProt);
             boolean versionOk = userStore.checkVersion("(Java)",
                     com.evernote.edam.userstore.Constants.EDAM_VERSION_MAJOR,
@@ -121,24 +123,26 @@ public class EvernoteReader implements ExecutableComponent {
                 System.err.println("Incomatible EDAM client protocol version");
                 System.exit(1);
             }
-         
-            AuthenticationResult authResult = 
-                userStore.authenticate(username, password, key);        
+
+            AuthenticationResult authResult =
+                userStore.authenticate(username, password, key);
             User user = authResult.getUser();
+
             String authToken = authResult.getAuthenticationToken();
             System.out.println("Notes for " + user.getUsername() + ":");
+
             String noteStoreUrl = noteStoreUrlBase + user.getShardId();
-            THttpClient noteStoreTrans = 
+            THttpClient noteStoreTrans =
                 new THttpClient(noteStoreUrl);
-            TBinaryProtocol noteStoreProt = 
+            TBinaryProtocol noteStoreProt =
                 new TBinaryProtocol(noteStoreTrans);
-            NoteStore.Client noteStore = 
+            NoteStore.Client noteStore =
                 new NoteStore.Client(noteStoreProt, noteStoreProt);
-            
-            List<Notebook> notebooks = 
+
+            List<Notebook> notebooks =
                 (List<Notebook>)noteStore.listNotebooks(authToken);
             for (Notebook notebook : notebooks) {
-                System.out.println("Notebook: " + notebook.getName());  
+                System.out.println("Notebook: " + notebook.getName());
                 NoteFilter filter = new NoteFilter();
                 filter.setNotebookGuid(notebook.getGuid());
                 NoteList noteList = noteStore.findNotes(authToken, filter, 0, 100);
@@ -148,19 +152,19 @@ public class EvernoteReader implements ExecutableComponent {
                     //System.out.println(noteStore.getNoteContent(authToken, note.getGuid()));
                 }
             }
-            
+
             cc.pushDataComponentToOutput(DATA_OUTPUT, noteStore);
         } catch(Exception e) {
             throw new ComponentExecutionException(e);
         }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
