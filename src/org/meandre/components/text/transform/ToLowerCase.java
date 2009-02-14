@@ -53,7 +53,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Converts a text String to all lowercase.",
+           description="Convert a text string to all lowercase.",
            name="ToLowerCase",
            tags="lower case, text",
            baseURL="meandre://seasr.org/components/")
@@ -66,9 +66,9 @@ public class ToLowerCase implements ExecutableComponent {
 
     @ComponentOutput(description="Text in lower case." +
             "<br>TYPE:java.lang.String",
-                     name="Text")        
+                     name="Text")
     public final static String DATA_OUTPUT = "Text";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -80,16 +80,16 @@ public class ToLowerCase implements ExecutableComponent {
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
         cc.pushDataComponentToOutput(DATA_OUTPUT, inpuText.toLowerCase());
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }   
+    }
 }
