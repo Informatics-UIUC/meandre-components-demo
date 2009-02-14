@@ -57,7 +57,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-        description="Demonstrate how to construct a interface to " +
+        description="Demonstrates how to construct a interface to " +
         "consume web service of list_Tags_HTML of Tapor at " +
         "http://tada.mcmaster.ca/view/Main/TAPoRware#Using_TAPoRware_as_a_web_service.",
         name="List HTML Tags",

@@ -25,7 +25,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-        description="Convert XML doucment to Map<String, Integer>. " +
+        description="Converts XML doucment to Map<String, Integer>. " +
         "The structure of the XML document is defined as " +
         "<tapor:item>" +
         "<tapor:label></tapor:label>" +

@@ -62,7 +62,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Demonstrate how to construct a interface to " +
+           description="Demonstrates how to construct a interface to " +
            "consume rest service of concordance of Tapor at " +
            "http://tada.mcmaster.ca/view/Main/TAPoRware#Using_TAPoRware_as_a_web_service.",
            name="Concordance",
@@ -74,7 +74,7 @@ public class Concordance implements ExecutableComponent {
             "<br>TYPE: java.lang.String",
                     name= "Text")
     public final static String DATA_INPUT = "Text";
-	
+
     /** When ready for execution.
      *
      * @param cc The component context
@@ -84,7 +84,7 @@ public class Concordance implements ExecutableComponent {
     public void execute(ComponentContext cc) throws
     ComponentExecutionException,ComponentContextException {
     	String htmlInput = (String)cc.getDataComponentFromInput(DATA_INPUT);
-    	
+
     	try {
     		String loc = "http://tapor1-dev.mcmaster.ca/~restserv/html/concordance";
     		URL url = new URL(loc);
