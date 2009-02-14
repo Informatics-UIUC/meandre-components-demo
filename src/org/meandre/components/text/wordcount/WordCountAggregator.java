@@ -56,15 +56,14 @@ import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
-import org.meandre.core.system.components.ext.StreamInitiator;
 import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
-           description="Aggregates a series of input Map<String, Float> " +
+           description="Aggregate a series of input Map<String, Float> " +
            		"objects into a single Map. If the same String key appears " +
            		"in multiple input Maps, the count values are summed together. " +
-           		"The aggregate map is pushed out when a StreamTerminator " +
-           		"object is input instead of a map.",
+           		"The aggregated map is pushed out when a StreamTerminator object" +
+           		"is received instead of a Map.",
            name="WordCountAggregator",
            tags="map, aggregator",
            baseURL="meandre://seasr.org/components/")
@@ -73,18 +72,19 @@ public class WordCountAggregator implements ExecutableComponent {
     @ComponentInput(description="Read content in Map format." +
             "<br>TYPE: " +
             "<br>java.util.Map<java.lang.String, java.lang.Float> (multiple times)" +
-            "<br>      THEN" +
+            "<br>THEN" +
             "<br>import org.meandre.core.system.components.ext.StreamTerminator",
                     name= "Map")
     public final static String DATA_INPUT = "Map";
 
     @ComponentOutput(description="Output content in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Float>",
-                     name="Map")        
+                     name="Map")
     public final static String DATA_OUTPUT = "Map";
-    
+
+    //Store output value.
     private Map outputMap;
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -94,9 +94,8 @@ public class WordCountAggregator implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         Object inputObject = cc.getDataComponentFromInput(DATA_INPUT);
-   
-        if(inputObject instanceof StreamTerminator) {//end of stream 
-            System.out.println(outputMap.toString());
+
+        if(inputObject instanceof StreamTerminator) {//end of stream
             cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
         } else if(inputObject instanceof Map) {
             Map inputMap = (Map)inputObject;
@@ -105,7 +104,7 @@ public class WordCountAggregator implements ExecutableComponent {
             while(it.hasNext()) {
                 Object obj = it.next();
                 if(outputMap.containsKey(obj)) {
-                    float value = 
+                    float value =
                         Float.valueOf(outputMap.get(obj).toString()) +
                         Float.valueOf(inputMap.get(obj).toString());
                     outputMap.put(obj, new Float(value));
@@ -115,17 +114,17 @@ public class WordCountAggregator implements ExecutableComponent {
             }
         }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
         outputMap = new Hashtable();
     }
-    
+
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }   
+    }
 }
