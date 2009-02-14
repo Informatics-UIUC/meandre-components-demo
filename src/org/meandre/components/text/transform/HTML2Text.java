@@ -68,7 +68,7 @@ import org.meandre.core.ExecutableComponent;
 
 public class HTML2Text implements ExecutableComponent {
     @ComponentInput(description="Read content in HTML format." +
-                    "<br>TYPE: java.lang.String",
+    		"<br>TYPE: java.lang.String",
                     name= "Html")
     public final static String DATA_INPUT = "Html";
 
