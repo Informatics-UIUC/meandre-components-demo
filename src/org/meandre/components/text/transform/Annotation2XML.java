@@ -79,18 +79,15 @@ import org.w3c.dom.Attr;
 
 
 @Component(creator = "Loretta Auvil & Lily Dong",
-
-		description = "<p>Overview: <br> This component extracts the" +
-            "annotations from an annotated text document and outputs them " +
-            "as xml.Only those entity types specified in this Components " +
-            "properties will be included in the output XML.</p>",
-		name = "Annotation2XML",
-		tags = "text, document, annotation",
-        baseURL="meandre://seasr.org/components/")
-
+		   description = "<p>Overview: <br> This component extracts the " +
+		   "annotations from an annotated text document and outputs them " +
+           "as xml document. Only those entity types specified in this component's " +
+           "properties will be included in the output XML doucment.</p>",
+           name = "Annotation2XML",
+           tags = "text, document, annotation",
+           baseURL="meandre://seasr.org/components/")
 
 public class Annotation2XML implements ExecutableComponent {
-
 	@ComponentProperty(description = "Verbose output? A boolean value " +
 					   "(true or false).",
 					   name = "verbose",
@@ -102,18 +99,19 @@ public class Annotation2XML implements ExecutableComponent {
 					   defaultValue =  "person,organization,location,time,money,percentage,date")
 	final static String DATA_PROPERTY_ENTITIES = "Entities";
 
-	@ComponentInput(description = "Input document." +
+	@ComponentInput(description = "Input document to be read." +
 	        "<br>TYPE: org.seasr.components.text.datatype.corpora.Document ",
 			 		name = "Document")
 	public final static String DATA_INPUT_DOC_IN = "Document";
 
-	@ComponentOutput(description = "Extracted annotations as XML." +
+	@ComponentOutput(description = "Extracted annotations as XML document." +
 	            "<br>TYPE: org.w3c.dom.Document",
 					 name = "Annotation_xml")
 	public final static String DATA_OUTPUT_ANNOTATIONS = "Annotation_xml";
 
 	private static Logger _logger = Logger.getLogger("AnnotationToXML");
 
+	//Store properties.
 	private String verbose;
 	private String entities;
 
@@ -164,12 +162,14 @@ public class Annotation2XML implements ExecutableComponent {
 					buf.append(item.getContent(doc_in).trim());
 				}
 				String value = buf.toString();
+				//some sentences extracted are surrounded by void ".
 				value = value.replaceAll("\"", " ");
 
 				String s = ann.getContent(doc_in).trim().toLowerCase();
 				if(ht.containsKey(s)) {
 					Element child = ht.get(s);
 					Attr attr = child.getAttributeNode("sentence");
+					//append new sentences using | as list separator.
 					attr.setNodeValue(attr.getNodeValue() + " | " + value);
 					continue;
 				}
