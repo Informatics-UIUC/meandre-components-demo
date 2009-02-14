@@ -58,13 +58,12 @@ import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
-           description="Converts a representation of a CSV file from " +
-           "a vector of arrays to a Hashmap that maps a string to a number. " +
-           "The csv rows are expected to have a first column of a string " +
-           "and second column of a float. If the same key (first column) " +
-           "appears multiple times, the number values (second column) will " +
-           "be added together to form the final float value in the output " +
-           "HashMap.Read CSV content in vector containing Object array.",
+           description="Convert a CSV file represented by " +
+           "a vector with Object[] as its element to Map<Object, Float>. " +
+           "The csv file is expected to have a first column of string " +
+           "and a second column of float. If the same key in the first column " +
+           "appears multiple times, the number values in the second column will " +
+           "be aggregated to form the final float value in the output.",
            name="CSV2WordCount",
            tags="csv, map, converter",
            baseURL="meandre://seasr.org/components/")
@@ -78,9 +77,9 @@ public class CSV2WordCount implements ExecutableComponent {
 
     @ComponentOutput(description="Output content in Map format." +
             "java.util.Map<java.lang.String, java.lang.Float>",
-                     name="Map")        
+                     name="Map")
     public final static String DATA_OUTPUT = "Map";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -90,17 +89,17 @@ public class CSV2WordCount implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         Vector<Object[]> inputCsv = (Vector<Object[]>)cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         Map outputMap = new Hashtable();
         for(int index=0; index<inputCsv.size(); index++) {
             Object[] data = inputCsv.elementAt(index);
             if(outputMap.containsKey(data[0])) {
-                float value = 
+                float value =
                     Float.valueOf(outputMap.get(data[0]).toString()) +
                     Float.valueOf(data[1].toString());
                 outputMap.put(data[0], new Float(value));
             } else {
-                Float value = null; 
+                Float value = null;
                 try {
                     value = Float.valueOf(data[1].toString());
                 }catch(NumberFormatException e) {}
@@ -108,24 +107,19 @@ public class CSV2WordCount implements ExecutableComponent {
                     outputMap.put(data[0], value);
             }
         }
-       
-        //System.out.println(outputMap.toString());
-        
+
         cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
-        
-        cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
-        cc.pushDataComponentToOutput(DATA_OUTPUT, new StreamTerminator());
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }   
+    }
 }
