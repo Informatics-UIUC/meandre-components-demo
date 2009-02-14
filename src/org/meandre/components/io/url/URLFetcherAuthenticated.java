@@ -65,7 +65,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 @Component(creator="Lily Dong",
-           description="Fetch content of the specified URL as an InputStream " +
+           description="Fetches content of the specified URL as an InputStream " +
            		"object.  This Component opens a handle to the resource ready " +
            		"for streaming (no data is actually downloaded until the " +
            		"created Stream is read from). For a local file, the URL " +
@@ -82,13 +82,13 @@ public class URLFetcherAuthenticated implements ExecutableComponent {
                     "<br> TYPE: java.lang.String",
                     name= "URL")
     public final static String DATA_INPUT = "URL";
-    
+
     @ComponentOutput(description="Output content of the specified URL as " +
     		"stream." +
     		"<br>TYPE: java.io.InputStream",
-                     name="Stream")             
+                     name="Stream")
     public final static String DATA_OUTPUT = "Stream";
-    
+
     @ComponentProperty(defaultValue="",
                        description="This property sets username.",
                        name="username")
@@ -97,7 +97,7 @@ public class URLFetcherAuthenticated implements ExecutableComponent {
                        description="This property sets password.",
                        name="password")
     final static String DATA_PROPERTY_2 = "password";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -107,12 +107,12 @@ public class URLFetcherAuthenticated implements ExecutableComponent {
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         String username = cc.getProperty(DATA_PROPERTY_1),
-               password = cc.getProperty(DATA_PROPERTY_2);        
+               password = cc.getProperty(DATA_PROPERTY_2);
         String inputUrl = (String)cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         InputStream is = null;
-        
-        if((username == null || username.length() == 0) || 
+
+        if((username == null || username.length() == 0) ||
            (password == null || password.length() == 0)) {//no authentication
             try {
                 URL url = new URL(inputUrl);
@@ -122,7 +122,7 @@ public class URLFetcherAuthenticated implements ExecutableComponent {
                 //the final client must close this stream.
             }catch(Exception e) {
                 try {
-                    if(is != null) 
+                    if(is != null)
                         is.close();
                 }catch(java.io.IOException ioex) {}
                 throw new ComponentExecutionException(e);
@@ -135,14 +135,14 @@ public class URLFetcherAuthenticated implements ExecutableComponent {
 
                 HttpClient httpClient = new HttpClient(new SimpleHttpConnectionManager());
                 httpClient.setHostConfiguration(hostConfig);
-            
+
                 Credentials credentials = new UsernamePasswordCredentials(username, password);
 
                 if (credentials != null) {
                     httpClient.getParams().setAuthenticationPreemptive(true);
                     httpClient.getState().setCredentials(new AuthScope(AuthScope.ANY), credentials);
                 }
-                
+
                 GetMethod getMethod = new GetMethod(inputUrl);
                 httpClient.executeMethod(getMethod);
 
@@ -150,20 +150,20 @@ public class URLFetcherAuthenticated implements ExecutableComponent {
                 cc.pushDataComponentToOutput(DATA_OUTPUT, is);
             } catch(Exception e) {
                 try {
-                    if(is != null) 
+                    if(is != null)
                         is.close();
                 }catch(java.io.IOException ioex) {}
                 throw new ComponentExecutionException(e);
             }
         }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */

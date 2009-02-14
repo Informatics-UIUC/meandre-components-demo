@@ -57,7 +57,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Parse an input string and convert it into a JSONArray.",
+           description="Parses an input string and convert it into a JSONArray.",
            name="JSONArrayParser",
            tags="json, converter",
            baseURL="meandre://seasr.org/components/")

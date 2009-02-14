@@ -56,7 +56,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Parse a string of text and convert it into a JSON object.",
+           description="Parses a string of text and convert it into a JSON object.",
            name="JSONObjectParser",
            tags="json, converter",
            baseURL="meandre://seasr.org/components/")

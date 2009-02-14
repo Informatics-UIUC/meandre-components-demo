@@ -56,7 +56,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Fetch content of the specified URL as an InputStream " +
+           description="Fetches content of the specified URL as an InputStream " +
            		"object.  This Component opens a handle to the resource ready " +
            		"for streaming (no data is necessarily downloaded until the " +
            		"created Stream is read from). For a local file, the URL " +
@@ -65,20 +65,20 @@ import org.meandre.core.ExecutableComponent;
            name="URLFetcher",
            tags="URL, stream",
            baseURL="meandre://seasr.org/components/")
-        
+
 public class URLFetcher implements ExecutableComponent {
-   
+
     @ComponentProperty(defaultValue="http://www.ibm.com/developerworks/views/java/rss/libraryview.jsp?feed_by=rss",
                        description="This property sets the URL.",
                        name="location")
     final static String DATA_PROPERTY = "location";
-    
+
     @ComponentOutput(description="Output content of the specified URL as stream." +
             "<br>TYPE: java.io.InputStream",
                      name="Stream")
-                     
+
     public final static String DATA_OUTPUT = "Stream";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -97,7 +97,7 @@ public class URLFetcher implements ExecutableComponent {
                 //the final client must close this stream.
             }catch(java.io.IOException e) {
                 try {
-                    if(is != null) 
+                    if(is != null)
                         is.close();
                 }catch(java.io.IOException ioex) {}
                 throw new ComponentExecutionException(e);
@@ -106,13 +106,13 @@ public class URLFetcher implements ExecutableComponent {
             throw new ComponentExecutionException(e);
         }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */

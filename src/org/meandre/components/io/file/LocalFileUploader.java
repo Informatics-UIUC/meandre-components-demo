@@ -62,7 +62,7 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
-           description="Upload a local file.",
+           description="Uploads a local file.",
            name="Local File Uploader",
            tags="file, upload",
            mode=Mode.webui,

@@ -59,7 +59,7 @@ import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.*;
 
 @Component(creator="Lily Dong",
-           description="Read an InputStream and pushes out one String per " +
+           description="Reads an InputStream and pushes out one String per " +
            		"line of the stream's content. The lines are delimited by " +
            		"newline characters. When the InputStream is consumed, it will " +
            		"output a StreamTerminator. The first output is a StreamInitiator.",

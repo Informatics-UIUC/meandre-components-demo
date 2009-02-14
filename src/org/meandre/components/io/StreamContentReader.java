@@ -59,7 +59,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-        description="Read content as stream and output it as string or byte array.",
+        description="Reads content as stream and output it as string or byte array.",
         name="StreamContentReader",
         tags="stream, string",
         baseURL="meandre://seasr.org/components/")

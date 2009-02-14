@@ -60,7 +60,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Parse a raw InputStream and convert it into a RSS SyndFeed object " +
+           description="Parses a raw InputStream and convert it into a RSS SyndFeed object " +
            "containing all the rss entries. Accept any RSS/ATom feed as stream.",
            name="RSSParser",
            tags="RSS",

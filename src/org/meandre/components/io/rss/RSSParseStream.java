@@ -66,7 +66,7 @@ import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
 @Component(creator="Lily Dong",
-           description="Parse a raw InputStream and convert it into RSS entries. " +
+           description="Parses a raw InputStream and convert it into RSS entries. " +
            "Push a StreamInitiator object first, then iterate over all RSS entries in " +
            "the stream and push them individually, finally push a " +
            "StreamTerminator object. Accept any RSS/ATom feed format.",
