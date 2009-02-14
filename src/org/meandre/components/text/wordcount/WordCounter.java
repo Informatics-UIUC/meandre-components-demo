@@ -57,7 +57,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Sum up the number of occurences of words in a text string and " +
+           description="Sums up the number of occurences of words in a text string and " +
            		"output the result in a Map<String, Integer> object.",
            name="WordCounter",
            tags="word, counter",

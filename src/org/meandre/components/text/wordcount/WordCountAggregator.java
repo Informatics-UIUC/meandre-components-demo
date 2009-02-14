@@ -59,7 +59,7 @@ import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
-           description="Aggregate a series of input Map<String, Float> " +
+           description="Aggregates a series of input Map<String, Float> " +
            		"objects into a single Map. If the same String key appears " +
            		"in multiple input Maps, the count values are summed together. " +
            		"The aggregated map is pushed out when a StreamTerminator object" +

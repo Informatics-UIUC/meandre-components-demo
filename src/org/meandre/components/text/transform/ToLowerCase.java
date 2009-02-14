@@ -53,7 +53,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Convert a text string to all lowercase.",
+           description="Converts a text string to all lowercase.",
            name="ToLowerCase",
            tags="lower case, text",
            baseURL="meandre://seasr.org/components/")

@@ -57,7 +57,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Convert Map with set of key-value mappings to Vector " +
+           description="Converts Map with set of key-value mappings to Vector " +
            "taking Object array as its element. If table viewer is used for visualization, " +
            "Attribute_Label_Header should be set to true, whereas " +
            "Attribute_Type_Header shoud be set to false." +

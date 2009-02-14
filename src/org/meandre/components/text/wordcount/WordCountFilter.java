@@ -57,9 +57,10 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Inputs a Map<String, Integer> and deletes all entries " +
-           		"whose key is one of the keys to delete. The keys to delete " +
-           		"are specified in this component's properties.",
+           description="Filters some entries in a Map<String, Integer> " +
+           		"if their keys are found among the deleting list. " +
+           		"The deleting list is composed of a series keys " +
+           		"separated by comma.",
            name="WordCountFilter",
            tags="map, reducer",
            baseURL="meandre://seasr.org/components/")
@@ -72,14 +73,14 @@ public class WordCountFilter implements ExecutableComponent {
 
     @ComponentOutput(description="Filtered word count in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                     name="Map")        
+                     name="Map")
     public final static String DATA_OUTPUT = "Map";
-    
+
     @ComponentProperty(defaultValue="",
                        description="Keys to be deleted from Map. The keys should be delimited by comma.",
                        name="Keys_To_Be_Deleted")
     final static String DATA_PROPERTY = "Keys_To_Be_Deleted";
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -96,21 +97,19 @@ public class WordCountFilter implements ExecutableComponent {
             if(inputMap.containsKey(theKey))
                 inputMap.remove(theKey);
         }
-        
-        System.out.println(inputMap.toString());
-        
+
         cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }   
+    }
 }

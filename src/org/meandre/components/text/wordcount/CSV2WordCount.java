@@ -58,7 +58,7 @@ import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
-           description="Convert a CSV file represented by " +
+           description="Converts a CSV file represented by " +
            "a vector with Object[] as its element to Map<Object, Float>. " +
            "The csv file is expected to have a first column of string " +
            "and a second column of float. If the same key in the first column " +
