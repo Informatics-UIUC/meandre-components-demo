@@ -57,10 +57,11 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Converts Map with set of key-value mappings to Vector " +
+           description="Convert Map with set of key-value mappings to Vector " +
            "taking Object array as its element. If table viewer is used for visualization, " +
            "Attribute_Label_Header should be set to true, whereas " +
-           "Attribute_Type_Header shoud be set to false.",
+           "Attribute_Type_Header shoud be set to false." +
+           "Heading in a table is predefined as a pair of \"Word\" and \"Count\".",
            name="Map2Table",
            tags="map, table, converter",
            baseURL="meandre://seasr.org/components/")
@@ -71,8 +72,7 @@ public class Map2Table implements ExecutableComponent {
                     name= "Map")
     public final static String DATA_INPUT = "Map";
 
-	@ComponentOutput(description="Output content as vector containing " +
-			"Object array." +
+	@ComponentOutput(description="Output content as vector containing Object array." +
 	        "<br>TYPE: java.lang.Vector<java.lang.Object[]>",
 	                 name="Table")
 	public final static String DATA_OUTPUT = "Table";
