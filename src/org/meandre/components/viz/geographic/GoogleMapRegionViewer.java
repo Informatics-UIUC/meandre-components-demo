@@ -75,8 +75,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 
 @Component(creator="Lily Dong",
-           description="Displays rectangular areas defined by latitude/longitude " +
-           		"coordinates in an XML document.",
+           description="Generates a web page containing rectangular areas " +
+           		"encloseed by latitude/longitude coordinates in a XML document.",
            name="Google Map Viewer",
            tags="google map, visualization",
            mode=Mode.webui,
@@ -305,8 +305,6 @@ public class GoogleMapRegionViewer
 			    sb.append("http://local.yahooapis.com/MapsService/V1/geocode?appid=");
 			    sb.append(yahooId);
 			    String str = fstNode.getTextContent();
-			    /*if(str.contains("\"")) //invalid location
-			    	continue;*/
 			    str = str.replaceAll(" ", "%20");
 			    sb.append("&location=").append(str);
 
