@@ -64,11 +64,11 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
-           description="This component provides a table viewer for data sets" +
-               "that where attributes are separated by a delimiter (like " +
-               "the comma). The data is held in Vector<Object[]>, where the " +
-               "vector contains the rows, and the cells of each row are " +
-               "in an Object[]. This component can be used with the " +
+           description="This component provides a table viewer for data set. " +
+               "The data is held in the format of Vector<Object[]>. " +
+               "Each element of Vector is mapped into a row in table and " +
+               "each element of Object array is mapped into a cell in table." +
+               "This component can be used with the " +
                "'CSV Reader' or Map2Table components.",
            name="Table Viewer",
            tags="table viewer",
