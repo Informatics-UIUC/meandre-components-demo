@@ -63,40 +63,40 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
-           description="Generates and displays a webpage with an element of " +
-           		"content that is input as a byte[]. The mime type that will " +
-           		"be assigned to the byte[] in the webpage is set in " +
-           		"properties. \"text/plain\" is the default, \"image/<EXT>\" is " +
-           		"also supported for standard image types.",
+           description="Generates a webpage with an element " +
+           		"that is inputed as a byte[]. The mime type that will be " +
+           		"assigned to the byte[] in the webpage is set in component" +
+           		"property. \"text/plain\" is the default type. " +
+           		"\"image/<EXT>\" is also supported for standard image types.",
            name="MIMEContentViz",
            tags="multipurpose, internet, mail, extensions, visualization",
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class MIMEContentViz 
+public class MIMEContentViz
     implements ExecutableComponent, WebUIFragmentCallback {
     @ComponentProperty(defaultValue="text/plain",
                        description="This property sets MIME type.",
                        name="MIME_type")
     final static String DATA_PROPERTY = "MIME_type";
-    
+
     @ComponentInput(description="Read content as byte array." +
             "<br>TYPE: byte[]",
                     name= "Content")
     public final static String DATA_INPUT = "Content";
-    
+
     /** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
 
     /** The instance ID */
     private String sInstanceID = null;
-    
+
     /** Store the input bytes */
     private byte[] inputContent;
-    
+
     /** Store MIME type */
     private String mimeType;
-    
+
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
      *
@@ -111,8 +111,8 @@ public class MIMEContentViz
             throw new WebUIException(e);
         }
     }
-    
-    
+
+
     /** A simple message.
     *
     * @return The html containing the page
@@ -136,23 +136,23 @@ public class MIMEContentViz
         sb.append("<br /><br />\n");
         sb.append("<p>");
         if(mimeType.startsWith("text")) {
-            StringTokenizer st = 
+            StringTokenizer st =
                 new StringTokenizer(new String(inputContent), "\n");
-            while(st.hasMoreTokens()) 
+            while(st.hasMoreTokens())
                 sb.append(st.nextToken()).append("<br/>");
         }
         else if(mimeType.startsWith("image")) {//type could be jpeg, gif or png
             String s = new sun.misc.BASE64Encoder().encode(inputContent); //convert byte[] to base64 string
-            
+
             sb.append("<div align=\"center\">\n");
-            
+
             sb.append("<img src=\"data:").append(mimeType).append(";base64,");
             sb.append(s).append("\"");
             sb.append(" border=\"0\" />");
-            
+
             sb.append("</div>\n");
         }
-          
+
         sb.append("</p>");
         sb.append("<div align=\"center\">\n");
         sb.append("<table align=center><font size=2><a id=\"url\" href=\"/" +
@@ -164,7 +164,7 @@ public class MIMEContentViz
         return sb.toString();
     }
 
-    
+
     /** This method gets called when a call with parameters is done to a given component
      * webUI fragment
      *
@@ -182,7 +182,7 @@ public class MIMEContentViz
         else
             emptyRequest(response);
     }
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -203,13 +203,13 @@ public class MIMEContentViz
             throw new ComponentExecutionException(e);
         }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
