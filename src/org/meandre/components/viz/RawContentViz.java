@@ -62,29 +62,29 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
-           description="Generates and displays a webpage where the " +
-           		"html body is the string that is input into this Component.",
+           description="Generates a webpage where the html body " +
+           		"is the string that is inputed into this Component.",
            name="RawContentViz",
            tags="string, visualization",
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class RawContentViz 
+public class RawContentViz
     implements ExecutableComponent, WebUIFragmentCallback {
-    @ComponentInput(description="String to Display" + 
+    @ComponentInput(description="String to Display" +
             "<br>TYPE: java.lang.String",
                     name= "String")
     public final static String DATA_INPUT = "String";
-    
+
     /** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
 
     /** The instance ID */
     private String sInstanceID = null;
-    
+
     /** Store the input string */
     private String inputString;
-    
+
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
      *
@@ -99,7 +99,7 @@ public class RawContentViz
             throw new WebUIException(e);
         }
     }
-    
+
     /** A simple message.
     *
     * @return The html containing the page
@@ -123,7 +123,7 @@ public class RawContentViz
         sb.append("<br /><br />\n");
         sb.append("<p>");
         StringTokenizer st = new StringTokenizer(inputString, "\n");
-        while(st.hasMoreTokens()) 
+        while(st.hasMoreTokens())
             sb.append(st.nextToken()).append("<br/>");
         sb.append("</p>");
         sb.append("<div align=\"center\">\n");
@@ -136,7 +136,7 @@ public class RawContentViz
         return sb.toString();
     }
 
-    
+
     /** This method gets called when a call with parameters is done to a given component
      * webUI fragment
      *
@@ -155,7 +155,7 @@ public class RawContentViz
             emptyRequest(response);
     }
 
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -165,7 +165,7 @@ public class RawContentViz
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
         inputString = (String)cc.getDataComponentFromInput(DATA_INPUT);
-        
+
         try {
             sInstanceID = cc.getExecutionInstanceID();
             sem.acquire();
@@ -176,13 +176,13 @@ public class RawContentViz
             throw new ComponentExecutionException(e);
         }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
     }
-    
+
     /**
      * Called when a flow is started.
      */
