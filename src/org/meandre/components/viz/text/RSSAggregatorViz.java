@@ -43,7 +43,6 @@
 package org.meandre.components.viz.text;
 
 import java.util.concurrent.Semaphore;
-import java.util.Date;
 import java.util.Vector;
 import java.util.List;
 import java.util.Iterator;
@@ -72,9 +71,9 @@ import com.sun.syndication.feed.synd.SyndFeed;
 
 @Component(creator="Lily Dong",
            description="Collects a stream of RSS SyndFeed or SyndEntry " +
-           		"objects, and then displays them in a webpage when a " +
-           		"StreamTerminator object is input. The first input of the " +
-           		"stream can be a StreamInitiator.",
+           		"objects, and then displays them in a webpage. " +
+           		"The first input of the stream is a StreamInitiator object and " +
+           		"the last input of the stream is a StreamTerminator object.",
            name="RSSEntryAggregatorViz",
            tags="RSS, visualization",
            mode=Mode.webui,
@@ -85,11 +84,11 @@ public class RSSAggregatorViz
     @ComponentInput(description="Read RSS content as SyndFeed or SyndEntry." +
             "<br>TYPE:" +
             "<br>org.meandre.core.system.components.ext.StreamInitiator" +
-            "<br>    THEN:" +
+            "<br>THEN:" +
             "<br>com.sun.syndication.feed.synd.SyndEntry" +
-            "<br>    OR:" +
+            "<br>OR:" +
             "<br>com.sun.syndication.feed.synd.SyndFeed" +
-            "<br>    THEN:" +
+            "<br>THEN:" +
             "<br>org.meandre.core.system.components.ext.StreamTerminator",
                     name= "Object")
     public final static String DATA_INPUT = "Object";

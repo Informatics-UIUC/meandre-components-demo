@@ -67,7 +67,7 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
-           description="Displays an RSS entry collection represented by a SyndFeed object.",
+           description="Visualizes an RSS entry collection represented by a SyndFeed object.",
            name="RSSViz",
            tags="RSS, visualization",
            mode=Mode.webui,
