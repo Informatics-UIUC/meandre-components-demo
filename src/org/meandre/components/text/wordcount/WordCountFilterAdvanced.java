@@ -68,10 +68,10 @@ import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Inputs a Map<String, Integer> and deletes all entries " +
-           		"whose key is one of the keys to delete. The keys to delete " +
+           		"whose keys are among stop words. The stop words " +
            		"are specified in a file whose location is defined via " +
-           		"Properties. This component can also optionally only keep " +
-           		"the N words with the highest word counts.",
+           		"component property. This component can also optionally filter " +
+           		"words with lower word counts.",
            name="WordFilter",
            tags="word, filter",
            baseURL="meandre://seasr.org/components/")
@@ -83,12 +83,12 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
     final static String DATA_PROPERTY_1 = "URL_for_Stop_Words";
 
 	@ComponentProperty(defaultValue="false",
-                       description="This property sets whether the number of keys should be limited. " +
+                       description="This property sets whether the number of keys should be limited." +
                        			   "If true, it will filter stop words.",
                        name="is_Limited")
     final static String DATA_PROPERTY_2 = "is_Limited";
 	@ComponentProperty(defaultValue="100",
-                       description="This property sets the maximum number of keys to be kept in output Map.",
+                       description="This property sets the maximum number of keys to be outputed.",
                        name="upper_Limit")
     final static String DATA_PROPERTY_3 = "upper_Limit";
 
@@ -113,6 +113,7 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
     	Map<String, Integer> inputMap =
     		(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
 
+    	//open connection to URL of stop words.
     	InputStream is = null;
         try {
             URL url = new URL(cc.getProperty(DATA_PROPERTY_1));
@@ -131,6 +132,7 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
             throw new ComponentExecutionException(e);
         }
 
+        //filter unnecessary words.
     	try {
     		BufferedReader reader =
     			new BufferedReader(new InputStreamReader(is));
@@ -145,9 +147,10 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
     		throw new ComponentExecutionException(e);
     	}
 
+    	//filter words with lower counts.
     	boolean isLimited = Boolean.parseBoolean(
     			cc.getProperty(DATA_PROPERTY_2));
-    	Map<String, Integer> outputMap = null;
+    	Map<String, Integer> outputMap = inputMap;
     	if(isLimited) {
     		int upperLimit =
     			Integer.parseInt(cc.getProperty(DATA_PROPERTY_3));
@@ -165,10 +168,8 @@ public class WordCountFilterAdvanced implements ExecutableComponent {
     				sortedMap.remove(key);
     				--upperLimit;
     			}
-    		} else
-    			outputMap = inputMap;
-    	} else
-    		outputMap = inputMap;
+    		}
+    	}
 
     	cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
     }
