@@ -58,7 +58,7 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
-        description="Present a simple text area for user to input string.",
+        description="Presents a simple text area for user to input string.",
         name="Input String",
         tags="string, visualization",
         mode=Mode.webui,
@@ -74,7 +74,7 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	/*
      * Store the message imported by user.
      */
-    private String outputText = null;
+    private String text = null;
 
 
     /** The blocking semaphore */
@@ -126,7 +126,6 @@ implements ExecutableComponent, WebUIFragmentCallback {
        sb.append("<form name=\"input\" method=\"get\" action=\"/" + sInstanceID + "\">\n");
        sb.append("Your input:<BR>\n");
        sb.append("<TEXTAREA NAME=\"context\" COLS=40 ROWS=6></TEXTAREA>\n");
-       //sb.append("<input type=\"text\" name=\"context\" size=\"40\"/>\n");
        sb.append("<br/>\n");
        sb.append("<input type=\"submit\" value=\"Submit\" onclick=\"validate(this.form, this.form.context.value); return false;\">\n");
        sb.append("</form>\n");
@@ -147,8 +146,8 @@ implements ExecutableComponent, WebUIFragmentCallback {
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws
             WebUIException {
-        outputText = request.getParameter("context");
-        if(outputText != null)
+        text = request.getParameter("context");
+        if(text != null)
             sem.release();
         else
             emptyRequest(response);
@@ -169,7 +168,7 @@ implements ExecutableComponent, WebUIFragmentCallback {
        		sem.acquire();
        		cc.stopWebUIFragment(this);
 
-       		cc.pushDataComponentToOutput(DATA_OUTPUT, outputText);
+       		cc.pushDataComponentToOutput(DATA_OUTPUT, text);
        	} catch (Exception e) {
        		throw new ComponentExecutionException(e);
        	}
