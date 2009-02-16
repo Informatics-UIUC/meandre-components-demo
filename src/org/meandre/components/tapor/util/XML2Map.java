@@ -8,7 +8,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -38,13 +37,13 @@ import org.meandre.core.ExecutableComponent;
 public class XML2Map implements ExecutableComponent {
 	@ComponentInput(description="Input XML document to be converted." +
             "<br>TYPE: java.lang.String",
-                    name= "text")
-    public final static String DATA_INPUT = "text";
+                    name= "Text")
+    public final static String DATA_INPUT = "Text";
 
 	@ComponentOutput(description="Output content in Map format." +
 			"TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-	                 name="map")
-	public final static String DATA_OUTPUT = "map";
+	                 name="Map")
+	public final static String DATA_OUTPUT = "Map";
 
 	/** When ready for execution.
     *
@@ -61,6 +60,9 @@ public class XML2Map implements ExecutableComponent {
 		xmlString = xmlString.replaceAll("&gt;", ">");
 		xmlString = xmlString.replaceAll("&quot;", "\"");
 		xmlString = xmlString.replaceAll("<BR/>|<br/>|<b>|</b>", "");
+		xmlString = xmlString.replaceAll("&ntilde;", "Ñ");
+
+		xmlString = xmlString.replaceAll("&", "");
 
 		Map<String, Integer> outputMap = new Hashtable<String, Integer>();
 
