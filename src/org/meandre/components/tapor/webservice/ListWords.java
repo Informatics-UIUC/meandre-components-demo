@@ -122,10 +122,6 @@ public class ListWords implements ExecutableComponent {
 
 			String[] params = { htmlInput, "body", "all", "glasgow", "2", "2" };
 		    String result = (String)call.invoke(params);
-		    java.io.PrintWriter pw = new java.io.PrintWriter("result.html");
-			pw.println(result);
-			pw.flush();
-			pw.close();
 
 		    cc.pushDataComponentToOutput(DATA_OUTPUT, result);
 		} catch (Exception ex) {
