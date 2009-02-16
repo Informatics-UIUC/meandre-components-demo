@@ -77,8 +77,7 @@ public class HTML2Text implements ExecutableComponent {
                      name="Text")
     public final static String DATA_OUTPUT = "Text";
 
-    StringBuffer sb;
-
+    
     /** When ready for execution.
     *
     * @param cc The component context
@@ -89,10 +88,11 @@ public class HTML2Text implements ExecutableComponent {
         throws ComponentExecutionException, ComponentContextException {
         String inputHtml = (String)cc.getDataComponentFromInput(DATA_INPUT);
         Parser parser = new Parser();
+        StringBuffer sb = new StringBuffer();
         try {
             parser.setInputHTML(inputHtml);
             NodeList list = parser.parse (null);
-            traverse(list);
+            traverse(list,sb);
         }catch(org.htmlparser.util.ParserException e) {
             throw new ComponentExecutionException(e);
         }
@@ -104,7 +104,7 @@ public class HTML2Text implements ExecutableComponent {
      *
      * @param list to be traversed
      */
-    private void traverse(NodeList list) {
+    private void traverse(NodeList list, StringBuffer sb) {
         if(list != null)
             for(int i=0; i<list.size(); i++) {
                 Node node = list.elementAt(i);
@@ -112,7 +112,7 @@ public class HTML2Text implements ExecutableComponent {
                     sb.append(((TextNode)node).getText().trim()).append("\n");
                 else if(node instanceof TagNode) {
                     NodeList sublist = ((TagNode)node).getChildren();
-                    traverse(sublist);
+                    traverse(sublist,sb);
                 }
             }
     }
@@ -121,7 +121,6 @@ public class HTML2Text implements ExecutableComponent {
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
-        sb = new StringBuffer();
     }
 
     /**
