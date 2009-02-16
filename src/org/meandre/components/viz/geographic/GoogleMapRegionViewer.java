@@ -112,12 +112,6 @@ public class GoogleMapRegionViewer
     /** Store latitude, longitude and address */
     private Vector<String> lat, lon, location, context;
 
-    /** Store the average values of latitude and longitude */
-    private float latAverage, lonAverage;
-
-    /** Store the minimum and maximum values of latitude and longitude */
-    float latMin, latMax, lonMin, lonMax ;
-
     private final static String STRING_DELIMITER = "\n";
 
     /** This method gets call when a request with no parameters is made to a
@@ -179,37 +173,14 @@ public class GoogleMapRegionViewer
         for(int i=0; i<context.size(); i++)
         	sb.append("cxt[").append(i).append("]=\"").append(context.elementAt(i)).append("\";\n");
 
-        sb.append("var latAverage=").append(latAverage).append(";\n");
-        sb.append("var lonAverage=").append(lonAverage).append(";\n");
-        sb.append("var latMin=").append(latMin).append(";\n");
-        sb.append("var latMax=").append(latMax).append(";\n");
-        sb.append("var lonMin=").append(lonMin).append(";\n");
-        sb.append("var lonMax=").append(lonMax).append(";\n");
-
-        sb.append("var zooMin=4;\n");
-        sb.append("var zooMax=13;\n");
-
         sb.append("function initialize() {\n");
         sb.append("if (GBrowserIsCompatible()) {\n");
 
         sb.append("var map = new GMap2(document.getElementById(\"map_canvas\"));\n");
 
-        //-------------
         sb.append("var bounds = new GLatLngBounds();\n");
-        //-------------
 
-        sb.append("var p1 = new GLatLng(latMin, lonMax);\n");
- 	    sb.append("var p2 = new GLatLng(latMax, lonMin);\n");
- 	    sb.append("var bounds = new GLatLngBounds(p1, p2);\n");
- 	    sb.append("var zoom = map.getBoundsZoomLevel(bounds);\n");
- 	    sb.append("if(zoom > zooMax) zoom = zooMax;\n");
-        sb.append("if(zoom < zooMin) zoom = zooMin;\n");
-
-        //sb.append("map.setCenter(new GLatLng(latAverage, lonAverage), zoom);\n");
-
-        //-------------
         sb.append("map.setCenter(new GLatLng(0,0),0);\n");
-        //-------------
 
         sb.append("map.addControl(new GSmallMapControl());\n");
         sb.append("map.addControl(new GMapTypeControl());\n");
@@ -227,17 +198,13 @@ public class GoogleMapRegionViewer
         sb.append("for (var i=0; i<loc.length; i++) {\n");
         sb.append("var latlng = new GLatLng(lat[i], lon[i]);\n");
 
-        //-------------
         sb.append("bounds.extend(latlng);\n");
-        //-------------
 
         sb.append("map.addOverlay(createMarker(latlng, i));\n");
         sb.append("}\n");
 
-        //-------------
         sb.append("map.setZoom(map.getBoundsZoomLevel(bounds));\n");
         sb.append("map.setCenter(bounds.getCenter());\n");
-        //-------------
 
         sb.append("}\n");
         sb.append("}\n");
@@ -330,34 +297,22 @@ public class GoogleMapRegionViewer
 		        br.close();
 
 		        String s = buffer.toString();
-		        float latitude, longitude;
 		        while(true) {//valid location
 		        	if(s.indexOf("<Latitude>") == -1)
 		        		break;
 
 		        	int beginIndex = s.indexOf("<Latitude>") + 10,
 		        	    endIndex = s.indexOf("</Latitude>");
-		        	latitude = Float.parseFloat(
-		        			s.substring(beginIndex, endIndex));
-		        	latMin = getMin(latMin, latitude);
-		        	latMax = getMax(latMax, latitude);
-		        	latAverage += latitude;
 		        	lat.add(s.substring(beginIndex, endIndex));
 
 		        	beginIndex = s.indexOf("<Longitude>") + 11;
 	        	    endIndex = s.indexOf("</Longitude>");
-	        	    longitude = Float.parseFloat(
-		        			s.substring(beginIndex, endIndex));
-	        	    lonMin = getMin(lonMin, longitude);
-	        	    lonMax = getMax(lonMax, longitude);
-	        	    lonAverage += longitude;
 	        	    lon.add(s.substring(beginIndex, endIndex));
 
 	        	    NamedNodeMap nnp = fstNode.getAttributes();
 
 	        	    String sentence = nnp.getNamedItem("sentence").getNodeValue();
 
-	        	    //------------
 	        	    StringTokenizer st = new StringTokenizer(sentence, "|");
 	        	    StringBuffer buf = new StringBuffer();
 	        	    int nr = 0;
@@ -366,7 +321,6 @@ public class GoogleMapRegionViewer
 	        	    	buf.append("<div onclick='toggleVisibility(this)' style='position:relative' ALIGN='LEFT'>Sentence ").append(++nr);
 	        	    	buf.append("<span style='display: none' ALIGN='LEFT'><table bgcolor='yellow'><tr><td>").append(nt).append("</td></tr></table></span></div>");
 	        	    }
-	        	    //------------
 
 	        	    /*sentence = "<p align=left>" + sentence;
 	        	    sentence = sentence.replaceAll("[|]", "</p><hr><p align=left>");
@@ -380,14 +334,6 @@ public class GoogleMapRegionViewer
 			}
 		} catch (Exception e1) {
 			throw new ComponentExecutionException(e1);
-		}
-
-		if(location.size() != 0) {
-			latAverage /= location.size();
-			lonAverage /= location.size();
-			System.out.println(latMin + " " + latMax + " " +
-					           lonMin + " " + lonMax + " " +
-					           latAverage + " " + lonAverage);
 		}
 
 		for(int k=0; k<location.size(); k++)
@@ -407,54 +353,6 @@ public class GoogleMapRegionViewer
         }
     }
 
-    /**
-     *
-     * @param n1 the first number to be compared
-     * @param n2 the second number to be compared
-     * @return the smaller number between n1 and n2
-     */
-    private float getMin(float n1, float n2) {
-    	if(Float.compare(n1, 0) == 0) //for the first time
-    		return n2;
-
-    	if(Float.compare(n1, n2) == 0)
-    		return n1;
-    	else if(n1 < 0 && n2 > 0)
-    		return n1;
-    	else if(n1 > 0 && n2 < 0)
-    		return n2;
-    	else {//same sign
-    		if((new Float(n1).toString().compareTo(new Float(n2).toString())) == -1)
-    			return n1;
-    		else
-    			return n2;
-    	}
-    }
-
-    /**
-     *
-     * @param n1 the first number to be compared
-     * @param n2 the second number to be compared
-     * @return the bigger number between n1 and n2
-     */
-    private float getMax(float n1, float n2) {
-    	if(Float.compare(n1, 0) == 0) //for the first time
-    		return n2;
-
-    	if(Float.compare(n1, n2) == 0)
-    		return n1;
-    	else if(n1 < 0 && n2 > 0)
-    		return n2;
-    	else if(n1 > 0 && n2 < 0)
-    		return n1;
-    	else {//same sign
-    		if((new Float(n1).toString().compareTo(new Float(n2).toString())) == -1)
-    			return n2;
-    		else
-    			return n1;
-    	}
-    }
-
 	/**
      * Call at the end of an execution flow.
      */
@@ -463,12 +361,6 @@ public class GoogleMapRegionViewer
     	lon = new Vector<String>();
     	location = new Vector<String>();
     	context = new Vector<String>();
-    	latAverage = 0;
-    	lonAverage = 0;
-    	latMin = 0;
-	    latMax = 0;
-	    lonMin = 0;
-	    lonMax = 0;
     }
 
     /**
