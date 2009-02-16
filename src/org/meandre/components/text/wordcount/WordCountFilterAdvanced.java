@@ -77,7 +77,7 @@ import org.meandre.core.ExecutableComponent;
            baseURL="meandre://seasr.org/components/")
 
 public class WordCountFilterAdvanced implements ExecutableComponent {
-	@ComponentProperty(defaultValue="http://norma.ncsa.uiuc.edu/public-dav/applets/common_words.txt",
+	@ComponentProperty(defaultValue="http://repository.seasr.org/Datasets/Text/common_words.txt",
  		   			   description="URL containing stop words.",
  		   			   name="URL_for_Stop_Words")
     final static String DATA_PROPERTY_1 = "URL_for_Stop_Words";
