@@ -42,6 +42,7 @@
 
 package org.meandre.components.text.wordcount;
 
+import java.io.PrintStream;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -57,12 +58,11 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
-           description="Filters some entries in a Map<String, Integer> " +
-           		"if their keys are found among the deleting list. " +
-           		"The deleting list is composed of a series keys " +
-           		"separated by comma.",
+           description="Inputs a Map<String, Integer> and deletes all entries " +
+           		"whose key is one of the keys to delete. The keys to delete " +
+           		"are specified in this component's properties.",
            name="WordCountFilter",
-           tags="map, reducer",
+           tags="map, reducer, filter",
            baseURL="meandre://seasr.org/components/")
 
 public class WordCountFilter implements ExecutableComponent {
@@ -73,14 +73,17 @@ public class WordCountFilter implements ExecutableComponent {
 
     @ComponentOutput(description="Filtered word count in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                     name="Map")
+                     name="Map")        
     public final static String DATA_OUTPUT = "Map";
-
+    
     @ComponentProperty(defaultValue="",
                        description="Keys to be deleted from Map. The keys should be delimited by comma.",
                        name="Keys_To_Be_Deleted")
     final static String DATA_PROPERTY = "Keys_To_Be_Deleted";
-
+    
+    private PrintStream console;
+	private ComponentContext ccHandle;
+    
     /** When ready for execution.
     *
     * @param cc The component context
@@ -89,27 +92,37 @@ public class WordCountFilter implements ExecutableComponent {
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-        Map inputMap = (Map)cc.getDataComponentFromInput(DATA_INPUT);
-        String keysToBeDeleted = cc.getProperty(DATA_PROPERTY);
-        StringTokenizer st = new StringTokenizer(keysToBeDeleted, ",");
-        while(st.hasMoreTokens()) {
-            String theKey = st.nextToken();
-            if(inputMap.containsKey(theKey))
-                inputMap.remove(theKey);
-        }
-
-        cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
+    	try {
+			this.ccHandle = cc;
+			Map inputMap = (Map)cc.getDataComponentFromInput(DATA_INPUT);
+			console.print("Filtering words from "+inputMap.size());
+			String keysToBeDeleted = cc.getProperty(DATA_PROPERTY);
+	        StringTokenizer st = new StringTokenizer(keysToBeDeleted, ",");
+	        while(st.hasMoreTokens()) {
+	            String theKey = st.nextToken();
+	            if(inputMap.containsKey(theKey))
+	                inputMap.remove(theKey);
+	        }
+	        
+	        console.println(" to "+inputMap.size());
+	        
+	        cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
+		} catch (Exception e) {
+			throw new ComponentExecutionException(e);
+		}
+        
     }
-
+    
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
+    	console = ccp.getOutputConsole();
     }
-
+    
     /**
      * Called when a flow is started.
      */
     public void dispose(ComponentContextProperties ccp) {
-    }
+    }   
 }
