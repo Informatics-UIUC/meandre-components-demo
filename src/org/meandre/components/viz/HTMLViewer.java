@@ -100,13 +100,13 @@ implements ExecutableComponent, WebUIFragmentCallback {
         	StringBuffer doneButton = new StringBuffer();
         	doneButton.append("<div align=\"center\">\n");
         	doneButton.append("<table align=center><font size=2><a id=\"url\" href=\"/" +
-            		ccHandle.getExecutionInstanceID() + "?done=true\">DONE</a></font></table>\n");
+            		ccHandle.getExecutionInstanceID() + "/?done=true\">DONE</a></font></table>\n");
         	doneButton.append("</div>\n");
         	doneButton.append("</body>\n");
             
             sb.replace("</body>\n", doneButton);
         	
-            response.getWriter().println(sb);
+            response.getWriter().println(sb.replace("</body>\n", doneButton));
         } catch (Exception e) {
             throw new WebUIException(e);
         }
