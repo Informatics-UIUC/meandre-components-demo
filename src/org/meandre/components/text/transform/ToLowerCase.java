@@ -77,8 +77,8 @@ public class ToLowerCase implements ExecutableComponent {
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-        String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
-        cc.pushDataComponentToOutput(DATA_OUTPUT, inpuText.toLowerCase());
+        String inputText = (String)cc.getDataComponentFromInput(DATA_INPUT);
+        cc.pushDataComponentToOutput(DATA_OUTPUT, inputText.toLowerCase());
     }
 
     /**
