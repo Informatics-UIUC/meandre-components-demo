@@ -266,8 +266,8 @@ public class TagCloudImageMaker implements ExecutableComponent {
   			double dd = 0.05;
 			int x, y;
 			while (true) {
-				x = (int)(Math.floor((width + (Math.cos(a)*d*2) - (textWidth/2))/5)*5);
-    			y = (int)(Math.floor((height + (Math.sin(a)*d) - (textHeight/2))/5)*5);
+				x = (int)(Math.floor((width/2 + (Math.cos(a)*d*2) - (textWidth/2))/5)*5);
+    			y = (int)(Math.floor((height/2 + (Math.sin(a)*d) - (textHeight/2))/5)*5);
 
 				x = (x<0)?0: x;
 				y = (y<0)?0: y;
