@@ -70,18 +70,18 @@ import javax.servlet.http.HttpServletResponse;
         tags="html, viewer",
         mode=Mode.webui,
         baseURL="meandre://seasr.org/components/")
-        
-public class HTMLViewer 
+
+public class HTMLViewer
 implements ExecutableComponent, WebUIFragmentCallback {
 
 	@ComponentInput(description="Read content as byte array." +
             "<br>TYPE: byte[]",
                     name= "Content")
     public final static String DATA_INPUT = "Content";
-	
-    private PrintStream console;
+
+    //private PrintStream console;
 	private ComponentContext ccHandle;
-	
+
 	/** The blocking semaphore */
     private Semaphore sem = new Semaphore(1,true);
 
@@ -95,7 +95,7 @@ implements ExecutableComponent, WebUIFragmentCallback {
             WebUIException {
         try {
         	String sb = (String)ccHandle.getDataComponentFromInput(DATA_INPUT);
-        	
+
         	//Adding html code for the "Done" button to end the flow execution
         	StringBuffer doneButton = new StringBuffer();
         	doneButton.append("<div align=\"center\">\n");
@@ -103,15 +103,15 @@ implements ExecutableComponent, WebUIFragmentCallback {
             		ccHandle.getExecutionInstanceID() + "/?done=true\">DONE</a></font></table>\n");
         	doneButton.append("</div>\n");
         	doneButton.append("</body>\n");
-            
-            sb.replace("</body>\n", doneButton);
-        	
+
+        	//sb.replace("</body>\n", doneButton);
+
             response.getWriter().println(sb.replace("</body>\n", doneButton));
         } catch (Exception e) {
             throw new WebUIException(e);
         }
     }
-    
+
     /** This method gets called when a call with parameters is done to a given component
      * webUI fragment
      *
@@ -129,7 +129,7 @@ implements ExecutableComponent, WebUIFragmentCallback {
         else
             emptyRequest(response);
     }
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -138,9 +138,9 @@ implements ExecutableComponent, WebUIFragmentCallback {
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
-    	
+
 			ccHandle = cc;
-			
+
 			try {
 	            sem.acquire();
 	            cc.startWebUIFragment(this);
@@ -148,15 +148,15 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	            cc.stopWebUIFragment(this);
 	        } catch (Exception e) {
 	            throw new ComponentExecutionException(e);
-	        }		
+	        }
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
-    	console = ccp.getOutputConsole();
-    	console.println("Initializing " + ccp.getFlowID());
+    	//console = ccp.getOutputConsole();
+    	//console.println("Initializing " + ccp.getFlowID());
     }
 
     /**
