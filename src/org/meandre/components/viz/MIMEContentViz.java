@@ -75,24 +75,24 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.compute,
            baseURL="meandre://seasr.org/components/")
 
-public class MIMEContentViz 
-    implements ExecutableComponent { 
+public class MIMEContentViz
+    implements ExecutableComponent {
     @ComponentProperty(defaultValue="text/plain",
                        description="This property sets MIME type.",
                        name="MIME_type")
     public final static String DATA_PROPERTY = "MIME_type";
-    
+
     @ComponentInput(description="Read content as byte array." +
             "<br>TYPE: byte[]",
                     name= "Content")
     public final static String DATA_INPUT = "Content";
-    
+
     @ComponentOutput(description="Push html web page." +
             "<br>TYPE: byte[]",
                     name= "HTML_Content")
     public final static String DATA_OUTPUT = "HTML_Content";
-    
-    private PrintStream console;
+
+    //private PrintStream console;
 	private ComponentContext ccHandle;
 
     /** A simple message.
@@ -100,10 +100,10 @@ public class MIMEContentViz
     * @return The html containing the page
     */
     private String getViz(byte[] inputContent) {
-    	
-    	String mimeType = ccHandle.getProperty(DATA_PROPERTY);  
+
+    	String mimeType = ccHandle.getProperty(DATA_PROPERTY);
         StringBuffer sb = new StringBuffer();
-        String sInstanceID = ccHandle.getExecutionInstanceID();
+        //String sInstanceID = ccHandle.getExecutionInstanceID();
 
         sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
         sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
@@ -121,23 +121,23 @@ public class MIMEContentViz
         sb.append("<br /><br />\n");
         sb.append("<p>");
         if(mimeType.startsWith("text")) {
-            StringTokenizer st = 
+            StringTokenizer st =
                 new StringTokenizer(new String(inputContent), "\n");
-            while(st.hasMoreTokens()) 
+            while(st.hasMoreTokens())
                 sb.append(st.nextToken()).append("<br/>");
         }
         else if(mimeType.startsWith("image")) {//type could be jpeg, gif or png
             String s = new sun.misc.BASE64Encoder().encode(inputContent); //convert byte[] to base64 string
-            
+
             sb.append("<div align=\"center\">\n");
-            
+
             sb.append("<img src=\"data:").append(mimeType).append(";base64,");
             sb.append(s).append("\"");
             sb.append(" border=\"0\" />");
-            
+
             sb.append("</div>\n");
         }
-          
+
         sb.append("</p>");
         sb.append("</body>\n");
         sb.append("</html>\n");
@@ -157,20 +157,21 @@ public class MIMEContentViz
 			ccHandle = cc;
 			byte[] inputContent = (byte[])cc.getDataComponentFromInput(DATA_INPUT);
 	        cc.pushDataComponentToOutput(DATA_OUTPUT, this.getViz(inputContent));
-	        
+
 		} catch (Exception e) {
 			throw new ComponentExecutionException(e);
 		}
     }
-    
+
+
     /**
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
-    	console = ccp.getOutputConsole();
-    	console.println("Initializing " + ccp.getFlowID());
+    	//console = ccp.getOutputConsole();
+    	//console.println("Initializing " + ccp.getFlowID());
     }
-    
+
     /**
      * Called when a flow is started.
      */
