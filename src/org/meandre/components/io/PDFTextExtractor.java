@@ -16,7 +16,7 @@ import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.util.PDFTextStripper;
 
 /** This class provides methods related to text extraction from PDF files
- * 
+ *
  * @author Xavier Llor&agrave;
  * @author Loretta Auvil
  *
@@ -28,22 +28,22 @@ import org.pdfbox.util.PDFTextStripper;
 		"The output is the extracted text.",
 		name="PDFTextExtractor",
 		tags="URL, text, pdf",
-		dependency={"FontBox-0.2.0-dev.jar"},
+		dependency={"FontBox-0.1.0.jar"},
 		baseURL="meandre://seasr.org/components/")
 
 		public class PDFTextExtractor implements ExecutableComponent {
 
 	@ComponentInput(description="URL of the pdf file." +
 			"<br>TYPE: java.io.String",
-			name="URL")                 
+			name="URL")
 			public final static String DATA_INPUT = "URL";
 	@ComponentOutput(description="Text of the pdf file." +
 			"<br>TYPE: java.io.String",
-			name="Text")                 
+			name="Text")
 			public final static String DATA_OUTPUT = "Text";
 
 	private PrintStream console;
-	
+
 	public void dispose(ComponentContextProperties ccp)
 	throws ComponentExecutionException, ComponentContextException {
 		// TODO Auto-generated method stub
