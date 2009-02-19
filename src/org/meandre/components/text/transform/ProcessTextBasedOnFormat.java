@@ -15,26 +15,26 @@ import org.meandre.core.ExecutableComponent;
 		"The output is the extracted text.",
 		name="ProcessTextBasedOnFormat",
 		tags="URL, text, pdf",
-		dependency={"FontBox-0.2.0-dev.jar"},
+		dependency={"FontBox-0.1.0.jar"},
 		baseURL="meandre://seasr.org/components/")
 
 public class ProcessTextBasedOnFormat implements ExecutableComponent {
 
 	@ComponentInput(description="URL of the item." +
 			"<br>TYPE: java.io.String",
-			name="URL")                 
+			name="URL")
 			public final static String DATA_INPUT = "URL";
 	@ComponentOutput(description="URL of the pdf item." +
 			"<br>TYPE: java.io.String",
-			name="PDF_URL")                 
+			name="PDF_URL")
 			public final static String DATA_OUTPUT_PDF = "PDF_URL";
 	@ComponentOutput(description="URL of the html item." +
 			"<br>TYPE: java.io.String",
-			name="HTML_URL")                 
+			name="HTML_URL")
 			public final static String DATA_OUTPUT_HTML = "HTML_URL";
 	@ComponentOutput(description="URL of the text item." +
 			"<br>TYPE: java.io.String",
-			name="TXT_URL")                 
+			name="TXT_URL")
 			public final static String DATA_OUTPUT_TXT = "TXT_URL";
 
 	public void dispose(ComponentContextProperties ccp)
