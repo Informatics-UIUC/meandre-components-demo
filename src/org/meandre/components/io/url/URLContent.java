@@ -53,10 +53,10 @@ import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 
-@Component(creator="Lily Dong",
+@Component(creator="Loretta Auvil",
 		description="Fetches content of the specified URL as an text.",
 		name="URLContent",
-		tags="URL, stream",
+		tags="URL, content, text",
 		baseURL="meandre://seasr.org/components/")
 
 		public class URLContent implements ExecutableComponent {
