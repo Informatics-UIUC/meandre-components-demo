@@ -49,8 +49,8 @@ public class ProcessTextBasedOnFormat implements ExecutableComponent {
 		String url = (String)cc.getDataComponentFromInput(DATA_INPUT);
 		if (url.endsWith(".pdf"))
 			cc.pushDataComponentToOutput(DATA_OUTPUT_PDF, url);
-		else if (url.endsWith(".html") || (url.endsWith(".xml")))
-			cc.pushDataComponentToOutput(DATA_OUTPUT_HTML, url);
+		//else if (url.endsWith(".html") || (url.endsWith(".xml")))
+			//cc.pushDataComponentToOutput(DATA_OUTPUT_HTML, url);
 		else
 			cc.pushDataComponentToOutput(DATA_OUTPUT_TXT, url);
 	}
