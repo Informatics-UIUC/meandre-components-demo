@@ -83,7 +83,7 @@ import org.meandre.core.ExecutableComponent;
 		StringBean sb = new StringBean ();
 		sb.setURL (inputUrl);
 		String sRes = sb.getStrings();
-		cc.pushDataComponentToOutput(DATA_OUTPUT, (sRes==null)?"":sRes);
+		cc.pushDataComponentToOutput(DATA_OUTPUT, (sRes==null)?"We have a problem.":sRes);
 	}
 
 	/**
