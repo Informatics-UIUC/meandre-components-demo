@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component(creator="Loretta Auvil",
         description="Generates a webpage from the HTML text that it receives as input.",
-        name="HTML_Viewer",
+        name="HTML Visualization",
         tags="html, viewer",
         mode=Mode.webui,
         baseURL="meandre://seasr.org/components/")
