@@ -48,9 +48,11 @@ import org.apache.velocity.Template;
  *  
  *  ComponentContextProperties  are in the velocity context as ccp
  *  ComponentContext             is in the velocity context as cc
+ *  HttpResponse                 is in the velocity context as response
  *  User supplied key=value pairs are in the velocity context as userMap
  *  
- * 
+ *  TODO: it would be nice to be able to put the HttpRequest object
+ *  in the velocity context
  */
 
 @Component(creator="Mike Haberman",
