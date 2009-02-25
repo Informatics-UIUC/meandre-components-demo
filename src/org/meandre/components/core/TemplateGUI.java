@@ -65,7 +65,7 @@ import org.apache.velocity.Template;
 public class TemplateGUI
     implements ExecutableComponent, WebUIFragmentCallback {
 	
-	@ComponentProperty(description = "The template name", name = "template", defaultValue = "GUITemplate.vm")
+	@ComponentProperty(description = "The template name", name = "template", defaultValue = "org/meandre/components/core/GUITemplate.vm")
 	final static String DATA_PROPERTY_TEMPLATE = "template";
 	
 	@ComponentProperty(description = "User supplied property list", name = "properties", defaultValue = "key=value,author=mike")
