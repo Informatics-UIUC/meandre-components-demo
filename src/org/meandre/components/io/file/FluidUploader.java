@@ -218,7 +218,7 @@ implements ExecutableComponent, WebUIFragmentCallback {
     			buf.append("type: \"fluid.swfUploadManager\",\n");
     			buf.append("options: {\n");
     	        	buf.append("flashURL: \"../../flash/swfupload.swf\",\n");
-    	            buf.append("uploadURL: \"/http://test.org/flow/instance/Local-File-Uploader/0\",\n");
+    	        	buf.append("uploadURL: \"/"+sInstanceID+"\",\n");
     	        buf.append("},\n");
     	        buf.append("decorators: {\n");
     	        	buf.append("type: \"fluid.swfUploadSetupDecorator\",\n");
@@ -352,6 +352,9 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	   "templates"+File.separator+
 	   name;
 
+	   webUiUrl = cc.getWebUIUrl(true).toString();
+	   sInstanceID = cc.getExecutionInstanceID();
+
 	   try {
 		   save(path);
 	   }catch(Exception e) {
@@ -359,8 +362,6 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	   }
 
 	   	try {
-	   		webUiUrl = cc.getWebUIUrl(true).toString();
-	   		sInstanceID = cc.getExecutionInstanceID();
 	   		sem.acquire();
 	   		cc.startWebUIFragment(this);
 	   		sem.acquire();
