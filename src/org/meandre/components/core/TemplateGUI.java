@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
+import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
 
@@ -21,9 +22,12 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 import java.util.Date;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Properties;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.VelocityContext;
@@ -71,11 +75,18 @@ public class TemplateGUI
 	@ComponentProperty(description = "User supplied property list", name = "properties", defaultValue = "key=value,author=mike")
 	final static String DATA_PROPERTY_HASHTABLE = "properties";
 	
+	protected String formInputName = null;
+	@ComponentProperty(description = "Form data to push", name="formInputName", defaultValue="done")
+	final static String DATA_PROPERTY_FORM = "formInputName";
+	
 	//
 	// this is a generic input, doesn't have to be used, up to the template
 	// 
     @ComponentInput(description="Input to Process", name= "input")
     public final static String DATA_INPUT = "input";
+    
+    @ComponentOutput(description="Output to Process", name= "output")
+    public final static String DATA_OUTPUT = "output";
     
     
     /** The blocking semaphore */
@@ -89,10 +100,19 @@ public class TemplateGUI
      * @throws WebUIException Some problem arose during execution and something went wrong
      */
     public void emptyRequest(HttpServletResponse response) throws
-            WebUIException {
-    	
+            WebUIException 
+    {
+    	// TODO: it would be nice to see the request object here
+    	generateContent(null, response);
+    }
+    
+    
+    protected void generateContent(HttpServletRequest request, HttpServletResponse response)
+       throws WebUIException
+    {
         try {
-        	
+        	// request could be null on the "first" request
+        	context.put("request",  request);
         	context.put("response", response);
         	
         	// render the template
@@ -106,9 +126,19 @@ public class TemplateGUI
         } catch (Exception e) {
             throw new WebUIException(e);
         }
+    	
     }
     
+    // exposed to the template
+    public void setPushValue(String parameterName)
+    {
+    	formInputName = parameterName;
+    }
     
+    protected boolean requestHasErrors(HttpServletRequest request)
+    {
+    	 return (request.getParameter(formInputName) == null);
+    }
 
     
     /** This method gets called when a call with parameters is done to a given component
@@ -119,27 +149,46 @@ public class TemplateGUI
      * @param response The response object
      * @throws WebUIException A problem arised during the call back
      */
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws
+    Map<String, String[]> parameterMap;
+    @SuppressWarnings("unchecked")
+	public void handle(HttpServletRequest request, HttpServletResponse response) throws
             WebUIException 
     {
-        String sDone = request.getParameter("done");
-        if ( sDone!=null ) {
+    	parameterMap = (Map<String, String[]>) request.getParameterMap();
+    	
+    	if ( requestHasErrors(request)) {
+    		// TODO: populate the velocity context with error objects
+    		// regenerate the template
+    		// TODO: put the request parameters or a wrapper in the context
+    		context.put("hasErrors", new Boolean(true));
+    		generateContent(request, response);
+    		return;
+    	}
+           
+    	// No Errors, 
+    	// just push the browser to the "next" component
+        try{
+        	// when the page has been handled, generate a browser refresh
+            PrintWriter writer = response.getWriter();
+            writer.println("<html><head><title>Refresh Page</title>");
+            writer.println("<meta http-equiv='REFRESH' content='0;url=/'></head>");
+            writer.println("<body>Refreshing Page</body></html>");
+         }catch (IOException e) {
+            throw new WebUIException("unable to generate redirect response");
+         }
+         finally {
             sem.release();
-        }
-        else {
-            emptyRequest(response);
-        }
+         }
     }
+    
     
     protected void subExecute(ComponentContext cc) 
           throws ComponentExecutionException, 
                  ComponentContextException      
     {
-    	
     	// if TemmplateGUI is subclassed, you can use this
     	// extension point for execute() without having to 
-    	// worry about semaphores, web fragments, 
-    		
+    	// worry about semaphores, web fragments,
     }
     
 
@@ -160,11 +209,21 @@ public class TemplateGUI
             String sInstanceId = cc.getExecutionInstanceID();
             context.put("sInstanceId", sInstanceId);
             context.put("cc", cc);
+            context.put("gui", this);
             
             sem.acquire();
             cc.startWebUIFragment(this);
             sem.acquire();
             cc.stopWebUIFragment(this);
+            
+            
+            // now push the output to the next component
+            // TODO: push a form value or ParameterParser object ?
+            //
+            String oneValue = parameterMap.get(formInputName)[0];
+            cc.pushDataComponentToOutput(DATA_OUTPUT, oneValue);
+            
+            
         } catch (Exception e) {
             throw new ComponentExecutionException(e);
         }
@@ -179,7 +238,11 @@ public class TemplateGUI
      * Called when a flow is started.
      */
     public void initialize(ComponentContextProperties ccp) {
+    	
+    	
     	try {
+    		
+    		formInputName = ccp.getProperty(DATA_PROPERTY_FORM);
     		
     		
     		Properties p = new Properties();
@@ -201,9 +264,9 @@ public class TemplateGUI
              */
 
             context = new VelocityContext();
-            context.put("dir", System.getProperty("user.dir"));
+            context.put("dir",  System.getProperty("user.dir"));
             context.put("date", new Date());
-            context.put("ccp", ccp);
+            context.put("ccp",  ccp);
             
             String toParse = ccp.getProperty(DATA_PROPERTY_HASHTABLE);
             HashMap<String,String> map = new HashMap<String,String>();
@@ -214,7 +277,7 @@ public class TemplateGUI
             	if (idx > 0) {
             		String key = kv.substring(0,idx);
             		String value = kv.substring(idx+1);
-            		map.put(key, value);
+            		map.put(key.trim(), value.trim());
             	}
             }
             context.put("userMap", map);
