@@ -89,7 +89,7 @@ public class InputStringGUI extends TemplateGUI {
 	// specific to this component
 	//
 	@ComponentProperty(description = "title", name = "title", defaultValue = "title=Input a string")
-	static final String DATA_PROPERTY_TITLE = "tile";
+	static final String DATA_PROPERTY_TITLE = "title";
 	
 	@ComponentProperty(description = "message", name = "message", defaultValue = "title=Please input a string")
 	static final String DATA_PROPERTY_MESSAGE = "message";
