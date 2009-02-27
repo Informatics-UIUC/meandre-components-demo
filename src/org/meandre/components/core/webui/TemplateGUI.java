@@ -64,12 +64,12 @@ import org.apache.velocity.Template;
            name="TemplateGUI",
            tags="string, visualization",
            dependency={"velocity-1.6.1-dep.jar"},
-           resources={"GUITemplate.vm"},
+           resources={"TemplateGUI.vm"},
            mode=Mode.webui)
 public class TemplateGUI
     implements ExecutableComponent, WebUIFragmentCallback {
 	
-	@ComponentProperty(description = "The template name", name = "template", defaultValue = "org/meandre/components/core/GUITemplate.vm")
+	@ComponentProperty(description = "The template name", name = "template", defaultValue = "org/meandre/components/core/TemplateGUI.vm")
 	final static String DATA_PROPERTY_TEMPLATE = "template";
 	
 	@ComponentProperty(description = "User supplied property list", name = "properties", defaultValue = "key=value,author=mike")
