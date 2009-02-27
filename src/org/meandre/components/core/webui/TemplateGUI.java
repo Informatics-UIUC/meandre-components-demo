@@ -92,6 +92,8 @@ public class TemplateGUI
     /* what field will we check for in the HTTPRequest */
     protected String formInputName = "done";
     
+    // convenience properties to easily push additional properties 
+    protected String[] templateVariables = {};
     
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
@@ -279,6 +281,11 @@ public class TemplateGUI
             	}
             }
             context.put("userMap", map);
+            
+            for (String name: templateVariables) {
+            	String value = ccp.getProperty(name);
+            	context.put(name,value);
+            }
             
     	}
     	catch (Exception e) {

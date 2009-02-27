@@ -65,10 +65,12 @@ import org.meandre.webui.WebUIFragmentCallback;
         tags="string, visualization",
         mode=Mode.webui,
         dependency={"velocity-1.6.1-dep.jar"},
-        resources={"StringInput.vm"}
+        resources={"InputString.vm"}
         )
 public class InputStringGUI extends TemplateGUI {
 	
+	
+	// repeat the TemplateGUI properties that are mandatory
 	@ComponentProperty(description = "The template name", 
 			                  name = TemplateGUI.DATA_PROPERTY_TEMPLATE, 
 			          defaultValue = "org/meandre/components/core/StringInput.vm")
@@ -83,9 +85,26 @@ public class InputStringGUI extends TemplateGUI {
     static String ignoreMeO = "";
 	
 	
+	//
+	// specific to this component
+	//
+	@ComponentProperty(description = "title", name = "title", defaultValue = "title=Input a string")
+	static final String DATA_PROPERTY_TITLE = "tile";
+	
+	@ComponentProperty(description = "message", name = "message", defaultValue = "title=Please input a string")
+	static final String DATA_PROPERTY_MESSAGE = "message";
+	
+	
 	public InputStringGUI()
 	{
-		// instead of above I could reassign default property values
 		formInputName = "done";
+		templateVariables = new String[]{DATA_PROPERTY_TITLE, DATA_PROPERTY_MESSAGE};
+		//
+		// velocity could always access these via $ccp.getProperty("title") 
+		// but now they will be visible as $title, $message
+		//
 	}
+	
+
+	
 }

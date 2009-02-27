@@ -4,7 +4,7 @@
 
 <head>
 
-<title> #if($userMap.title) $userMap.title #end
+<title> #if($title) $title #end
 </title>
 <script language="JavaScript">
 function validate(form, value) {
@@ -22,7 +22,7 @@ function validate(form, value) {
 
 <div>
 
-$userMap.message 
+$message 
 #set ($fieldName = "context")
 $gui.setPushValue($fieldName)
 <form name="input" method="POST" action="/$sInstanceId">
