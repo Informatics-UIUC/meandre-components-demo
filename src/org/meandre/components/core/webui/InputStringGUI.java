@@ -88,16 +88,15 @@ public class InputStringGUI extends TemplateGUI {
 	//
 	// specific to this component
 	//
-	@ComponentProperty(description = "title", name = "title", defaultValue = "title=Input a string")
+	@ComponentProperty(description = "title",   name = "title",   defaultValue = "Input a string")
 	static final String DATA_PROPERTY_TITLE = "title";
 	
-	@ComponentProperty(description = "message", name = "message", defaultValue = "title=Please input a string")
+	@ComponentProperty(description = "message", name = "message", defaultValue = "Please input a string")
 	static final String DATA_PROPERTY_MESSAGE = "message";
 	
 	
 	public InputStringGUI()
 	{
-		formInputName = "done";
 		templateVariables = new String[]{DATA_PROPERTY_TITLE, DATA_PROPERTY_MESSAGE};
 		//
 		// velocity could always access these via $ccp.getProperty("title") 

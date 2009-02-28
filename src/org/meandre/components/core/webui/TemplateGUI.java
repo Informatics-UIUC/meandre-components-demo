@@ -69,11 +69,16 @@ import org.apache.velocity.Template;
 public class TemplateGUI
     implements ExecutableComponent, WebUIFragmentCallback {
 	
-	@ComponentProperty(description = "The template name", name = "template", defaultValue = "org/meandre/components/core/TemplateGUI.vm")
+	@ComponentProperty(description = "The template name", 
+			                  name = "template", 
+			          defaultValue = "org/meandre/components/core/TemplateGUI.vm")
 	final static String DATA_PROPERTY_TEMPLATE = "template";
 	
-	@ComponentProperty(description = "User supplied property list", name = "properties", defaultValue = "key=value,author=mike")
+	@ComponentProperty(description = "User supplied property list", 
+			                  name = "properties", 
+			          defaultValue = "key=value,author=mike")
 	final static String DATA_PROPERTY_HASHTABLE = "properties";
+	
 	
 	//
 	// this is a generic input, doesn't have to be used, up to the template
@@ -90,10 +95,13 @@ public class TemplateGUI
 
     
     /* what field will we check for in the HTTPRequest */
+    // the template should actually set this variable via $gui.setPushValue()
     protected String formInputName = "done";
     
     // convenience properties to easily push additional properties 
+    // not needed, template can always do $ccp.getProperty("title")
     protected String[] templateVariables = {};
+    
     
     /** This method gets call when a request with no parameters is made to a
      * component webui fragment.
@@ -275,13 +283,14 @@ public class TemplateGUI
             	String kv = tokens.nextToken();
             	int idx = kv.indexOf('=');
             	if (idx > 0) {
-            		String key = kv.substring(0,idx);
+            		String key   = kv.substring(0,idx);
             		String value = kv.substring(idx+1);
             		map.put(key.trim(), value.trim());
             	}
             }
             context.put("userMap", map);
             
+            // push property values to the context
             for (String name: templateVariables) {
             	String value = ccp.getProperty(name);
             	context.put(name,value);
