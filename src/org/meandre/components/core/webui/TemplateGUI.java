@@ -63,6 +63,7 @@ import org.apache.velocity.Template;
            description="Generates and displays a webpage via a Velocity Template ",
            name="TemplateGUI",
            tags="string, visualization",
+           baseURL="meandre://seasr.org/components/",
            dependency={"velocity-1.6.1-dep.jar"},
            resources={"TemplateGUI.vm"},
            mode=Mode.webui)
