@@ -72,7 +72,7 @@ public class TemplateGUI
 	
 	@ComponentProperty(description = "The template name", 
 			                  name = "template", 
-			          defaultValue = "org/meandre/components/core/TemplateGUI.vm")
+			          defaultValue = "org/meandre/components/core/webui/TemplateGUI.vm")
 	public final static String DATA_PROPERTY_TEMPLATE = "template";
 	
 	@ComponentProperty(description = "User supplied property list", 
