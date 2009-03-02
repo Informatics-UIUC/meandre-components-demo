@@ -64,6 +64,7 @@ import org.meandre.webui.WebUIFragmentCallback;
         name="InputStringGUI",
         tags="string, visualization",
         mode=Mode.webui,
+        baseURL="meandre://seasr.org/components/",
         dependency={"velocity-1.6.1-dep.jar"},
         resources={"InputString.vm"}
         )
@@ -73,7 +74,7 @@ public class InputStringGUI extends TemplateGUI {
 	// repeat the TemplateGUI properties that are mandatory
 	@ComponentProperty(description = "The template name", 
 			                  name = TemplateGUI.DATA_PROPERTY_TEMPLATE, 
-			          defaultValue = "org/meandre/components/core/StringInput.vm")
+			          defaultValue = "org/meandre/components/core/InputString.vm")
 	static String ignoreMeT = "";
 	
 	@ComponentProperty(description = "User supplied property list", 

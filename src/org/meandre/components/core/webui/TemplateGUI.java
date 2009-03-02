@@ -72,12 +72,12 @@ public class TemplateGUI
 	@ComponentProperty(description = "The template name", 
 			                  name = "template", 
 			          defaultValue = "org/meandre/components/core/TemplateGUI.vm")
-	final static String DATA_PROPERTY_TEMPLATE = "template";
+	public final static String DATA_PROPERTY_TEMPLATE = "template";
 	
 	@ComponentProperty(description = "User supplied property list", 
 			                  name = "properties", 
 			          defaultValue = "key=value,author=mike")
-	final static String DATA_PROPERTY_HASHTABLE = "properties";
+	public final static String DATA_PROPERTY_HASHTABLE = "properties";
 	
 	
 	//
