@@ -74,7 +74,7 @@ public class InputStringGUI extends TemplateGUI {
 	// repeat the TemplateGUI properties that are mandatory
 	@ComponentProperty(description = "The template name", 
 			                  name = TemplateGUI.DATA_PROPERTY_TEMPLATE, 
-			          defaultValue = "org/meandre/components/core/InputString.vm")
+			          defaultValue = "org/meandre/components/core/webui/InputString.vm")
 	static String ignoreMeT = "";
 	
 	@ComponentProperty(description = "User supplied property list", 
