@@ -31,7 +31,6 @@
     <condition property="using.java.1.5">
         <or>
             <equals arg1="${ant.java.version}" arg2="1.5"/>
-            <equals arg1="${ant.java.version}" arg2="1.6"/>
         </or>
     </condition>
 
