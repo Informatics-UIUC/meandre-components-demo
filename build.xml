@@ -27,10 +27,11 @@
     ==================================== 
     -->
 
-    <!-- Check whether Java 1.5 is being used -->
+    <!-- Check whether Java 1.5+ is being used -->
     <condition property="using.java.1.5">
         <or>
             <equals arg1="${ant.java.version}" arg2="1.5"/>
+            <equals arg1="${ant.java.version}" arg2="1.6"/>
         </or>
     </condition>
 
@@ -42,7 +43,7 @@
 
     <!-- Make sure we're running under the correct environment -->
     <fail message="This package requires Ant 1.7." unless="using.ant.1.7"/>
-    <fail message="This package requires Java 5. Please set JAVA_HOME to point to where JDK 1.5 is installed."
+    <fail message="This package requires at least Java 5. Please set JAVA_HOME to point to where JDK 1.5+ is installed."
           unless="using.java.1.5"/>
 
     <!-- 
@@ -80,15 +81,9 @@
     
     <!-- Code locations -->
     <path id="src.code.dirs">
-        <dirset dir="${basedir}" includes="src*"/>
+        <dirset dir="${basedir}" includes="src"/>
     </path>
 
-    <!-- Test locations -->
-    <path id="src.test.root.dirs">
-        <dirset dir="${basedir}" includes="src-*/test"/>
-    </path>
-
-  
     <!--
     =================
     WIKI UPLOAD PROPERTIES
@@ -182,12 +177,12 @@
         <copy todir="${classes.dir}"
               includeEmptyDirs="no">
             <fileset dir="${basedir}">
-                <include name="src-*/code/**/*.properties"/>
-                <include name="src-*/code/**/*.xml"/>
-                <include name="src-*/code/**/*.vm"/>
-                <include name="src-*/code/**/*.list"/>
+                <include name="src/**/*.properties"/>
+                <include name="src/**/*.xml"/>
+                <include name="src/**/*.vm"/>
+                <include name="src/**/*.list"/>
             </fileset>
-            <regexpmapper from="^src-(.*)/code/(.*)$" to="\2"/>
+            <regexpmapper from="^src/(.+/)*(.*\..*)$" to="\2"/>
         </copy>
     </target>
 
@@ -200,76 +195,6 @@
         <jar destfile="${dist.dir}/${components.jar.file}"
              basedir="${classes.dir}"/>
     </target>
-
-    <!--
-    =================
-    JUNIT TESTS TARGETS
-    =================
-    -->
-
-    <!--
-        Compile tests
-    -->
-    <target name="compile-tests"
-            depends="dist"
-            description="-> compiles the unit tests">
-        <!-- compile -->
-        <javac debug="on"
-               debuglevel="lines,vars,source"
-               destdir="${test.classes.dir}">
-            <src refid="src.test.root.dirs"/>
-            <classpath refid="classpath.runtime"/>
-        </javac>
-
-        <!-- include other files that should be available to runtime classpath-->
-        <copy todir="${test.classes.dir}"
-              includeEmptyDirs="no">
-            <fileset dir="${basedir}">
-                <include name="src-*/test/**/*.properties"/>
-                <include name="src-*/test/**/*.xml"/>
-                <include name="src-*/test/**/*.vm"/>
-                <include name="src-*/test/**/*.list"/>
-            </fileset>
-            <regexpmapper from="^src-(.*)/test/(.*)$" to="\2"/>
-        </copy>
-    </target>
-
-
-    <!--
-        run the JUnit tests
-    -->
-    <target name="run-tests"
-            depends="compile-tests"
-            description= "-> runs the unit tests and generates xml logs and html reports">
-        <mkdir dir="${test.logs.dir}/xml"/>
-        <junit printsummary="yes"
-               forkmode="once"
-               errorProperty="test.failed"
-               failureProperty="test.failed"
-               fork="yes"
-               showoutput="yes">
-            <jvmarg value="-Duser.language=en"/>
-            <classpath>
-                <path refid="classpath.build"/>
-                <pathelement location="${classes.dir}"/>
-                <pathelement location="${test.classes.dir}"/>
-            </classpath>
-            <formatter type="xml"/>
-            <formatter type="brief" usefile="false"/>
-            <batchtest todir="${test.logs.dir}/xml">
-                <fileset dir="${test.classes.dir}" includes="**/*Test.class"/>
-            </batchtest>
-        </junit>
-        <junitreport todir="${test.logs.dir}/xml">
-            <fileset dir="${test.logs.dir}/xml">
-                <include name="TEST-*.xml"/>
-            </fileset>
-            <report format="noframes" todir="${test.root.dir}"/>
-        </junitreport>
-        <echo message="Report generated at: 
-            file://${test.root.dir}/junit-noframes.html"/>
-    </target>
-
 
 
     <!--
