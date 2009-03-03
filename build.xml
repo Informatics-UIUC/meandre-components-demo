@@ -29,7 +29,10 @@
 
     <!-- Check whether Java 1.5 is being used -->
     <condition property="using.java.1.5">
-        <contains string="${java.version}" substring="1.5"/>
+        <or>
+            <equals arg1="${ant.java.version}" arg2="1.5"/>
+            <equals arg1="${ant.java.version}" arg2="1.6"/>
+        </or>
     </condition>
 
     <!-- Check whether Ant 1.7 is being used. 1.7 is needed for junit4 
@@ -54,9 +57,16 @@
     <property name="lib.devkit.dir" value="${basedir}/lib/devkit"/>
     <property name="build.dir" value="${basedir}/build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
-    <property name="dist.dir" value="${build.dir}/dist"/>
+    <property name="dist.dir" value="${basedir}/dist"/>
     <property name="descriptors.dir" value="${build.dir}/descriptors"/>
     <property name="javadoc.dir" value="${build.dir}/javadoc"/>
+
+
+    <!-- Default settings for the 'upload-components' task -->
+    <property name="server" value="localhost"/>
+    <property name="port" value="1714"/>
+    <property name="user" value="admin"/>
+    <property name="pw" value="admin"/>
 
 
     <!-- JUnit elements -->
@@ -149,6 +159,7 @@
     -->
     <target name="clean" description="-> removes build artifacts">
         <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
         <delete dir="${test.root.dir}"/>
         <delete dir="./log"/>
     </target>
@@ -292,16 +303,16 @@
             <arg value="${build.dir}"/>
 
             <arg value="--meandre-host"/>
-            <arg value="localhost"/>
+            <arg value="${server}"/>
 
             <arg value="--meandre-port"/>
-            <arg value="1714"/>
+            <arg value="${port}"/>
 
             <arg value="--meandre-username"/>
-            <arg value="admin"/>
+            <arg value="${user}"/>
 
             <arg value="--meandre-password"/>
-            <arg value="admin"/>
+            <arg value="${pw}"/>
         </java>
     </target>
 
