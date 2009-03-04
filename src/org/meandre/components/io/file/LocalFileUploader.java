@@ -48,6 +48,8 @@ import javax.servlet.http.HttpServletResponse;
 //import javax.servlet.ServletInputStream;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentOutput;
@@ -176,6 +178,16 @@ implements ExecutableComponent, WebUIFragmentCallback {
 			}catch(java.io.IOException e) {
 				throw new WebUIException(e);
 			}
+
+			try{
+                PrintWriter writer = response.getWriter();
+                writer.println("<html><head><title>Local File Uploader</title>");
+                writer.println("<meta http-equiv='REFRESH' content='0;url=/'></HEAD>");
+                writer.println("<body>Local File Uploader Releasing Display</body></html>");
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
 			sem.release();
 		}
 	}
