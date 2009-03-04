@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -65,8 +66,7 @@ import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
-
-import com.sun.xml.rpc.processor.model.java.JavaException;
+import org.mortbay.log.Log;
 
 @Component(creator="Lily Dong",
            description="Uploads a local file using Fiuld at http://build.fluidproject.org/. " +
@@ -284,6 +284,15 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	throws	WebUIException {
 		String sDone = request.getParameter("done");
 	    if ( sDone!=null ) {
+	    	try{
+                PrintWriter writer = response.getWriter();
+                writer.println("<html><head><title>Fluid Uploader</title>");
+                writer.println("<meta http-equiv='REFRESH' content='0;url=/'></HEAD>");
+                writer.println("<body>Fluid Uploader Releasing Display</body></html>");
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+
 	    	sem.release();
 	    	return;
 	    }
@@ -323,7 +332,7 @@ implements ExecutableComponent, WebUIFragmentCallback {
 				}
 				br.close();
 				str = buf.toString();
-				System.out.println(str);
+				//System.out.println(str);
 			}catch(java.io.IOException e) {
 				throw new WebUIException(e);
 			}
@@ -343,13 +352,27 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	   ".html";
 
 	   String path = new File(".").getAbsolutePath();
-	   System.out.println(". = " + path);
-	   int endIndex = path.lastIndexOf(File.separator);
-	   String resourceDir = cc.getPublicResourcesDirectory();
-	   int beginIndex = resourceDir.indexOf(".");
+	   int index = path.length()-1;
+	   while(true) { //find the last occurrence of alphabet, and ignore \.
+		   char ch = path.charAt(index);
+		   if(Character.toString(ch).equals(File.separator))
+			   break;
+		   --index;
+	   }
+	   int endIndex = index;
 
-	   path = path.substring(0, endIndex+1)+ //remove .
-	   resourceDir.substring(beginIndex+1)+File.separator+ //remove .\
+	   String dir = cc.getPublicResourcesDirectory();
+	   index = 0;
+	   while(true) { //find the first occurrence of alphabet, and ignore .\
+		   char ch = dir.charAt(index);
+		   if(Character.isLetter(ch))
+			   break;
+		   ++index;
+	   }
+	   int beginIndex = index;
+
+	   path = path.substring(0, endIndex)+File.separator+
+	   dir.substring(beginIndex)+File.separator+
 	   "fluid-0.8"+File.separator+
 	   "fluid-components"+File.separator+
 	   "html"+File.separator+
@@ -370,13 +393,21 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	   }
 
 	   	try {
+	   		try {
 	   		sem.acquire();
 	   		cc.startWebUIFragment(this);
 	   		sem.acquire();
+	   		}
+	   		catch ( InterruptedException ie ) {
+	   			cc.getOutputConsole().println("I'm panicking");
+		   		cc.getLogger().warning("Timing issue");
+		   	}
 	   		cc.stopWebUIFragment(this);
 
 	   		cc.pushDataComponentToOutput(DATA_OUTPUT, str);
-	   	} catch (Exception e) {
+	   	}
+
+	   	catch (Exception e) {
 	   		throw new ComponentExecutionException(e);
 	   	}
    	}
