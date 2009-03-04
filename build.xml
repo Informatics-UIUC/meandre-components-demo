@@ -182,7 +182,7 @@
                 <include name="src/**/*.vm"/>
                 <include name="src/**/*.list"/>
             </fileset>
-            <regexpmapper from="^src/(.+/)*(.*\..*)$" to="\2"/>
+            <regexpmapper from="^src/(.+)$" to="\1"/>
         </copy>
     </target>
 
