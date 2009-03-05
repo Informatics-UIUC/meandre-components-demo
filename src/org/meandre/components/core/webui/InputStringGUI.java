@@ -72,6 +72,7 @@ public class InputStringGUI extends TemplateGUI {
 	
 	
 	// repeat the TemplateGUI properties that are mandatory
+	// these will be removed once the plugin is ready
 	@ComponentProperty(description = "The template name", 
 			                  name = TemplateGUI.DATA_PROPERTY_TEMPLATE, 
 			          defaultValue = "org/meandre/components/core/webui/InputString.vm")
@@ -84,6 +85,7 @@ public class InputStringGUI extends TemplateGUI {
 	
 	@ComponentOutput(description="Name of output port", name= TemplateGUI.DATA_OUTPUT)
     static String ignoreMeO = "";
+	
 	
 	
 	//

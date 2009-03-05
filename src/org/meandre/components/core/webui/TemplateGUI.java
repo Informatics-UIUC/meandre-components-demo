@@ -161,7 +161,7 @@ public class TemplateGUI
      * @param target The target path
      * @param request The request object
      * @param response The response object
-     * @throws WebUIException A problem arised during the call back
+     * @throws WebUIException A problem arose during the call back
      */
     Map<String, String[]> parameterMap;
     @SuppressWarnings("unchecked")
@@ -181,6 +181,7 @@ public class TemplateGUI
            
     	// No Errors, 
     	// just push the browser to the "next" component
+    	// TODO make this an option
         try{
         	// when the page has been handled, generate a browser refresh
             PrintWriter writer = response.getWriter();
