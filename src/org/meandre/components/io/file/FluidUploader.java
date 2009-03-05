@@ -132,9 +132,9 @@ implements ExecutableComponent, WebUIFragmentCallback {
     	buf.append("<head>\n");
     	buf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n");
     	buf.append("<title>Uploader</title>\n");
-    	buf.append("<link href=\"http://build.fluidproject.org/fluid/fluid-components/css/fluid.components.uploader.css\" rel=\"stylesheet\" type=\"text/css\" />\n");
-    	buf.append("<link href=\"http://build.fluidproject.org/fluid/fluid-components/css/fluid.layout.css\" rel=\"stylesheet\" type=\"text/css\" />\n");
-    	buf.append("<script type=\"text/javascript\" src=\"http://build.fluidproject.org/fluid/fluid-components/js/Fluid-all.js\"></script>\n");
+    	buf.append("<link href=\"../../css/fluid.components.uploader.css\" rel=\"stylesheet\" type=\"text/css\" />\n");
+    	buf.append("<link href=\"../../css/fluid.layout.css\" rel=\"stylesheet\" type=\"text/css\" />\n");
+    	buf.append("<script type=\"text/javascript\" src=\"../../js/Fluid-all.js\"></script>\n");
     	buf.append("</head>\n");
 
     	buf.append("<body>\n");
@@ -223,7 +223,8 @@ implements ExecutableComponent, WebUIFragmentCallback {
     	        buf.append("decorators: {\n");
     	        	buf.append("type: \"fluid.swfUploadSetupDecorator\",\n");
     	            buf.append("options: {\n");
-    	            	buf.append("flashButtonImageURL: \"http://build.fluidproject.org/fluid/fluid-components/images/uploader/browse.png\"\n");
+    	            	//buf.append("flashButtonImageURL: \"http://build.fluidproject.org/fluid/fluid-components/images/uploader/browse.png\"\n");
+    	            	buf.append("flashButtonImageURL: \"../../images/uploader/browse.png\"\n");
     	            buf.append("}\n");
     	        buf.append("}\n");
     	    buf.append("},\n");
