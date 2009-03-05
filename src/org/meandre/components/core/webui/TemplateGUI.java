@@ -84,8 +84,10 @@ public class TemplateGUI
 	//
 	// this is a generic input, doesn't have to be used, up to the template
 	// 
+	/*
     @ComponentInput(description="Name of input port", name= "input")
     public final static String DATA_INPUT = "input";
+    */
     
     @ComponentOutput(description="Name of output port", name= "output")
     public final static String DATA_OUTPUT = "output";

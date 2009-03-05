@@ -29,6 +29,7 @@ $gui.setPushValue($fieldName)
 <br/>
 
 <TEXTAREA NAME="$fieldName" COLS="40" ROWS="6">
+$defaultValue
 </TEXTAREA>
 <br/>
 
