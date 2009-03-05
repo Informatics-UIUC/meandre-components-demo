@@ -84,6 +84,11 @@
         <dirset dir="${basedir}" includes="src"/>
     </path>
 
+    <!-- Test locations -->
+    <path id="src.test.root.dirs">
+        <dirset dir="${basedir}" includes="src-test" />
+    </path>
+
     <!--
     =================
     WIKI UPLOAD PROPERTIES
@@ -194,6 +199,74 @@
             description="-> creates components jar file">
         <jar destfile="${dist.dir}/${components.jar.file}"
              basedir="${classes.dir}"/>
+    </target>
+
+    <!--
+    =================
+    JUNIT TESTS TARGETS
+    =================
+    -->
+
+    <!--
+        Compile tests
+    -->
+    <target name="compile-tests"
+            depends="dist"
+            description="-> compiles the unit tests">
+        <!-- compile -->
+        <javac debug="on"
+               debuglevel="lines,vars,source"
+               destdir="${test.classes.dir}">
+            <src refid="src.test.root.dirs"/>
+            <classpath refid="classpath.runtime"/>
+        </javac>
+
+        <!-- include other files that should be available to runtime classpath-->
+        <copy todir="${test.classes.dir}"
+              includeEmptyDirs="no">
+            <fileset dir="${basedir}">
+                <include name="src-test/**/*.properties"/>
+                <include name="src-test/**/*.xml"/>
+                <include name="src-test/**/*.vm"/>
+                <include name="src-test/**/*.list"/>
+            </fileset>
+            <regexpmapper from="^src-test/(.+)$" to="\1"/>
+        </copy>
+    </target>
+
+
+    <!--
+        run the JUnit tests
+    -->
+    <target name="run-tests"
+            depends="compile-tests"
+            description= "-> runs the unit tests and generates xml logs and html reports">
+        <mkdir dir="${test.logs.dir}/xml"/>
+        <junit printsummary="yes"
+               forkmode="once"
+               errorProperty="test.failed"
+               failureProperty="test.failed"
+               fork="yes"
+               showoutput="yes">
+            <jvmarg value="-Duser.language=en"/>
+            <classpath>
+                <path refid="classpath.runtime"/>
+                <pathelement location="${test.classes.dir}"/>
+            </classpath>
+            <formatter type="xml"/>
+            <formatter type="brief" usefile="false"/>
+            <batchtest todir="${test.logs.dir}/xml">
+                <fileset dir="${test.classes.dir}" includes="**/*Test.class"/>
+            </batchtest>
+        </junit>
+        <junitreport todir="${test.logs.dir}/xml">
+            <fileset dir="${test.logs.dir}/xml">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="noframes" todir="${test.root.dir}"/>
+        </junitreport>
+        <echo message="Report generated at: 
+            file://${test.root.dir}/junit-noframes.html"/>
     </target>
 
 
