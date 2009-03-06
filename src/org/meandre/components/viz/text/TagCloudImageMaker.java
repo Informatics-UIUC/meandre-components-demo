@@ -194,7 +194,7 @@ public class TagCloudImageMaker implements ExecutableComponent {
 			    h = (int)(layout.getAscent()+layout.getDescent());
 
 			int textWidth = ((w+2*margin)/margin)*margin,
-			    textHeight = ((h+margin)/margin)*margin;
+			    textHeight = ((h+2*margin)/margin)*margin;
 
 			int xCoord = (textWidth-w)/2,
 			    yCoord = (int)layout.getAscent()+(textHeight-h)/2;
