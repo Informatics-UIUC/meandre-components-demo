@@ -43,7 +43,7 @@
 
     <!-- Make sure we're running under the correct environment -->
     <fail message="This package requires Ant 1.7." unless="using.ant.1.7"/>
-    <fail message="This package requires at least Java 5. Please set JAVA_HOME to point to where JDK 1.5+ is installed."
+    <fail message="This package requires at least Java 5. Please set JAVA_HOME to point to where JDK 1.5 or higher is installed."
           unless="using.java.1.5"/>
 
     <!-- 
