@@ -151,9 +151,31 @@ public class TagCloudImageMaker implements ExecutableComponent {
 			text[pos] = key;
 			count[pos] = value;
 			fontSize[pos++] = value;
-			maxValue = (value>maxValue)? value: maxValue;
-			minValue = (value<minValue)? value: minValue;
+			//maxValue = (value>maxValue)? value: maxValue;
+			//minValue = (value<minValue)? value: minValue;
 		}
+
+		for(int i=0; i<count.length-1; i++) {
+			int p = i; //p points to the biggest value
+			for(int j=i+1; j<count.length; j++) {
+				if(count[j] > count[p])
+					p = j;
+			}
+			if(p != i) { //swap
+				String s = text[i];
+				text[i] = text[p];
+				text[p] = s;
+				int t = count[i];
+				count[i] = count[p];
+				count[p] = t;
+				t = fontSize[i];
+				fontSize[i] = fontSize[p];
+				fontSize[p] = t;
+			}
+		}
+
+		maxValue = fontSize[0];
+		minValue = fontSize[fontSize.length-1];
 
 		if(maxValue != minValue) {
 			float slope = (maxFontSize-minFontSize)/(maxValue-minValue);
@@ -210,7 +232,7 @@ public class TagCloudImageMaker implements ExecutableComponent {
         	textG2D.drawString(/*text[k]*/str, xCoord, yCoord);
 
 			BufferedImage biFlip = null;
-			if(k%5==0) {
+			if(k%5 == 0) {
 				biFlip = new BufferedImage(textHeight, textWidth,textImage.getType());
 				for(int i=0; i<textWidth; i++)
     					for(int j=0; j<textHeight; j++)
