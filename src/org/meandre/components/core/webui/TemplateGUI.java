@@ -80,6 +80,11 @@ public class TemplateGUI
 			          defaultValue = "key=value,author=mike")
 	public final static String DATA_PROPERTY_HASHTABLE = "properties";
 	
+	@ComponentProperty(description = "Generate meta refresh html after execute", 
+                              name = "doRefresh", 
+                      defaultValue = "true")
+    public final static String DATA_PROPERTY_REFRESH = "doRefresh";
+	
 	
 	//
 	// this is a generic input, doesn't have to be used, up to the template
@@ -104,6 +109,10 @@ public class TemplateGUI
     // convenience properties to easily push additional properties 
     // not needed, template can always do $ccp.getProperty("title")
     protected String[] templateVariables = {};
+    
+    
+    // generate meta refresh html after execute
+    protected boolean doRefresh = true;
     
     
     /** This method gets call when a request with no parameters is made to a
@@ -181,13 +190,14 @@ public class TemplateGUI
            
     	// No Errors, 
     	// just push the browser to the "next" component
-    	// TODO make this an option
         try{
         	// when the page has been handled, generate a browser refresh
-            PrintWriter writer = response.getWriter();
-            writer.println("<html><head><title>Refresh Page</title>");
-            writer.println("<meta http-equiv='REFRESH' content='0;url=/'></head>");
-            writer.println("<body>Refreshing Page</body></html>");
+        	if (doRefresh) {
+               PrintWriter writer = response.getWriter();
+               writer.println("<html><head><title>Refresh Page</title>");
+               writer.println("<meta http-equiv='REFRESH' content='0;url=/'></head>");
+               writer.println("<body>Refreshing Page</body></html>");
+        	}
          }catch (IOException e) {
             throw new WebUIException("unable to generate redirect response");
          }
@@ -256,6 +266,10 @@ public class TemplateGUI
     	
     	
     	try {
+    		
+    		String tf = ccp.getProperty(DATA_PROPERTY_REFRESH);
+    		this.doRefresh = Boolean.parseBoolean(tf);
+    		
     		
     		Properties p = new Properties();
 			p.setProperty("resource.loader", "file,class" );

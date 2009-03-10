@@ -69,25 +69,7 @@ import org.meandre.webui.WebUIFragmentCallback;
         resources={"InputString.vm"}
         )
 public class InputStringGUI extends TemplateGUI {
-	
-	
-	// repeat the TemplateGUI properties that are mandatory
-	// these will be removed once the plugin is ready
-	@ComponentProperty(description = "The template name", 
-			                  name = TemplateGUI.DATA_PROPERTY_TEMPLATE, 
-			          defaultValue = "org/meandre/components/core/webui/InputString.vm")
-	static String ignoreMeT = "";
-	
-	@ComponentProperty(description = "User supplied property list", 
-			                  name = TemplateGUI.DATA_PROPERTY_HASHTABLE, 
-			          defaultValue = "title=Input a string, message=Please input a string")
-	static String ignoreMeP = "";
-	
-	@ComponentOutput(description="Name of output port", name= TemplateGUI.DATA_OUTPUT)
-    static String ignoreMeO = "";
-	
-	
-	
+
 	//
 	// specific to this component
 	//
