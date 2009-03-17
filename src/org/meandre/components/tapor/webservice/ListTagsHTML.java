@@ -49,6 +49,7 @@ import javax.xml.rpc.ParameterMode;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
+import org.meandre.annotations.ComponentOutput;
 
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
@@ -71,14 +72,19 @@ public class ListTagsHTML implements ExecutableComponent{
                     name= "Text")
     public final static String DATA_INPUT = "Text";
 
-	private String qnameService = "TaporwareService";
-	private String qnamePort = "TaporwareService_xml";
-	private String bodyNamespaceValue = "http://taporware.mcmaster.ca/~taporware/webservice";
-	private String endPoint = "http://taporware.mcmaster.ca:9982";
+	@ComponentOutput(description="Output the string passed from Tapor." +
+			"<br>TYPE: java.lang.String",
+	                 name="Text")
+	public final static String DATA_OUTPUT = "Text";
 
-	private String ENCODING_STYLE_PROPERTY = "javax.xml.rpc.encodingstyle.namespace.uri";
-	private String NS_XSD = "http://www.w3.org/2001/XMLSchema";
-	private String URI_ENCODING =  "http://schemas.xmlsoap.org/soap/encoding/";
+	private static String qnameService = "TaporwareService";
+	private static String qnamePort = "TaporwareService_xml";
+	private static String bodyNamespaceValue = "http://taporware.mcmaster.ca/~taporware/webservice";
+	private static String endPoint = "http://taporware.mcmaster.ca:9982";
+
+	private static String ENCODING_STYLE_PROPERTY = "javax.xml.rpc.encodingstyle.namespace.uri";
+	private static String NS_XSD = "http://www.w3.org/2001/XMLSchema";
+	private static String URI_ENCODING =  "http://schemas.xmlsoap.org/soap/encoding/";
 
 	/** When ready for execution.
      *
@@ -118,7 +124,7 @@ public class ListTagsHTML implements ExecutableComponent{
 			pw.flush();
 			pw.close();
 
-		    System.out.println(result);
+			cc.pushDataComponentToOutput(DATA_OUTPUT, result);
 		} catch (Exception ex) {
 			throw new ComponentExecutionException(ex);
 		}
