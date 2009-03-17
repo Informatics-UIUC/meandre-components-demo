@@ -57,6 +57,7 @@ import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamTerminator;
+import org.meandre.core.system.components.ext.StreamInitiator;
 
 @Component(creator="Lily Dong",
            description="Aggregates a series of input Map<String, Float> " +
@@ -83,7 +84,7 @@ public class WordCountAggregator implements ExecutableComponent {
     public final static String DATA_OUTPUT = "Map";
 
     //Store output value.
-    private Map outputMap;
+    private Map outputMap = null;
 
     /** When ready for execution.
     *
@@ -112,6 +113,12 @@ public class WordCountAggregator implements ExecutableComponent {
                     outputMap.put(obj, inputMap.get(obj));
                 }
             }
+        } else if(inputObject instanceof StreamInitiator) {
+        	// check to see if outputMap is null and create
+    		if (outputMap == null)
+    			outputMap = new Hashtable();
+    		else //otherwise clear this hashtable so that it contains no keys.
+    			outputMap.clear();
         }
     }
 
@@ -119,7 +126,6 @@ public class WordCountAggregator implements ExecutableComponent {
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
-        outputMap = new Hashtable();
     }
 
     /**
