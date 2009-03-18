@@ -281,9 +281,10 @@ public class RSSAggregatorViz
         ComponentContextException {
         Object inputObject = cc.getDataComponentFromInput(DATA_INPUT);
 
-        if(inputObject instanceof StreamInitiator) //start of stream
-            return;
-        else if(inputObject instanceof StreamTerminator) {//end of stream
+        if(inputObject instanceof StreamInitiator) {//start of stream
+        	if(aggregator!=null && aggregator.size()!=0)
+        		aggregator.clear();//for fresh start
+        } else if(inputObject instanceof StreamTerminator) {//end of stream
             try {
                 sInstanceID = cc.getExecutionInstanceID();
                 sem.acquire();
