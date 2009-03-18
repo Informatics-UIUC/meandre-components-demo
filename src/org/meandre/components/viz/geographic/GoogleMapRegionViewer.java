@@ -43,17 +43,17 @@
 package org.meandre.components.viz.geographic;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.concurrent.Semaphore;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
@@ -69,7 +69,6 @@ import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
@@ -278,10 +277,18 @@ public class GoogleMapRegionViewer
 			System.out.println("Information of all addresses");
 			for (int k = 0; k < nodeLst.getLength(); k++) {
 				Node fstNode = nodeLst.item(k);
+
+				String str = fstNode.getTextContent();
+
+				Pattern p = Pattern.compile("[a-zA-Z .]+");
+		 		Matcher m = p.matcher(str);
+		 		if(!m.matches()) //illegal characters
+		 			continue;
+
 				StringBuffer sb = new StringBuffer();
 			    sb.append("http://local.yahooapis.com/MapsService/V1/geocode?appid=");
 			    sb.append(yahooId);
-			    String str = fstNode.getTextContent();
+			    //String str = fstNode.getTextContent();
 			    str = str.replaceAll(" ", "%20");
 			    sb.append("&location=").append(str);
 
@@ -346,11 +353,11 @@ public class GoogleMapRegionViewer
 			throw new ComponentExecutionException(e1);
 		}
 
-		for(int k=0; k<location.size(); k++)
+		/*for(int k=0; k<location.size(); k++)
 			System.out.println(k + "\t" +
 							   location.elementAt(k) + "\t" +
 							   lat.elementAt(k)   + "\t" +
-							   lon.elementAt(k));
+							   lon.elementAt(k));*/
 
     	try {
             sInstanceID = cc.getExecutionInstanceID();
