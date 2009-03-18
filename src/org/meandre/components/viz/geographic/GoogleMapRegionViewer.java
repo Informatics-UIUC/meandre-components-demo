@@ -255,6 +255,16 @@ public class GoogleMapRegionViewer
     */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
+    	//prepare for fresh start
+    	if(lat!=null && lat.size()!=0)
+    		lat.clear();
+    	if(lon!=null && lon.size()!=0)
+    		lon.clear();
+    	if(location!=null && location.size()!=0)
+    		location.clear();
+    	if(context!=null && context.size()!=0)
+    		context.clear();
+
     	googleKey = cc.getProperty(DATA_PROPERTY_1);
 
     	String yahooId = cc.getProperty(DATA_PROPERTY_2);
