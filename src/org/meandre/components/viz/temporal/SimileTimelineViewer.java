@@ -290,6 +290,8 @@ public class SimileTimelineViewer
      */
     public void execute(ComponentContext cc) throws ComponentExecutionException,
         ComponentContextException {
+    	minYear = Integer.MAX_VALUE;
+
     	htmLocation = cc.getProperty(DATA_PROPERTY_1);
     	xmLocation = cc.getProperty(DATA_PROPERTY_2);
 
@@ -464,7 +466,6 @@ public class SimileTimelineViewer
      * Call at the end of an execution flow.
      */
     public void initialize(ComponentContextProperties ccp) {
-    	minYear = Integer.MAX_VALUE;
     }
 
     /**
