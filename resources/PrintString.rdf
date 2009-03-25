@@ -1,0 +1,36 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.meandre.org/ontology/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:about="meandre://seasr.org/components/util/printstring/output/string">
+    <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">object output port</dc:description>
+    <name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">string</name>
+    <dc:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">meandre://seasr.org/components/util/printstring/output/string</dc:identifier>
+    <rdf:type rdf:resource="http://www.meandre.org/ontology/data_port"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="meandre://seasr.org/components/util/printstring">
+    <mode rdf:resource="http://www.meandre.org/ontology/component/type/compute"/>
+    <firing_policy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">any</firing_policy>
+    <resource_location rdf:resource="meandre://seasr.org/components/util/printstring/implementation/org.meandre.components.util.PrintString"/>
+    <dc:rights rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UofINCSA</dc:rights>
+    <tag rdf:datatype="http://www.w3.org/2001/XMLSchema#string">utility</tag>
+    <dc:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2009-03-05T22:30:52</dc:date>
+    <rdf:type rdf:resource="http://www.meandre.org/ontology/executable_component"/>
+    <execution_context rdf:resource="meandre://seasr.org/components/util/printstring/implementation/"/>
+    <runnable rdf:datatype="http://www.w3.org/2001/XMLSchema#string">java</runnable>
+    <name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PrintString</name>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Bernie Acs</dc:creator>
+    <input_data_port rdf:resource="meandre://seasr.org/components/util/printstring/input/object"/>
+    <dc:format rdf:datatype="http://www.w3.org/2001/XMLSchema#string">java/class</dc:format>
+    <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Print String</dc:description>
+    <output_data_port rdf:resource="meandre://seasr.org/components/util/printstring/output/string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="meandre://seasr.org/components/util/printstring/input/object">
+    <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The String value of the input recieved will be Printed to Console.</dc:description>
+    <name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">object</name>
+    <dc:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">meandre://seasr.org/components/util/printstring/input/object</dc:identifier>
+    <rdf:type rdf:resource="http://www.meandre.org/ontology/data_port"/>
+  </rdf:Description>
+</rdf:RDF>

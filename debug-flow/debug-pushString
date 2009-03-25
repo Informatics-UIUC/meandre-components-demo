@@ -1,0 +1,17 @@
+#
+import <file:///c:/Eclipise_Meandre/Demo-Components/resources/PushString.rdf>
+alias <meandre://seasr.org/components/push-string> as PUSHSTRING
+
+import <file:///c:/Eclipise_Meandre/Demo-Components/resources/PrintString.rdf>
+alias <meandre://seasr.org/components/util/printstring> as PRINTSTRING
+
+# 
+print = PRINTSTRING()
+
+push = PUSHSTRING()
+push.ConsoleOutput = "verbose"
+push.string = "hello this is my message"
+
+@anything = push()
+print(object: anything.string )
+#

@@ -1,0 +1,45 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.meandre.org/ontology/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > 
+  <rdf:Description rdf:about="meandre://seasr.org/components/push-string/property/string">
+    <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Input string</dc:description>
+    <value rdf:datatype="http://www.w3.org/2001/XMLSchema#string">hello world</value>
+    <key rdf:datatype="http://www.w3.org/2001/XMLSchema#string">string</key>
+    <rdf:type rdf:resource="http://www.meandre.org/ontology/property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="meandre://seasr.org/components/push-string/property/ConsoleOutput">
+    <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Controls ConsoleOutput during runtime; values maybe (off, on, verbose)</dc:description>
+    <value rdf:datatype="http://www.w3.org/2001/XMLSchema#string">off</value>
+    <key rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ConsoleOutput</key>
+    <rdf:type rdf:resource="http://www.meandre.org/ontology/property"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="meandre://seasr.org/components/push-string/output/string">
+    <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Output string</dc:description>
+    <name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">string</name>
+    <dc:identifier rdf:datatype="http://www.w3.org/2001/XMLSchema#string">meandre://seasr.org/components/push-string/output/string</dc:identifier>
+    <rdf:type rdf:resource="http://www.meandre.org/ontology/data_port"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="meandre://seasr.org/components/push-string">
+    <dc:format rdf:datatype="http://www.w3.org/2001/XMLSchema#string">java/class</dc:format>
+    <tag rdf:datatype="http://www.w3.org/2001/XMLSchema#string">io</tag>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Boris Capitanu</dc:creator>
+    <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Pushes the string specified in the property to the output</dc:description>
+    <tag rdf:datatype="http://www.w3.org/2001/XMLSchema#string">string</tag>
+    <mode rdf:resource="http://www.meandre.org/ontology/component/type/compute"/>
+    <execution_context rdf:resource="meandre://seasr.org/components/push-string/implementation/"/>
+    <resource_location rdf:resource="meandre://seasr.org/components/push-string/implementation/org.meandre.components.io.PushString"/>
+    <output_data_port rdf:resource="meandre://seasr.org/components/push-string/output/string"/>
+    <dc:date rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2009-03-25T14:36:24</dc:date>
+    <dc:rights rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UofINCSA</dc:rights>
+    <tag rdf:datatype="http://www.w3.org/2001/XMLSchema#string">input</tag>
+    <property_set rdf:resource="meandre://seasr.org/components/push-string/property/string"/>
+    <runnable rdf:datatype="http://www.w3.org/2001/XMLSchema#string">java</runnable>
+    <name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Push String</name>
+    <firing_policy rdf:datatype="http://www.w3.org/2001/XMLSchema#string">all</firing_policy>
+    <rdf:type rdf:resource="http://www.meandre.org/ontology/executable_component"/>
+    <property_set rdf:resource="meandre://seasr.org/components/push-string/property/ConsoleOutput"/>
+  </rdf:Description>
+</rdf:RDF>
