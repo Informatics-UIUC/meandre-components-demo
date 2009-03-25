@@ -42,14 +42,11 @@
 
 package org.meandre.components.io;
 
-import org.meandre.core.ComponentContext;
-import org.meandre.core.ComponentContextException;
-import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
-
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextProperties;
 
 /* This executable component pushes a string to the output
@@ -70,7 +67,7 @@ import org.meandre.core.ComponentContextProperties;
 	    tags="io, input, string",
         baseURL="meandre://seasr.org/components/")
         
-public class PushString implements ExecutableComponent {
+public class PushString extends AbstractExecutableComponent { /* implements ExecutableComponent { */
 
 	@ComponentProperty(description = "Input string", name = "string", defaultValue = "hello world")
 	public final static String DATA_PROPERTY_STRING = "string";
@@ -78,17 +75,18 @@ public class PushString implements ExecutableComponent {
 	@ComponentOutput(description = "Output string", name = "string")
 	public final static String DATA_OUTPUT_STRING = "string";
 
-	public void initialize(ComponentContextProperties ccp) {
+	public void initializeCallBack(ComponentContextProperties ccp) throws Exception {
 	}
 
-	public void execute(ComponentContext context)
-		throws ComponentExecutionException, ComponentContextException {
+	public void executeCallBack(ComponentContext context)
+		throws Exception {
 
 		String strInput = context.getProperty(DATA_PROPERTY_STRING);
 		context.pushDataComponentToOutput(DATA_OUTPUT_STRING, strInput);
 	}
-
-	public void dispose(ComponentContextProperties ccp) {
+	public void disposeCallBack(ComponentContextProperties ccp)
+			throws Exception {
 	}
+
 
 }
