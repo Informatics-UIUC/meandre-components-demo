@@ -1,8 +1,12 @@
 package org.meandre.components.io;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
+import java.util.Iterator;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
@@ -12,74 +16,159 @@ import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
-import org.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.util.PDFTextStripper;
+
+import de.intarsys.pdf.content.CSDeviceBasedInterpreter;
+import de.intarsys.pdf.content.CSException;
+import de.intarsys.pdf.content.text.CSTextExtractor;
+import de.intarsys.pdf.parser.COSLoadException;
+import de.intarsys.pdf.pd.PDDocument;
+import de.intarsys.pdf.pd.PDPage;
+import de.intarsys.pdf.pd.PDPageNode;
+import de.intarsys.pdf.pd.PDPageTree;
+import de.intarsys.tools.locator.ByteArrayLocator;
 
 /** This class provides methods related to text extraction from PDF files
  *
+ * @author Boris Capitanu
  * @author Xavier Llor&agrave;
  * @author Loretta Auvil
  *
  */
 
 @Component(creator="Loretta Auvil",
-		description="This component extracts the text from a pdf document. "+
-		"The input is a String or URL specifiying the url of the pdf document. "+
-		"The output is the extracted text.",
-		name="PDFTextExtractor",
-		tags="URL, text, pdf",
-		dependency={"FontBox-0.1.0.jar"},
-		baseURL="meandre://seasr.org/components/")
+        description="This component extracts the text from a pdf document. "+
+        "The input is a String or URL specifiying the url of the pdf document. "+
+        "The output is the extracted text.",
+        name="PDFTextExtractor",
+        tags="URL, text, pdf",
+        baseURL="meandre://seasr.org/components/")
 
-		public class PDFTextExtractor implements ExecutableComponent {
+        public class PDFTextExtractor implements ExecutableComponent {
 
-	@ComponentInput(description="URL of the pdf file." +
-			"<br>TYPE: java.io.String",
-			name="URL")
-			public final static String DATA_INPUT = "URL";
-	@ComponentOutput(description="Text of the pdf file." +
-			"<br>TYPE: java.io.String",
-			name="Text")
-			public final static String DATA_OUTPUT = "Text";
+    @ComponentInput(description="URL of the pdf file." +
+            "<br>TYPE: java.io.String",
+            name="URL")
+            public final static String DATA_INPUT = "URL";
+    @ComponentOutput(description="Text of the pdf file." +
+            "<br>TYPE: java.io.String",
+            name="Text")
+            public final static String DATA_OUTPUT = "Text";
 
-	private PrintStream console;
+    private PrintStream console;
 
-	public void dispose(ComponentContextProperties ccp)
-	throws ComponentExecutionException, ComponentContextException {
-		// TODO Auto-generated method stub
-	}
+    public void initialize(ComponentContextProperties ccp)
+        throws ComponentExecutionException, ComponentContextException {
 
-	public void execute(ComponentContext cc)
-	throws ComponentExecutionException, ComponentContextException {
-		try {
-			URL url;
-			if (cc.getDataComponentFromInput(DATA_INPUT).getClass().getName() == "java.lang.String")
-				url = new URL ((String) cc.getDataComponentFromInput("URL"));
-			else if (cc.getDataComponentFromInput(DATA_INPUT).getClass().getName() == "java.net.URL")
-					url = (URL) cc.getDataComponentFromInput("URL");
-			else {
-				console.println("PDFTextExtractor must receive a java.lang.String or a java.net.URL type");
-				url = null;
-			}
-			if (url.toString().endsWith(".pdf")) {
+        console = ccp.getOutputConsole();
+        console.println("Initializing PDFTextExtrator for " + ccp.getFlowID());
+    }
 
-				PDDocument pdd = PDDocument.load(url);
-				PDFTextStripper pts = new PDFTextStripper();
-				String sRes = pts.getText(pdd);
-				pdd.close();
-				cc.pushDataComponentToOutput(DATA_OUTPUT, sRes);
-			}
-		} catch(java.net.MalformedURLException e) {
-			throw new ComponentExecutionException(e);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    public void execute(ComponentContext cc)
+        throws ComponentExecutionException, ComponentContextException {
 
-	public void initialize(ComponentContextProperties ccp)
-	throws ComponentExecutionException, ComponentContextException {
-		console = ccp.getOutputConsole();
-		console.println("Initializing PDFTextExtrator for " + ccp.getFlowID());
-	}
+        URL url;
+
+        try {
+            if (cc.getDataComponentFromInput(DATA_INPUT).getClass().getName() == "java.lang.String")
+                url = new URL ((String) cc.getDataComponentFromInput("URL"));
+            else if (cc.getDataComponentFromInput(DATA_INPUT).getClass().getName() == "java.net.URL")
+                url = (URL) cc.getDataComponentFromInput("URL");
+            else {
+                console.println("PDFTextExtractor must receive a java.lang.String or a java.net.URL type");
+                url = null;
+            }
+        } catch(java.net.MalformedURLException e) {
+            throw new ComponentExecutionException(e);
+        }
+
+        if (url != null && url.toString().toLowerCase().endsWith(".pdf")) {
+            try {
+                byte[] pdfData;
+                String pdfText;
+
+                InputStream dataStream = url.openStream();
+                try {
+                    pdfData = getBytesFromStream(dataStream);
+                } finally {
+                    dataStream.close();
+                }
+
+                PDDocument pdfDoc = PDDocument.createFromLocator(
+                        new ByteArrayLocator(pdfData, url.toString(), null));
+                try {
+                    StringBuilder sb = new StringBuilder();
+                    extractText(pdfDoc.getPageTree(), sb);
+                    pdfText = sb.toString();
+                } finally {
+                    pdfDoc.close();
+                }
+
+                cc.pushDataComponentToOutput(DATA_OUTPUT, pdfText);
+            }
+            catch (IOException ioex) {
+                ioex.printStackTrace();
+                throw new ComponentExecutionException(ioex);
+            }
+            catch (COSLoadException coslex) {
+                coslex.printStackTrace();
+                throw new ComponentExecutionException(coslex);
+            }
+        } else
+            console.println("PDFTextExtractor can only process PDF files (*.pdf)");
+    }
+
+    public void dispose(ComponentContextProperties ccp)
+        throws ComponentExecutionException, ComponentContextException {
+    }
+
+    /**
+     * Reads the content of an InputStream into a byte array
+     *
+     * @param dataStream The data stream
+     * @return A byte array containing the data from the data stream
+     * @throws IOException Thrown if a problem occurred while reading from the stream
+     */
+    private byte[] getBytesFromStream(InputStream dataStream) throws IOException {
+        BufferedInputStream bufStream = new BufferedInputStream(dataStream);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[4096];
+        int nRead;
+
+        do {
+            nRead = bufStream.read(buffer, 0, buffer.length);
+            if (nRead > 0)
+                baos.write(buffer, 0, nRead);
+        } while (nRead > 0);
+
+        return baos.toByteArray();
+    }
+
+    /**
+     * Extracts text from the page tree of a PDF document
+     *
+     * @param pageTree The page tree root node
+     * @param sb The StringBuilder to use to store the extracted text
+     */
+    @SuppressWarnings("unchecked")
+    private void extractText(PDPageTree pageTree, StringBuilder sb) {
+        for (Iterator it = pageTree.getKids().iterator(); it.hasNext();) {
+            PDPageNode node = (PDPageNode) it.next();
+            if (node.isPage()) {
+                try {
+                    CSTextExtractor extractor = new CSTextExtractor();
+                    PDPage page = (PDPage) node;
+                    CSDeviceBasedInterpreter interpreter = new CSDeviceBasedInterpreter(
+                            null, extractor);
+                    interpreter.process(page.getContentStream(), page
+                            .getResources());
+                    sb.append(extractor.getContent());
+                } catch (CSException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                extractText((PDPageTree) node, sb);
+            }
+        }
+    }
 }
