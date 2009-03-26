@@ -15,7 +15,6 @@ import org.meandre.core.ExecutableComponent;
 		"The output is the extracted text.",
 		name="ProcessTextBasedOnFormat",
 		tags="URL, text, pdf",
-		dependency={"FontBox-0.1.0.jar"},
 		baseURL="meandre://seasr.org/components/")
 
 public class ProcessTextBasedOnFormat implements ExecutableComponent {
