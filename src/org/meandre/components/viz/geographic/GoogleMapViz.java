@@ -53,11 +53,12 @@ import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
@@ -69,8 +70,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class GoogleMapViz
-	implements ExecutableComponent, WebUIFragmentCallback {
+public class GoogleMapViz extends AbstractExecutableComponent
+implements WebUIFragmentCallback {
 	@ComponentProperty(defaultValue=//"",
 		//"ABQIAAAAzuMq2M5--KdBKawoLNQWUxQKQLDP3-h3gXPk25Qansm9VUoOPBRzc41cGNCHCFTWrlzNJCHE5Y_9AA", //demo.seasr.org
 		"ABQIAAAAzuMq2M5--KdBKawoLNQWUxRi_j0U6kJrkFvY4-OX2XYmEAa76BQS61jzrv4ruAIpkFQs5Qp-fiN3hg", //127.0.0.1
@@ -249,8 +250,8 @@ public class GoogleMapViz
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
     	lat = (Vector<String>)cc.getDataComponentFromInput(DATA_INPUT_1);
         lon = (Vector<String>)cc.getDataComponentFromInput(DATA_INPUT_2);
         location = (Vector<String>)cc.getDataComponentFromInput(DATA_INPUT_3);
@@ -272,13 +273,15 @@ public class GoogleMapViz
 	/**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
 
