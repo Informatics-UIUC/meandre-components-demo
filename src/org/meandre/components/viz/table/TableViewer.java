@@ -54,11 +54,11 @@ import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
@@ -75,8 +75,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class TableViewer
-    implements ExecutableComponent, WebUIFragmentCallback {
+public class TableViewer extends AbstractExecutableComponent
+implements WebUIFragmentCallback {
     @ComponentProperty(defaultValue="true",
                        description="This property indicates whether a header exists " +
                        		"that contains the attribute (column) labels in the first row of the file. ",
@@ -370,8 +370,8 @@ public class TableViewer
     * @throws ComponentExecutionException An exeception occurred during execution
     * @throws ComponentContextException Illigal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         try {
             isHeader = Boolean.valueOf(cc.getProperty(DATA_PROPERTY_1));
             isType = Boolean.valueOf(cc.getProperty(DATA_PROPERTY_2));
@@ -466,12 +466,14 @@ public class TableViewer
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
