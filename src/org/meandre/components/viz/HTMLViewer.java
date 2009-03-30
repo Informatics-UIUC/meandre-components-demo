@@ -48,6 +48,7 @@ import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -71,8 +72,8 @@ import javax.servlet.http.HttpServletResponse;
         mode=Mode.webui,
         baseURL="meandre://seasr.org/components/")
 
-public class HTMLViewer
-implements ExecutableComponent, WebUIFragmentCallback {
+public class HTMLViewer extends AbstractExecutableComponent
+implements WebUIFragmentCallback {
 
 	@ComponentInput(description="Read content as byte array." +
             "<br>TYPE: byte[]",
@@ -136,8 +137,8 @@ implements ExecutableComponent, WebUIFragmentCallback {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
 
 			ccHandle = cc;
 
@@ -154,14 +155,14 @@ implements ExecutableComponent, WebUIFragmentCallback {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
-    	//console = ccp.getOutputConsole();
-    	//console.println("Initializing " + ccp.getFlowID());
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

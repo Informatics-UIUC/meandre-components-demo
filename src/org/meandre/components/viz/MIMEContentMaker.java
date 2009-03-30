@@ -55,6 +55,7 @@ import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -75,8 +76,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.compute,
            baseURL="meandre://seasr.org/components/")
 
-public class MIMEContentMaker
-    implements ExecutableComponent {
+public class MIMEContentMaker extends AbstractExecutableComponent
+{
     @ComponentProperty(defaultValue="text/plain",
                        description="This property sets MIME type.",
                        name="MIME_type")
@@ -151,8 +152,8 @@ public class MIMEContentMaker
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
     	try {
 			ccHandle = cc;
 			byte[] inputContent = (byte[])cc.getDataComponentFromInput(DATA_INPUT);
@@ -167,14 +168,14 @@ public class MIMEContentMaker
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
-    	//console = ccp.getOutputConsole();
-    	//console.println("Initializing " + ccp.getFlowID());
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
