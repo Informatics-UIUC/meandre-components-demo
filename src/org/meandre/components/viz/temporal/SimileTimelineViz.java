@@ -47,6 +47,7 @@ import java.util.concurrent.Semaphore;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.Component.Mode;
@@ -65,8 +66,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class SimileTimelineViz
-	implements ExecutableComponent, WebUIFragmentCallback {
+public class SimileTimelineViz extends AbstractExecutableComponent
+implements  WebUIFragmentCallback {
 	@ComponentInput(description="Read URL of an existing HTML file generated " +
 			"by SimileTimelineGenerator. XML file is supposed to be " +
 			"in the same directory with the HTML file." +
@@ -155,8 +156,8 @@ public class SimileTimelineViz
     /* (non-Javadoc)
      * @see org.meandre.core.ExecutableComponent#execute(org.meandre.core.ComponentContext)
      */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
     	urlOfHtml = (String)cc.getDataComponentFromInput(DATA_INPUT);
 
     	try {
@@ -173,12 +174,14 @@ public class SimileTimelineViz
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
