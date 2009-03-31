@@ -46,6 +46,8 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -58,7 +60,8 @@ import org.meandre.core.ExecutableComponent;
            tags="lower case, text",
            baseURL="meandre://seasr.org/components/")
 
-public class ToLowerCase implements ExecutableComponent {
+public class ToLowerCase extends AbstractExecutableComponent
+{
     @ComponentInput(description="Text to be converted." +
             "<br>TYPE:java.lang.String",
                     name= "Text")
@@ -75,8 +78,8 @@ public class ToLowerCase implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         String inputText = (String)cc.getDataComponentFromInput(DATA_INPUT);
         cc.pushDataComponentToOutput(DATA_OUTPUT, inputText.toLowerCase());
     }
@@ -84,12 +87,14 @@ public class ToLowerCase implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

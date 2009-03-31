@@ -55,6 +55,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -69,7 +70,8 @@ import org.meandre.core.ExecutableComponent;
            tags="concordance rest service",
            baseURL="meandre://seasr.org/components/")
 
-public class Concordance implements ExecutableComponent {
+public class Concordance extends AbstractExecutableComponent
+{
 	@ComponentInput(description="Input text to be analyzed." +
             "<br>TYPE: java.lang.String",
                     name= "Text")
@@ -81,8 +83,8 @@ public class Concordance implements ExecutableComponent {
      * @throws ComponentExecutionException An exeception occurred during execution
      * @throws ComponentContextException Illigal access to context
      */
-    public void execute(ComponentContext cc) throws
-    ComponentExecutionException,ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
     	String htmlInput = (String)cc.getDataComponentFromInput(DATA_INPUT);
 
     	try {
@@ -108,7 +110,7 @@ public class Concordance implements ExecutableComponent {
         			new InputStreamReader(postMethod.getResponseBodyAsStream()));
         	String line = null;
         	while((line = in.readLine()) != null)
-        		System.out.println(line);
+        		getConsoleOut().println(line);
 
         	in.close();
 
@@ -120,12 +122,14 @@ public class Concordance implements ExecutableComponent {
 	/**
 	 * Call at the end of an execution flow.
 	 */
-	public void initialize(ComponentContextProperties ccp) {
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 
 	/**
 	 * Called when a flow is started.
 	 */
-	public void dispose(ComponentContextProperties ccp) {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 }

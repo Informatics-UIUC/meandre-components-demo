@@ -44,9 +44,6 @@ package org.meandre.components.text.transform;
 
 import java.io.StringWriter;
 import java.util.Iterator;
-import java.util.logging.Logger;
-import java.util.Enumeration;
-import java.util.Set;
 import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -58,16 +55,16 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
 
 import org.meandre.core.ComponentContext;
-import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 import org.seasr.components.text.datatype.corpora.Annotation;
 import org.seasr.components.text.datatype.corpora.AnnotationConstants;
@@ -87,13 +84,7 @@ import org.w3c.dom.Attr;
            tags = "text, document, annotation",
            baseURL="meandre://seasr.org/components/")
 
-public class Annotation2XML implements ExecutableComponent {
-	@ComponentProperty(description = "Verbose output? A boolean value " +
-					   "(true or false).",
-					   name = "verbose",
-					   defaultValue = "false")
-	final static String DATA_PROPERTY_VERBOSE = "verbose";
-
+public class Annotation2XML extends AbstractExecutableComponent {
 	@ComponentProperty(description = "Entity types (comma delimited list).",
 					   name = "Entities",
 					   defaultValue =  "person,organization,location,time,money,percentage,date")
@@ -109,20 +100,18 @@ public class Annotation2XML implements ExecutableComponent {
 					 name = "Annotation_xml")
 	public final static String DATA_OUTPUT_ANNOTATIONS = "Annotation_xml";
 
-	private static Logger _logger = Logger.getLogger("AnnotationToXML");
+	//private static Logger _logger = Logger.getLogger("AnnotationToXML");
 
 	//Store properties.
-	private String verbose;
 	private String entities;
 
-	public void dispose(ComponentContextProperties ccp)
-	throws ComponentExecutionException, ComponentContextException {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 		// TODO Auto-generated method stub
 	}
 
-	public void execute(ComponentContext ctx)
-	throws ComponentExecutionException, ComponentContextException {
-		_logger.fine("execute() called");
+	public void executeCallBack(ComponentContext ctx)
+	throws Exception {
 		Document doc_in = (Document)
 		ctx.getDataComponentFromInput(DATA_INPUT_DOC_IN);
 
@@ -145,7 +134,7 @@ public class Annotation2XML implements ExecutableComponent {
 		Element root = doc_out.createElement("root");
         doc_out.appendChild(root);
         root.setAttribute("docID", doc_in.getDocID());
-		System.out.println("docID: " + doc_in.getDocID());
+        getConsoleOut().println("docID: " + doc_in.getDocID());
 
 		Hashtable<String, Element> ht = new Hashtable<String, Element>();
 
@@ -200,7 +189,7 @@ public class Annotation2XML implements ExecutableComponent {
         String xmlString = sw.toString();
 
         //print xml
-        System.out.println("Here's the xml:\n\n" + xmlString);
+        getConsoleOut().println("Here's the xml:\n\n" + xmlString);
 		} catch(Exception e) {}
 
 		// if statement to check ann.getType() to the property DATA_PROPERTY_ENTITIES
@@ -208,9 +197,8 @@ public class Annotation2XML implements ExecutableComponent {
 		ctx.pushDataComponentToOutput(DATA_OUTPUT_ANNOTATIONS, doc_out);
 	}
 
-	public void initialize(ComponentContextProperties ccp)
-	throws ComponentExecutionException, ComponentContextException {
-		verbose = (ccp.getProperty(DATA_PROPERTY_VERBOSE)).toLowerCase();
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 		entities = ccp.getProperty(DATA_PROPERTY_ENTITIES);
 	}
 

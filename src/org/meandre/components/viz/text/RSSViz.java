@@ -42,7 +42,6 @@
 
 package org.meandre.components.viz.text;
 
-import java.util.Vector;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -57,11 +56,11 @@ import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
@@ -73,8 +72,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class RSSViz
-    implements ExecutableComponent, WebUIFragmentCallback {
+public class RSSViz extends AbstractExecutableComponent
+implements WebUIFragmentCallback {
     @ComponentInput(description="Read RSS content as SyndFeed." +
                 "<br>TYPE: com.sun.syndication.feed.synd.SyndFeed",
                     name= "RSS_Feed")
@@ -315,8 +314,8 @@ public class RSSViz
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         inputFeed = (SyndFeed)cc.getDataComponentFromInput(DATA_INPUT);
 
         try {
@@ -335,12 +334,14 @@ public class RSSViz
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

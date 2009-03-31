@@ -45,15 +45,14 @@ package org.meandre.components.io.url;
 import java.net.URL;
 import java.io.InputStream;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
 
 import org.meandre.core.ComponentContext;
-import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
-import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Fetches content of the specified URL as an InputStream " +
@@ -66,8 +65,8 @@ import org.meandre.core.ExecutableComponent;
            tags="URL, stream",
            baseURL="meandre://seasr.org/components/")
 
-public class URLFetcher implements ExecutableComponent {
-
+public class URLFetcher extends AbstractExecutableComponent
+{
     @ComponentProperty(defaultValue="http://www.ibm.com/developerworks/views/java/rss/libraryview.jsp?feed_by=rss",
                        description="This property sets the URL.",
                        name="location")
@@ -85,8 +84,8 @@ public class URLFetcher implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         InputStream is = null;
         try {
             URL url = new URL(cc.getProperty(DATA_PROPERTY));
@@ -100,22 +99,24 @@ public class URLFetcher implements ExecutableComponent {
                     if(is != null)
                         is.close();
                 }catch(java.io.IOException ioex) {}
-                throw new ComponentExecutionException(e);
+                throw new Exception(e);
             }
         } catch(java.net.MalformedURLException e) {
-            throw new ComponentExecutionException(e);
+            throw new Exception(e);
         }
     }
 
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

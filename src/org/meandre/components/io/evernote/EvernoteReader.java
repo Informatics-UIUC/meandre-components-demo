@@ -44,6 +44,8 @@ package org.meandre.components.io.evernote;
 
 import java.util.List;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
@@ -52,7 +54,6 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 import com.facebook.thrift.protocol.TBinaryProtocol;
 import com.facebook.thrift.transport.THttpClient;
@@ -74,7 +75,8 @@ import com.evernote.edam.notestore.NoteList;
            tags="evernote, note, notebook",
            baseURL="meandre://seasr.org/components/")
 
-public class EvernoteReader implements ExecutableComponent {
+public class EvernoteReader extends AbstractExecutableComponent
+{
     @ComponentProperty(defaultValue="",
                        description="This property sets username.",
                        name="username")
@@ -100,14 +102,15 @@ public class EvernoteReader implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception
+    {
         String username = cc.getProperty(DATA_PROPERTY_1),
                password = cc.getProperty(DATA_PROPERTY_2),
                key = cc.getProperty(DATA_PROPERTY_3);
 
-        String userStoreUrl = "https://lb.evernote.com/edam/user";
-        String noteStoreUrlBase = "http://lb.evernote.com/edam/note/";
+        String userStoreUrl = "https://sandbox.evernote.com/edam/user";
+        String noteStoreUrlBase = "http://sandbox.evernote.com/edam/note/";
 
         try {
             THttpClient userStoreTrans = new THttpClient(userStoreUrl);
@@ -120,8 +123,8 @@ public class EvernoteReader implements ExecutableComponent {
                     com.evernote.edam.userstore.Constants.EDAM_VERSION_MAJOR,
                     com.evernote.edam.userstore.Constants.EDAM_VERSION_MINOR);
             if (!versionOk) {
-                System.err.println("Incomatible EDAM client protocol version");
-                System.exit(1);
+            	String message = "Incomatible EDAM client protocol version";
+            	throw new ComponentExecutionException(message);
             }
 
             AuthenticationResult authResult =
@@ -129,7 +132,7 @@ public class EvernoteReader implements ExecutableComponent {
             User user = authResult.getUser();
 
             String authToken = authResult.getAuthenticationToken();
-            System.out.println("Notes for " + user.getUsername() + ":");
+            getConsoleOut().println("Notes for " + user.getUsername() + ":");
 
             String noteStoreUrl = noteStoreUrlBase + user.getShardId();
             THttpClient noteStoreTrans =
@@ -142,14 +145,14 @@ public class EvernoteReader implements ExecutableComponent {
             List<Notebook> notebooks =
                 (List<Notebook>)noteStore.listNotebooks(authToken);
             for (Notebook notebook : notebooks) {
-                System.out.println("Notebook: " + notebook.getName());
+            	getConsoleOut().println("Notebook: " + notebook.getName());
                 NoteFilter filter = new NoteFilter();
                 filter.setNotebookGuid(notebook.getGuid());
                 NoteList noteList = noteStore.findNotes(authToken, filter, 0, 100);
                 List<Note> notes = (List<Note>) noteList.getNotes();
                 for (Note note : notes) {
-                    System.out.println(" * " + note.getTitle());
-                    //System.out.println(noteStore.getNoteContent(authToken, note.getGuid()));
+                	getConsoleOut().println(" * " + note.getTitle());
+                	//getConsoleOut().println(noteStore.getNoteContent(authToken, note.getGuid()));
                 }
             }
 
@@ -162,12 +165,14 @@ public class EvernoteReader implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

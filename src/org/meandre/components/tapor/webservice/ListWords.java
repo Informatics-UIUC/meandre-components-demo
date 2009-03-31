@@ -50,6 +50,7 @@ import javax.xml.rpc.ParameterMode;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -65,7 +66,8 @@ import org.meandre.core.ExecutableComponent;
         dependency={"FastInfoset.jar", "jaxrpc-impl.jar", "jaxrpc-spi.jar", "jsr173_api.jar", "saaj-impl.jar"},
         baseURL="meandre://seasr.org/components/")
 
-public class ListWords implements ExecutableComponent {
+public class ListWords extends AbstractExecutableComponent
+{
 	@ComponentInput(description="Input text to be analyzed." +
             "<br>TYPE: java.lang.String",
                     name= "Text")
@@ -91,8 +93,8 @@ public class ListWords implements ExecutableComponent {
      * @throws ComponentExecutionException An exeception occurred during execution
      * @throws ComponentContextException Illigal access to context
      */
-	public void execute(ComponentContext cc) throws
-	ComponentExecutionException, ComponentContextException {
+	public void executeCallBack(ComponentContext cc)
+	throws Exception {
 		String htmlInput = (String)cc.getDataComponentFromInput(DATA_INPUT);
 
 	    try {
@@ -132,12 +134,14 @@ public class ListWords implements ExecutableComponent {
 	/**
 	 * Call at the end of an execution flow.
 	 */
-	public void initialize(ComponentContextProperties ccp) {
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 
 	/**
 	 * Called when a flow is started.
 	 */
-	public void dispose(ComponentContextProperties ccp) {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 }

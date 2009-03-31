@@ -42,6 +42,8 @@
 
 package org.meandre.components.io.evernote;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentProperty;
@@ -50,7 +52,6 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 import com.facebook.thrift.protocol.TBinaryProtocol;
 import com.facebook.thrift.transport.THttpClient;
@@ -58,7 +59,6 @@ import com.facebook.thrift.transport.THttpClient;
 import com.evernote.edam.notestore.NoteStore;
 import com.evernote.edam.type.User;
 import com.evernote.edam.type.Note;
-import com.evernote.edam.type.Notebook;
 import com.evernote.edam.userstore.AuthenticationResult;
 import com.evernote.edam.userstore.UserStore;
 
@@ -74,7 +74,8 @@ import com.evernote.edam.userstore.UserStore;
            tags="evernote, note, notebook",
            baseURL="meandre://seasr.org/components/")
 
-public class EvernoteWriter implements ExecutableComponent {
+public class EvernoteWriter extends AbstractExecutableComponent
+{
     @ComponentInput(description="String to be written to Evernote."+
             "<br>TYPE: java.lang.String",
                     name= "string")
@@ -105,8 +106,8 @@ public class EvernoteWriter implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         String username = cc.getProperty(DATA_PROPERTY_1),
                password = cc.getProperty(DATA_PROPERTY_2),
                key = cc.getProperty(DATA_PROPERTY_3);
@@ -115,8 +116,8 @@ public class EvernoteWriter implements ExecutableComponent {
 
         String inputContent = (String)cc.getDataComponentFromInput(DATA_INPUT);
 
-        String userStoreUrl = "https://lb.evernote.com/edam/user";
-        String noteStoreUrlBase = "http://lb.evernote.com/edam/note/";
+        String userStoreUrl = "https://sandbox.evernote.com/edam/user";
+        String noteStoreUrlBase = "http://sandbox.evernote.com/edam/note/";
 
         try {
             THttpClient userStoreTrans = new THttpClient(userStoreUrl);
@@ -130,15 +131,15 @@ public class EvernoteWriter implements ExecutableComponent {
                     com.evernote.edam.userstore.Constants.EDAM_VERSION_MINOR);
 
             if (!versionOk) {
-                System.err.println("Incomatible EDAM client protocol version");
-                System.exit(1);
+            	String message = "Incomatible EDAM client protocol version";
+            	throw new ComponentExecutionException(message);
             }
 
             AuthenticationResult authResult =
                 userStore.authenticate(username, password, key);
             User user = authResult.getUser();
             String authToken = authResult.getAuthenticationToken();
-            System.out.println("Notes for " + user.getUsername());
+            getConsoleOut().println("Notes for " + user.getUsername());
             String noteStoreUrl = noteStoreUrlBase + user.getShardId();
 
             THttpClient noteStoreTrans =
@@ -173,12 +174,14 @@ public class EvernoteWriter implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

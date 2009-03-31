@@ -55,6 +55,8 @@ import java.io.BufferedReader;
 
 import java.util.Calendar;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.Component.Mode;
@@ -63,10 +65,8 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
-import org.mortbay.log.Log;
 
 @Component(creator="Lily Dong",
            description="Uploads a local file using Fiuld at http://build.fluidproject.org/. " +
@@ -81,8 +81,8 @@ import org.mortbay.log.Log;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class FluidUploader
-implements ExecutableComponent, WebUIFragmentCallback {
+public class FluidUploader extends AbstractExecutableComponent
+implements WebUIFragmentCallback {
 	@ComponentOutput(description="Output the file uploaded from local machine."+
 			"<br>TYPE: java.lang.String",
 	         		 name="Text")
@@ -333,7 +333,6 @@ implements ExecutableComponent, WebUIFragmentCallback {
 				}
 				br.close();
 				str = buf.toString();
-				//System.out.println(str);
 			}catch(java.io.IOException e) {
 				throw new WebUIException(e);
 			}
@@ -346,8 +345,8 @@ implements ExecutableComponent, WebUIFragmentCallback {
     * @throws ComponentExecutionException An exeception occurred during execution
     * @throws ComponentContextException Illigal access to context
     */
-   public void execute(ComponentContext cc) throws
-   ComponentExecutionException,ComponentContextException {
+   public void executeCallBack(ComponentContext cc)
+   throws Exception {
 	   name = "tmp" +
 	   Calendar.getInstance().get(Calendar.DAY_OF_MONTH) +
 	   ".html";
@@ -383,9 +382,9 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	   webUiUrl = cc.getWebUIUrl(true).toString();
 	   sInstanceID = cc.getExecutionInstanceID();
 
-	   System.out.println("path = " + path);
-	   System.out.println("dir = " + cc.getPublicResourcesDirectory());
-	   System.out.println("url = " + cc.getWebUIUrl(true).toString());
+	   getConsoleOut().println("path = " + path);
+	   getConsoleOut().println("dir = " + cc.getPublicResourcesDirectory());
+	   getConsoleOut().println("url = " + cc.getWebUIUrl(true).toString());
 
 	   try {
 		   save(path);
@@ -416,13 +415,15 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	/**
 	 * Call at the end of an execution flow.
 	 */
-	public void initialize(ComponentContextProperties ccp) {
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 
 	/**
 	 * Called when a flow is started.
 	 */
-	public void dispose(ComponentContextProperties ccp) {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 }
 

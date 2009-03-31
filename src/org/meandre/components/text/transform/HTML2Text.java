@@ -52,6 +52,8 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -66,7 +68,8 @@ import org.meandre.core.ExecutableComponent;
            tags="html, text, converter",
            baseURL="meandre://seasr.org/components/")
 
-public class HTML2Text implements ExecutableComponent {
+public class HTML2Text extends AbstractExecutableComponent
+{
     @ComponentInput(description="Read content in HTML format." +
     		"<br>TYPE: java.lang.String",
                     name= "Html")
@@ -77,15 +80,15 @@ public class HTML2Text implements ExecutableComponent {
                      name="Text")
     public final static String DATA_OUTPUT = "Text";
 
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc)
-        throws ComponentExecutionException, ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         String inputHtml = (String)cc.getDataComponentFromInput(DATA_INPUT);
         Parser parser = new Parser();
         StringBuffer sb = new StringBuffer();
@@ -120,12 +123,14 @@ public class HTML2Text implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

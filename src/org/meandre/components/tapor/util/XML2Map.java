@@ -17,6 +17,7 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -34,7 +35,8 @@ import org.meandre.core.ExecutableComponent;
         tags="XML map converter",
         baseURL="meandre://seasr.org/components/")
 
-public class XML2Map implements ExecutableComponent {
+public class XML2Map extends AbstractExecutableComponent
+{
 	@ComponentInput(description="Input XML document to be converted." +
             "<br>TYPE: java.lang.String",
                     name= "Text")
@@ -51,8 +53,8 @@ public class XML2Map implements ExecutableComponent {
     * @throws ComponentExecutionException An exeception occurred during execution
     * @throws ComponentContextException Illigal access to context
     */
-	public void execute(ComponentContext cc) throws
-	ComponentExecutionException, ComponentContextException {
+	public void executeCallBack(ComponentContext cc)
+	throws Exception {
 		String xmlString = (String)cc.getDataComponentFromInput(DATA_INPUT);
 
 		//DocumentBuilder reports error if not removing the &lt;, &gt;, &quot; <br> and <b>.
@@ -92,12 +94,14 @@ public class XML2Map implements ExecutableComponent {
 	/**
 	 * Call at the end of an execution flow.
 	 */
-	public void initialize(ComponentContextProperties ccp) {
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 
 	/**
 	 * Called when a flow is started.
 	 */
-	public void dispose(ComponentContextProperties ccp) {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 }

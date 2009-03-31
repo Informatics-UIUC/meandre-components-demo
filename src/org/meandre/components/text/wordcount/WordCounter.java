@@ -50,6 +50,8 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -63,7 +65,8 @@ import org.meandre.core.ExecutableComponent;
            tags="word, counter",
            baseURL="meandre://seasr.org/components/")
 
-public class WordCounter implements ExecutableComponent {
+public class WordCounter extends AbstractExecutableComponent
+{
     @ComponentInput(description="Text to be analyzed." +
             "<br>TYPE: java.lang.String",
                     name= "Text")
@@ -80,8 +83,8 @@ public class WordCounter implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
         StringTokenizer st = new StringTokenizer(inpuText, " ,\t\n");
         Map<String, Integer> outputMap = new Hashtable<String, Integer>();
@@ -104,12 +107,14 @@ public class WordCounter implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

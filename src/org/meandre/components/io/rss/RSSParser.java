@@ -49,6 +49,8 @@ import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.XmlReader;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
+
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
@@ -57,7 +59,6 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Parses a raw InputStream and convert it into a RSS SyndFeed object " +
@@ -67,7 +68,8 @@ import org.meandre.core.ExecutableComponent;
            dependency={"rome-1.0RC1.jar", "jdom-1.0.jar"},
            baseURL="meandre://seasr.org/components/")
 
-public class RSSParser implements ExecutableComponent {
+public class RSSParser extends AbstractExecutableComponent
+{
     @ComponentInput(description="Read content as stream."+
             "<br> TYPE: java.io.InputStream",
                     name= "Stream")
@@ -84,8 +86,8 @@ public class RSSParser implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
 
         SyndFeedInput input = new SyndFeedInput();
@@ -96,11 +98,11 @@ public class RSSParser implements ExecutableComponent {
             throw new ComponentExecutionException(e);
         }
 
-        /*System.out.println("Title: " + feed.getTitle());
-        System.out.println("Author: " + feed.getAuthor());
-        System.out.println("Description: " + feed.getDescription());
-        System.out.println("Pub date: " + feed.getPublishedDate());
-        System.out.println("Copyrignt: " + feed.getCopyright());*/
+        getConsoleOut().println("Title: " + feed.getTitle());
+        getConsoleOut().println("Author: " + feed.getAuthor());
+        getConsoleOut().println("Description: " + feed.getDescription());
+        getConsoleOut().println("Pub date: " + feed.getPublishedDate());
+        getConsoleOut().println("Copyrignt: " + feed.getCopyright());
 
         cc.pushDataComponentToOutput(DATA_OUTPUT, feed);
     }
@@ -108,12 +110,14 @@ public class RSSParser implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
