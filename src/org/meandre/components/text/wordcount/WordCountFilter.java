@@ -42,7 +42,6 @@
 
 package org.meandre.components.text.wordcount;
 
-import java.io.PrintStream;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -51,11 +50,11 @@ import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Inputs a Map<String, Integer> and deletes all entries " +
@@ -65,7 +64,8 @@ import org.meandre.core.ExecutableComponent;
            tags="map, reducer, filter",
            baseURL="meandre://seasr.org/components/")
 
-public class WordCountFilter implements ExecutableComponent {
+public class WordCountFilter extends AbstractExecutableComponent
+{
     @ComponentInput(description="A word count summary in Map format." +
                 "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
                     name= "Map")
@@ -73,29 +73,29 @@ public class WordCountFilter implements ExecutableComponent {
 
     @ComponentOutput(description="Filtered word count in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
-                     name="Map")        
+                     name="Map")
     public final static String DATA_OUTPUT = "Map";
-    
+
     @ComponentProperty(defaultValue="",
                        description="Keys to be deleted from Map. The keys should be delimited by comma.",
                        name="Keys_To_Be_Deleted")
     final static String DATA_PROPERTY = "Keys_To_Be_Deleted";
-    
-    private PrintStream console;
+
+    //private PrintStream console;
 	private ComponentContext ccHandle;
-    
+
     /** When ready for execution.
     *
     * @param cc The component context
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
     	try {
 			this.ccHandle = cc;
 			Map inputMap = (Map)cc.getDataComponentFromInput(DATA_INPUT);
-			console.print("Filtering words from "+inputMap.size());
+			getConsoleOut().print("Filtering words from "+inputMap.size());
 			String keysToBeDeleted = cc.getProperty(DATA_PROPERTY);
 	        StringTokenizer st = new StringTokenizer(keysToBeDeleted, ",");
 	        while(st.hasMoreTokens()) {
@@ -103,26 +103,28 @@ public class WordCountFilter implements ExecutableComponent {
 	            if(inputMap.containsKey(theKey))
 	                inputMap.remove(theKey);
 	        }
-	        
-	        console.println(" to "+inputMap.size());
-	        
+
+	        getConsoleOut().println(" to "+inputMap.size());
+
 	        cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
 		} catch (Exception e) {
 			throw new ComponentExecutionException(e);
 		}
-        
+
     }
-    
+
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
-    	console = ccp.getOutputConsole();
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
+    	//console = ccp.getOutputConsole();
     }
-    
+
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
-    }   
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
+    }
 }
