@@ -42,12 +42,7 @@
 
 package org.meandre.components.viz;
 
-import java.io.PrintStream;
 import java.util.StringTokenizer;
-import java.util.concurrent.Semaphore;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
@@ -60,10 +55,6 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
-
-import org.meandre.webui.WebUIException;
-import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
            description="Generates and displays a webpage with an element of " +
@@ -104,7 +95,6 @@ public class MIMEContentMaker extends AbstractExecutableComponent
 
     	String mimeType = ccHandle.getProperty(DATA_PROPERTY);
         StringBuffer sb = new StringBuffer();
-        //String sInstanceID = ccHandle.getExecutionInstanceID();
 
         sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
         sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
