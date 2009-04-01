@@ -53,6 +53,7 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -73,7 +74,8 @@ import org.meandre.core.system.components.ext.StreamTerminator;
            tags="CSV",
            baseURL="meandre://seasr.org/components/")
 
-public class CSVLinePusher implements ExecutableComponent {
+public class CSVLinePusher extends AbstractExecutableComponent
+{
     @ComponentInput(description="Read content as stream." +
             "<br>TYPE: java.io.InputStream",
                     name= "Stream")
@@ -95,8 +97,8 @@ public class CSVLinePusher implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         InputStream is = (InputStream)cc.getDataComponentFromInput(DATA_INPUT);
 
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -138,12 +140,14 @@ public class CSVLinePusher implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
