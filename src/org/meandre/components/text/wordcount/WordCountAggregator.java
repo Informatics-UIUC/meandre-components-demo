@@ -56,7 +56,6 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamTerminator;
 import org.meandre.core.system.components.ext.StreamInitiator;
 
