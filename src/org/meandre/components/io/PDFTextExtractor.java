@@ -4,18 +4,16 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.net.URL;
 import java.util.Iterator;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
-import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 import de.intarsys.pdf.content.CSDeviceBasedInterpreter;
 import de.intarsys.pdf.content.CSException;
@@ -43,7 +41,7 @@ import de.intarsys.tools.locator.ByteArrayLocator;
         tags="URL, text, pdf",
         baseURL="meandre://seasr.org/components/")
 
-        public class PDFTextExtractor implements ExecutableComponent {
+        public class PDFTextExtractor extends AbstractExecutableComponent {
 
     @ComponentInput(description="URL of the pdf file." +
             "<br>TYPE: java.io.String",
@@ -54,17 +52,17 @@ import de.intarsys.tools.locator.ByteArrayLocator;
             name="Text")
             public final static String DATA_OUTPUT = "Text";
 
-    private PrintStream console;
+    //private PrintStream console;
 
-    public void initialize(ComponentContextProperties ccp)
-        throws ComponentExecutionException, ComponentContextException {
+    public void initializeCallBack(ComponentContextProperties ccp)
+        throws Exception {
 
-        console = ccp.getOutputConsole();
-        console.println("Initializing PDFTextExtrator for " + ccp.getFlowID());
+        //console = ccp.getOutputConsole();
+        getConsoleOut().println("Initializing PDFTextExtrator for " + ccp.getFlowID());
     }
 
-    public void execute(ComponentContext cc)
-        throws ComponentExecutionException, ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+        throws Exception {
 
         URL url;
 
@@ -74,7 +72,7 @@ import de.intarsys.tools.locator.ByteArrayLocator;
             else if (cc.getDataComponentFromInput(DATA_INPUT).getClass().getName() == "java.net.URL")
                 url = (URL) cc.getDataComponentFromInput("URL");
             else {
-                console.println("PDFTextExtractor must receive a java.lang.String or a java.net.URL type");
+            	getConsoleOut().println("PDFTextExtractor must receive a java.lang.String or a java.net.URL type");
                 url = null;
             }
         } catch(java.net.MalformedURLException e) {
@@ -106,19 +104,21 @@ import de.intarsys.tools.locator.ByteArrayLocator;
                 cc.pushDataComponentToOutput(DATA_OUTPUT, pdfText);
             }
             catch (IOException ioex) {
-                ioex.printStackTrace();
+                //ioex.printStackTrace();
+            	componentConsoleHandler.whenLogLevelOutput("verbose" , ioex);
                 throw new ComponentExecutionException(ioex);
             }
             catch (COSLoadException coslex) {
-                coslex.printStackTrace();
+                //coslex.printStackTrace();
+            	componentConsoleHandler.whenLogLevelOutput("verbose" , coslex);
                 throw new ComponentExecutionException(coslex);
             }
         } else
-            console.println("PDFTextExtractor can only process PDF files (*.pdf)");
+        	getConsoleOut().println("PDFTextExtractor can only process PDF files (*.pdf)");
     }
 
-    public void dispose(ComponentContextProperties ccp)
-        throws ComponentExecutionException, ComponentContextException {
+    public void disposeCallBack(ComponentContextProperties ccp)
+        throws Exception {
     }
 
     /**
@@ -164,7 +164,8 @@ import de.intarsys.tools.locator.ByteArrayLocator;
                             .getResources());
                     sb.append(extractor.getContent());
                 } catch (CSException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                	componentConsoleHandler.whenLogLevelOutput("verbose" , e);
                 }
             } else {
                 extractText((PDPageTree) node, sb);
