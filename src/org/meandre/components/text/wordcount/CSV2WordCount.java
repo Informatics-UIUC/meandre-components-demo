@@ -50,12 +50,11 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
-import org.meandre.core.system.components.ext.StreamTerminator;
 
 @Component(creator="Lily Dong",
            description="Converts a CSV file represented by " +
@@ -68,7 +67,8 @@ import org.meandre.core.system.components.ext.StreamTerminator;
            tags="csv, map, converter",
            baseURL="meandre://seasr.org/components/")
 
-public class CSV2WordCount implements ExecutableComponent {
+public class CSV2WordCount extends AbstractExecutableComponent
+{
     @ComponentInput(description="A tokenized csv table. Each Object[] " +
     		"contains a row of data from a csv file." +
             "<br>TYPE: java.util.Vector<java.lang.Object[]>",
@@ -86,25 +86,24 @@ public class CSV2WordCount implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         Vector<Object[]> inputCsv = (Vector<Object[]>)cc.getDataComponentFromInput(DATA_INPUT);
 
         Map outputMap = new Hashtable();
         for(int index=0; index<inputCsv.size(); index++) {
             Object[] data = inputCsv.elementAt(index);
+
+            if(!validateNumber(data[1].toString())) //incorrect Number
+               continue;
+
             if(outputMap.containsKey(data[0])) {
                 float value =
                     Float.valueOf(outputMap.get(data[0]).toString()) +
                     Float.valueOf(data[1].toString());
                 outputMap.put(data[0], new Float(value));
             } else {
-                Float value = null;
-                try {
-                    value = Float.valueOf(data[1].toString());
-                }catch(NumberFormatException e) {}
-                if(value != null) //only number is stored in map
-                    outputMap.put(data[0], value);
+                outputMap.put(data[0], Float.valueOf(data[1].toString()));
             }
         }
 
@@ -112,14 +111,30 @@ public class CSV2WordCount implements ExecutableComponent {
     }
 
     /**
+     *
+     * @param num to be checked
+     * @return true if correct, otherwise false
+     */
+    private static boolean validateNumber(String num) {
+        try {
+            Float.parseFloat(num);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
