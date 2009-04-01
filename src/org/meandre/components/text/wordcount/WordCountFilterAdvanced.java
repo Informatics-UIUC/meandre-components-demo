@@ -42,18 +42,15 @@
 
 package org.meandre.components.text.wordcount;
 
-import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Comparator;
-import java.util.Set;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
@@ -65,7 +62,6 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Inputs a Map<String, Integer> and deletes all entries " +
