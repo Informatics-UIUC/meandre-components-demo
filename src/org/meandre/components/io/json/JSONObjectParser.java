@@ -49,11 +49,11 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Parses a string of text and convert it into a JSON object.",
@@ -61,7 +61,8 @@ import org.meandre.core.ExecutableComponent;
            tags="json, converter",
            baseURL="meandre://seasr.org/components/")
 
-public class JSONObjectParser implements ExecutableComponent {
+public class JSONObjectParser extends AbstractExecutableComponent
+{
     @ComponentInput(description="Text to be parsed." +
             "<br>TYPE: java.lang.String",
                     name= "Text")
@@ -77,12 +78,12 @@ public class JSONObjectParser implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
         JSONObject jo = (JSONObject)JSONSerializer.toJSON(inpuText);
 
-        System.out.println(jo.toString());
+        getConsoleOut().println(jo.toString());
 
         cc.pushDataComponentToOutput(DATA_OUTPUT, jo);
     }
@@ -90,12 +91,14 @@ public class JSONObjectParser implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

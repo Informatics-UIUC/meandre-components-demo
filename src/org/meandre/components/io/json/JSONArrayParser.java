@@ -50,11 +50,11 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong",
            description="Parses an input string and convert it into a JSONArray.",
@@ -62,7 +62,8 @@ import org.meandre.core.ExecutableComponent;
            tags="json, converter",
            baseURL="meandre://seasr.org/components/")
 
-public class JSONArrayParser implements ExecutableComponent {
+public class JSONArrayParser extends AbstractExecutableComponent
+{
     @ComponentInput(description="Text to be parsed." +
             "<br>TYPE: java.lang.String",
                     name= "Text")
@@ -79,15 +80,15 @@ public class JSONArrayParser implements ExecutableComponent {
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
 
         JSONObject jo = (JSONObject)JSONSerializer.toJSON(inpuText);
         JSONArray ja = jo.names();
 
-        System.out.println(jo.toString());
-        System.out.println(ja.toString());
+        getConsoleOut().println(jo.toString());
+        getConsoleOut().println(ja.toString());
 
         cc.pushDataComponentToOutput(DATA_OUTPUT, ja);
     }
@@ -95,12 +96,14 @@ public class JSONArrayParser implements ExecutableComponent {
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
