@@ -55,6 +55,7 @@ import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -70,8 +71,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class LocalFileUploader
-implements ExecutableComponent, WebUIFragmentCallback {
+public class LocalFileUploader extends AbstractExecutableComponent
+implements WebUIFragmentCallback {
 	@ComponentOutput(description="Output the file uploaded from local machine."+
 			"<br>TYPE: java.lang.String",
 	         		 name="Text")
@@ -198,8 +199,8 @@ implements ExecutableComponent, WebUIFragmentCallback {
     * @throws ComponentExecutionException An exeception occurred during execution
     * @throws ComponentContextException Illigal access to context
     */
-   public void execute(ComponentContext cc) throws
-   ComponentExecutionException,ComponentContextException {
+   public void executeCallBack(ComponentContext cc)
+   throws Exception {
 	   	try {
 	   		sInstanceID = cc.getExecutionInstanceID();
 	   		sem.acquire();
@@ -216,12 +217,14 @@ implements ExecutableComponent, WebUIFragmentCallback {
 	/**
 	 * Call at the end of an execution flow.
 	 */
-	public void initialize(ComponentContextProperties ccp) {
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 
 	/**
 	 * Called when a flow is started.
 	 */
-	public void dispose(ComponentContextProperties ccp) {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 }
