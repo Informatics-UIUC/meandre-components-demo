@@ -50,11 +50,11 @@ import java.util.Set;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Lily Dong and Loretta Auvil",
 		description="Aggregates a series of input Map<String, Float> " +
@@ -65,7 +65,8 @@ import org.meandre.core.ExecutableComponent;
 		tags="map, aggregator",
 		baseURL="meandre://seasr.org/components/")
 
-		public class WordCountAggregatorByFlag implements ExecutableComponent {
+public class WordCountAggregatorByFlag extends AbstractExecutableComponent
+{
 	@ComponentInput(description="Read content in Map format." +
 			"<br>TYPE: " +
 			"<br>java.util.Map<java.lang.String, java.lang.Float> (multiple times)",
@@ -92,8 +93,8 @@ import org.meandre.core.ExecutableComponent;
 	 * @throws ComponentExecutionException An exception occurred during execution
 	 * @throws ComponentContextException Illegal access to context
 	 */
-	public void execute(ComponentContext cc) throws ComponentExecutionException,
-	ComponentContextException {
+	public void executeCallBack(ComponentContext cc)
+	throws Exception {
 
 		Object inputObject = cc.getDataComponentFromInput(DATA_INPUT);
 
@@ -130,12 +131,14 @@ import org.meandre.core.ExecutableComponent;
 	/**
 	 * Call at the end of an execution flow.
 	 */
-	public void initialize(ComponentContextProperties ccp) {
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 
 	/**
 	 * Called when a flow is started.
 	 */
-	public void dispose(ComponentContextProperties ccp) {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 }
