@@ -55,11 +55,11 @@ import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamTerminator;
 import org.meandre.core.system.components.ext.StreamInitiator;
 
@@ -79,8 +79,8 @@ import com.sun.syndication.feed.synd.SyndFeed;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class RSSAggregatorViz
-    implements ExecutableComponent, WebUIFragmentCallback{
+public class RSSAggregatorViz extends AbstractExecutableComponent
+implements WebUIFragmentCallback {
     @ComponentInput(description="Read RSS content as SyndFeed or SyndEntry." +
             "<br>TYPE:" +
             "<br>org.meandre.core.system.components.ext.StreamInitiator" +
@@ -108,7 +108,7 @@ public class RSSAggregatorViz
     private String sInstanceID = null;
 
     /**
-     * Aggregator for output
+     * A feed aggregator
      */
     private Vector<SyndEntry> aggregator;
 
@@ -197,15 +197,6 @@ public class RSSAggregatorViz
 
     /**
      *
-     * @param s input string
-     * @return s if s is not null or empty string, otherwise warning information.
-     */
-    private String getValidValue(String s) {
-        return (s == null || s.length() == 0)? "no data available": s;
-    }
-
-    /**
-     *
      * @param e input entry
      * @param b output buffer
      */
@@ -277,8 +268,8 @@ public class RSSAggregatorViz
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
         Object inputObject = cc.getDataComponentFromInput(DATA_INPUT);
 
         if(inputObject instanceof StreamInitiator) {//start of stream
@@ -306,13 +297,15 @@ public class RSSAggregatorViz
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
         aggregator = new Vector<SyndEntry>();
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
