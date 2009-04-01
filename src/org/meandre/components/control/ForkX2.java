@@ -55,6 +55,7 @@ import java.io.ObjectOutputStream;
 // Other Imports
 //===============
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.*;
 import org.meandre.annotations.*;
 
@@ -87,7 +88,8 @@ import org.meandre.annotations.*;
            tags="clone, fork, copy",
            baseURL="meandre://seasr.org/components/")
 
-public class ForkX2 implements ExecutableComponent {
+public class ForkX2 extends AbstractExecutableComponent
+{
     @ComponentInput(description="Object to replicate",
                     name= "object")
     final static String DATA_INPUT = "object";
@@ -140,15 +142,17 @@ public class ForkX2 implements ExecutableComponent {
     // Interface Implementation: ExecutableComponent
     //===============================================
 
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
 
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-            ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
 
         String fn = cc.getProperty(s_REPLICATION_METHOD);
         if (fn == null || fn.length() == 0) {

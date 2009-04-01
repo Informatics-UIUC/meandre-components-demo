@@ -66,8 +66,8 @@ import org.meandre.core.ComponentContextProperties;
 	    name="Push String",
 	    tags="io, input, string",
         baseURL="meandre://seasr.org/components/")
-        
-public class PushString extends AbstractExecutableComponent { /* implements ExecutableComponent { */
+
+public class PushString extends AbstractExecutableComponent {
 
 	@ComponentProperty(description = "Input string", name = "string", defaultValue = "hello world")
 	public final static String DATA_PROPERTY_STRING = "string";
