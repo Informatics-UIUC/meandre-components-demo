@@ -1,7 +1,7 @@
 package api;
 
-import org.meandre.tools.components.FlowBuilderAPI;
-import org.meandre.tools.components.FlowBuilderAPI.WorkingFlow;
+import org.meandre.tools.flows.FlowBuilderAPI;
+import org.meandre.tools.flows.FlowBuilderAPI.WorkingFlow;
 
 public class SimileTimelineDemo {
 	public static void main(String[] args) {
@@ -11,14 +11,18 @@ public class SimileTimelineDemo {
 		String pushString = wflow.addComponent(
 				"org.meandre.components.io.PushString");
 		wflow.setComponentInstanceProp(
-				pushString, "string", "http://www.gutenberg.org/files/26090/26090.txt");
-				//"http://norma.ncsa.uiuc.edu/public-dav/applets/Mississippi(1918).txt");
+				pushString, "string", "http://www.gutenberg.org/files/22925/22925.txt");
 				//"http://www.gutenberg.org/dirs/etext04/dlshg10.txt");
-				//"http://repository.seasr.org/Datasets/Text/ThreeLivesExcerpt.txt");//"http://www.gutenberg.org/files/20120/20120-8.txt");
+				//"http://www.gutenberg.org/files/20120/20120-8.txt");
+				//"http://norma.ncsa.uiuc.edu/public-dav/applets/Mississippi(1918).txt");
+				//"http://www.gutenberg.org/files/26090/26090.txt");
+
+
+
 
 		String toDoc = wflow.addComponent("" +
 				"org.seasr.components.text.io.file.TextFileToDoc");
-		wflow.connectComponents(pushString, "output_string", toDoc, "file_name");
+		wflow.connectComponents(pushString, "string", toDoc, "file_name");
 		wflow.setComponentInstanceProp(toDoc, "webdav", "true");
 		wflow.setComponentInstanceProp(toDoc, "add_space_at_new_lines", "true");
 
@@ -45,20 +49,30 @@ public class SimileTimelineDemo {
 				nameFinder, "verbose", "false");
 
 		String annToXML = wflow.addComponent(
-				"org.meandre.demo.components.io.AnnotationToXML");
+				"org.meandre.components.text.transform.Annotation2XML");
 		wflow.connectComponents(
-				nameFinder, "document_out", annToXML, "document_in");
+				nameFinder, "document_out", annToXML, "Document");
 		wflow.setComponentInstanceProp(
-				annToXML, "entities", "date");
+				annToXML, "Entities", "date");
+
+		/*String viewer = wflow.addComponent(
+				"org.meandre.components.viz.temporal.SimileTimelineViewer");
+		wflow.connectComponents(
+				annToXML, "Annotation_xml", viewer, "Document");*/
+
+		String stMaker = wflow.addComponent(
+			"org.meandre.components.viz.temporal.SimileTimelineMaker");
+		wflow.connectComponents(
+				annToXML, "Annotation_xml", stMaker, "Document");
 
 		String viewer = wflow.addComponent(
-				"org.meandre.demo.components.io.SimileTimelineViewer");
+				"org.meandre.components.viz.temporal.SimileTimelineViz");
 		wflow.connectComponents(
-				annToXML, "annot_xml", viewer, "inputDocument");
-		
+				stMaker, "Text", viewer, "Text");
+
 		flowBuilder.execute(wflow, true);
-		
-		System.exit(0); 
+
+		System.exit(0);
 	}
 }
 

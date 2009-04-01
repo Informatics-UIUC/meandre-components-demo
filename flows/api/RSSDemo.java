@@ -7,20 +7,20 @@ public class RSSDemo {
 	public static void main(String[] args) {
 		FlowBuilderAPI flowBuilder = new FlowBuilderAPI();
 		WorkingFlow wflow = flowBuilder.newWorkingFlow("test");
-		
+
 		String urlFetcher = wflow.addComponent(
-				"org.meandre.demo.components.io.URLFetcher");
-		
-		String rssReader = wflow.addComponent(
-				"org.meandre.demo.components.io.RSSReader");
+				"org.meandre.components.io.url.URLFetcher");
+
+		String rssParser = wflow.addComponent(
+				"org.meandre.components.io.rss.RSSParser");
 		wflow.connectComponents(
-				urlFetcher, "outputStream", rssReader, "inputStream");
-		
+				urlFetcher, "Stream", rssParser, "Stream");
+
 		String rssViz = wflow.addComponent(
-				"org.meandre.demo.components.io.RSSViz");
+				"org.meandre.components.viz.text.RSSViz");
 		wflow.connectComponents(
-				rssReader, "outputObject", rssViz, "inputFeed");
-		
+				rssParser, "object", rssViz, "RSS_Feed");
+
 		flowBuilder.execute(wflow, true);
 	}
 }
