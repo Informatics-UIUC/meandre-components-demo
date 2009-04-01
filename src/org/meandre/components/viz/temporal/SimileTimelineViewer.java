@@ -76,8 +76,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import sun.misc.UCEncoder;
-
 @Component(creator="Lily Dong",
            description="Visualizes temporal data from an XML document.",
            name="SimileTimelineViewer",
