@@ -46,7 +46,7 @@ import org.htmlparser.beans.StringBean;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
-import org.meandre.annotations.ComponentProperty;
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
@@ -59,7 +59,7 @@ import org.meandre.core.ExecutableComponent;
 		tags="URL, content, text",
 		baseURL="meandre://seasr.org/components/")
 
-		public class URLContent implements ExecutableComponent {
+		public class URLContent extends AbstractExecutableComponent {
 	@ComponentInput(description="URL to be fetched." +
 			"<br> TYPE: java.lang.String",
 			name= "URL")
@@ -69,15 +69,15 @@ import org.meandre.core.ExecutableComponent;
 			name="Text")
 			public final static String DATA_OUTPUT = "Text";
 
-	
+
 	/** When ready for execution.
 	 *
 	 * @param cc The component context
 	 * @throws ComponentExecutionException An exception occurred during execution
 	 * @throws ComponentContextException Illegal access to context
 	 */
-	public void execute(ComponentContext cc) throws ComponentExecutionException,
-	ComponentContextException {
+	public void executeCallBack(ComponentContext cc)
+	throws Exception {
 		String inputUrl = (String)cc.getDataComponentFromInput(DATA_INPUT);
 
 		StringBean sb = new StringBean ();
@@ -89,12 +89,14 @@ import org.meandre.core.ExecutableComponent;
 	/**
 	 * Call at the end of an execution flow.
 	 */
-	public void initialize(ComponentContextProperties ccp) {
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 
 	/**
 	 * Called when a flow is started.
 	 */
-	public void dispose(ComponentContextProperties ccp) {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 	}
 }
