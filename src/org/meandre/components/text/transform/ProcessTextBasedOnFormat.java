@@ -3,11 +3,9 @@ package org.meandre.components.text.transform;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
-import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
-import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 
 @Component(creator="Loretta Auvil",
 		description="This component extracts the text from a pdf document. "+
@@ -17,7 +15,8 @@ import org.meandre.core.ExecutableComponent;
 		tags="URL, text, pdf",
 		baseURL="meandre://seasr.org/components/")
 
-public class ProcessTextBasedOnFormat implements ExecutableComponent {
+public class ProcessTextBasedOnFormat extends AbstractExecutableComponent
+{
 
 	@ComponentInput(description="URL of the item." +
 			"<br>TYPE: java.io.String",
@@ -36,14 +35,14 @@ public class ProcessTextBasedOnFormat implements ExecutableComponent {
 			name="TXT_URL")
 			public final static String DATA_OUTPUT_TXT = "TXT_URL";
 
-	public void dispose(ComponentContextProperties ccp)
-	throws ComponentExecutionException, ComponentContextException {
+	public void disposeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void execute(ComponentContext cc)
-	throws ComponentExecutionException, ComponentContextException {
+	public void executeCallBack(ComponentContext cc)
+	throws Exception {
 
 		String url = (String)cc.getDataComponentFromInput(DATA_INPUT);
 		if (url.endsWith(".pdf"))
@@ -54,8 +53,8 @@ public class ProcessTextBasedOnFormat implements ExecutableComponent {
 			cc.pushDataComponentToOutput(DATA_OUTPUT_TXT, url);
 	}
 
-	public void initialize(ComponentContextProperties ccp)
-	throws ComponentExecutionException, ComponentContextException {
+	public void initializeCallBack(ComponentContextProperties ccp)
+	throws Exception {
 		// TODO Auto-generated method stub
 	}
 }
