@@ -60,11 +60,11 @@ import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 import org.meandre.webui.WebUIException;
 import org.meandre.webui.WebUIFragmentCallback;
 
@@ -81,8 +81,8 @@ import org.w3c.dom.NamedNodeMap;
            mode=Mode.webui,
            baseURL="meandre://seasr.org/components/")
 
-public class GoogleMapRegionViewer
-	implements ExecutableComponent, WebUIFragmentCallback {
+public class GoogleMapRegionViewer extends AbstractExecutableComponent
+implements WebUIFragmentCallback {
 	@ComponentProperty(defaultValue=//"",
 		//"ABQIAAAAzuMq2M5--KdBKawoLNQWUxQKQLDP3-h3gXPk25Qansm9VUoOPBRzc41cGNCHCFTWrlzNJCHE5Y_9AA", //demo.seasr.org
 		"ABQIAAAAzuMq2M5--KdBKawoLNQWUxRi_j0U6kJrkFvY4-OX2XYmEAa76BQS61jzrv4ruAIpkFQs5Qp-fiN3hg", //127.0.0.1
@@ -252,8 +252,8 @@ public class GoogleMapRegionViewer
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
     	//prepare for fresh start
     	if(lat!=null && lat.size()!=0)
     		lat.clear();
@@ -353,12 +353,6 @@ public class GoogleMapRegionViewer
 			throw new ComponentExecutionException(e1);
 		}
 
-		/*for(int k=0; k<location.size(); k++)
-			System.out.println(k + "\t" +
-							   location.elementAt(k) + "\t" +
-							   lat.elementAt(k)   + "\t" +
-							   lon.elementAt(k));*/
-
     	try {
             sInstanceID = cc.getExecutionInstanceID();
             sem.acquire();
@@ -373,7 +367,8 @@ public class GoogleMapRegionViewer
 	/**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     	lat = new Vector<String>();
     	lon = new Vector<String>();
     	location = new Vector<String>();
@@ -383,6 +378,7 @@ public class GoogleMapRegionViewer
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }

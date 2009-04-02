@@ -42,12 +42,7 @@
 
 package org.meandre.components.viz;
 
-import java.io.PrintStream;
 import java.util.StringTokenizer;
-import java.util.concurrent.Semaphore;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
@@ -55,14 +50,11 @@ import org.meandre.annotations.ComponentOutput;
 import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.Mode;
 
+import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
-
-import org.meandre.webui.WebUIException;
-import org.meandre.webui.WebUIFragmentCallback;
 
 @Component(creator="Lily Dong",
            description="Generates and displays a webpage with an element of " +
@@ -75,8 +67,8 @@ import org.meandre.webui.WebUIFragmentCallback;
            mode=Mode.compute,
            baseURL="meandre://seasr.org/components/")
 
-public class MIMEContentViz
-    implements ExecutableComponent {
+public class MIMEContentViz extends AbstractExecutableComponent
+{
     @ComponentProperty(defaultValue="text/plain",
                        description="This property sets MIME type.",
                        name="MIME_type")
@@ -151,8 +143,8 @@ public class MIMEContentViz
     * @throws ComponentExecutionException An exception occurred during execution
     * @throws ComponentContextException Illegal access to context
     */
-    public void execute(ComponentContext cc) throws ComponentExecutionException,
-        ComponentContextException {
+    public void executeCallBack(ComponentContext cc)
+    throws Exception {
     	try {
 			ccHandle = cc;
 			byte[] inputContent = (byte[])cc.getDataComponentFromInput(DATA_INPUT);
@@ -167,14 +159,14 @@ public class MIMEContentViz
     /**
      * Call at the end of an execution flow.
      */
-    public void initialize(ComponentContextProperties ccp) {
-    	//console = ccp.getOutputConsole();
-    	//console.println("Initializing " + ccp.getFlowID());
+    public void initializeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 
     /**
      * Called when a flow is started.
      */
-    public void dispose(ComponentContextProperties ccp) {
+    public void disposeCallBack(ComponentContextProperties ccp)
+    throws Exception {
     }
 }
