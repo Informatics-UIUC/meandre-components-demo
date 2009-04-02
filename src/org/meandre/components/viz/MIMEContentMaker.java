@@ -62,7 +62,7 @@ import org.meandre.core.ComponentExecutionException;
            		"be assigned to the byte[] in the webpage is set in " +
            		"properties. \"text/plain\" is the default, \"image/<EXT>\" is " +
            		"also supported for standard image types.",
-           name="MIMEContentViz",
+           name="MIME Content Maker",
            tags="multipurpose, internet, mail, extensions, visualization",
            mode=Mode.compute,
            baseURL="meandre://seasr.org/components/")

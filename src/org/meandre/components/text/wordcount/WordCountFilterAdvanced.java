@@ -69,7 +69,7 @@ import org.meandre.core.ComponentExecutionException;
            		"are specified in a file whose location is defined via " +
            		"component property. This component can also optionally filter " +
            		"words with lower word counts.",
-           name="WordFilter",
+           name="Word Count Filter Advanced",
            tags="word, filter",
            baseURL="meandre://seasr.org/components/")
 
