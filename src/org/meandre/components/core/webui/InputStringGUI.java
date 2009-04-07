@@ -82,6 +82,11 @@ public class InputStringGUI extends TemplateGUI {
 	@ComponentProperty(description = "default value", name = "defaultValue", defaultValue = "")
 	static final String DATA_PROPERTY_DEFAULT = "defaultValue";
 	
+	@ComponentProperty(description = "The template name", 
+                              name = "template", 
+                      defaultValue = "org/meandre/components/core/webui/InputString.vm")
+    static final String DATA_PROPERTY_TEMPLATE = TemplateGUI.DATA_PROPERTY_TEMPLATE;
+	
 	
 	public InputStringGUI()
 	{
