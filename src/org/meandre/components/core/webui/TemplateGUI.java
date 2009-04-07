@@ -1,5 +1,6 @@
 package org.meandre.components.core.webui;
 
+
 import java.util.concurrent.Semaphore;
 import java.util.StringTokenizer;
 
@@ -24,6 +25,7 @@ import org.meandre.webui.WebUIFragmentCallback;
 import java.util.Date;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.io.StringWriter;
 import java.util.Properties;
 import java.util.HashMap;
@@ -157,12 +159,35 @@ public class TemplateGUI
     	formInputName = parameterName;
     }
     
-    protected boolean requestHasErrors(HttpServletRequest request)
+    protected void generateMetaRefresh(HttpServletResponse response)
+    throws IOException
     {
-    	// server side form validation goes here
-    	return (request.getParameter(formInputName) == null);
+ 	   PrintWriter writer = response.getWriter();
+       writer.println("<html><head><title>Refresh Page</title>");
+       writer.println("<meta http-equiv='REFRESH' content='0;url=/'></head>");
+       writer.println("<body>Refreshing Page</body></html>");
     }
 
+    //
+    // not only check errors, process the input at this step
+    // return false on errors, bad input, etc
+    // return true if all is good
+    protected boolean processRequest(HttpServletRequest request)
+       throws IOException 
+    {
+    	// server side form validation goes here
+    	// any processing of the request parameters
+    	return true;
+    }
+    
+    protected boolean expectMoreRequests(HttpServletRequest request)
+    {
+    	// we are done, if the 'formInputName' is in the request
+    	// e.g. ?done=true or whatever
+    	// if the request does NOT contain this parameter
+    	// we will assume, we are expecting more input
+    	return (request.getParameter(formInputName) == null);
+    }
     
     /** This method gets called when a call with parameters is done to a given component
      * webUI fragment
@@ -172,37 +197,52 @@ public class TemplateGUI
      * @param response The response object
      * @throws WebUIException A problem arose during the call back
      */
-    Map<String, String[]> parameterMap;
+    
+    Map<String, String[]>parameterMap;
     @SuppressWarnings("unchecked")
-	public void handle(HttpServletRequest request, HttpServletResponse response) throws
-            WebUIException 
+	public void handle(HttpServletRequest request, HttpServletResponse response) 
+       throws WebUIException 
     {
     	parameterMap = (Map<String, String[]>) request.getParameterMap();
     	
-    	if ( requestHasErrors(request)) {
-    		// TODO: populate the velocity context with error objects
-    		// regenerate the template
-    		// TODO: put the request parameters or a wrapper in the context
-    		context.put("hasErrors", new Boolean(true));
-    		generateContent(request, response);
+    	//
+    	// this is the workhorse method
+    	// process the input, determine any errors, 
+    	// set up any output that will be pushed
+    	//
+    	try {
+    	   if (! processRequest(request)) {
+    	    	// TODO: populate the velocity context with error objects
+    	    	// regenerate the template
+    		    // TODO: put the request parameters or a wrapper in the context
+    		   context.put("hasErrors", new Boolean(true));
+    		   generateContent(request, response);
+    		   return;
+    	    }
+    	} catch(IOException ioe) {
+    		throw new WebUIException(ioe);
+    	}
+    	
+    	//
+    	// see if this component can handle multiple requests before
+    	// releasing the semaphore,
+    	if (expectMoreRequests(request)) {
     		return;
     	}
+    	
            
     	// No Errors, 
     	// just push the browser to the "next" component
         try{
         	// when the page has been handled, generate a browser refresh
         	if (doRefresh) {
-               PrintWriter writer = response.getWriter();
-               writer.println("<html><head><title>Refresh Page</title>");
-               writer.println("<meta http-equiv='REFRESH' content='0;url=/'></head>");
-               writer.println("<body>Refreshing Page</body></html>");
+               generateMetaRefresh(response);
         	}
          }catch (IOException e) {
             throw new WebUIException("unable to generate redirect response");
          }
          finally {
-            sem.release();
+        	sem.release();
          }
     }
     
@@ -214,6 +254,21 @@ public class TemplateGUI
     	// if TemmplateGUI is subclassed, you can use this
     	// extension point for execute() without having to 
     	// worry about semaphores, web fragments,
+    	
+    }
+    
+    protected void subPushOutput(ComponentContext cc)
+       throws ComponentExecutionException, 
+              ComponentContextException
+    {
+    	// default is to push the formInputName value
+    	// now push the output to the next component
+        // allow subclasses to push a form value or ParameterParser object
+        //
+    	String defaultOutput = parameterMap.get(formInputName)[0];
+        //console.println("pushing " + defaultOutput);
+        //console.flush();
+        cc.pushDataComponentToOutput(DATA_OUTPUT, defaultOutput);
     }
     
 
@@ -229,6 +284,7 @@ public class TemplateGUI
     	
         try {
         	
+        	// allow subclasses to do execute
         	subExecute(cc);
         	
             String sInstanceId = cc.getExecutionInstanceID();
@@ -238,23 +294,20 @@ public class TemplateGUI
             
             sem.acquire();
             cc.startWebUIFragment(this);
+            
+            // block waiting for any web requests
             sem.acquire();
             cc.stopWebUIFragment(this);
             
-            
-            // now push the output to the next component
-            // TODO: push a form value or ParameterParser object ?
-            //
-            String oneValue = parameterMap.get(formInputName)[0];
-            cc.pushDataComponentToOutput(DATA_OUTPUT, oneValue);
-            
+            // allow subclasses to determine what to push to the output
+            subPushOutput(cc);
             
         } catch (Exception e) {
             throw new ComponentExecutionException(e);
         }
     }
     
-   
+    protected void subInitialize(ComponentContextProperties ccp) {}
     
     protected VelocityContext context;
     protected Template template;
@@ -262,8 +315,10 @@ public class TemplateGUI
     /**
      * Called when a flow is started.
      */
+    protected PrintStream console;
     public void initialize(ComponentContextProperties ccp) {
     	
+    	console = ccp.getOutputConsole();
     	
     	try {
     		
@@ -313,6 +368,8 @@ public class TemplateGUI
             	String value = ccp.getProperty(name);
             	context.put(name,value);
             }
+            
+            subInitialize(ccp);
             
     	}
     	catch (Exception e) {
