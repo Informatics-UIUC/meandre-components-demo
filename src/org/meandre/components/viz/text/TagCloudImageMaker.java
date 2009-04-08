@@ -144,19 +144,15 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
 
 		Enumeration<String> keys = table.keys();
 		int pos = 0;
-		int maxValue = Integer.MIN_VALUE,
-		    minValue = Integer.MAX_VALUE;
 		while(keys.hasMoreElements()) {
 			String key = keys.nextElement();
 			int value = ((Integer)table.get(key)).intValue();
 			text[pos] = key;
 			count[pos] = value;
 			fontSize[pos++] = value;
-			//maxValue = (value>maxValue)? value: maxValue;
-			//minValue = (value<minValue)? value: minValue;
 		}
 
-		for(int i=0; i<count.length-1; i++) {
+		for(int i=0; i<count.length-1; i++) { //sort
 			int p = i; //p points to the biggest value
 			for(int j=i+1; j<count.length; j++) {
 				if(count[j] > count[p])
@@ -174,28 +170,25 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
 				fontSize[p] = t;
 			}
 		}
+		int maxValue = fontSize[0],
+		    minValue = fontSize[fontSize.length-1];
 
-		maxValue = fontSize[0];
-		minValue = fontSize[fontSize.length-1];
+		Color[] colors = {new Color(0x99, 0x33, 0x33),
+		          new Color(0x99, 0x66, 0x33),
+		          new Color(0x99, 0x99, 0x33),
+		          new Color(0x99, 0xcc, 0x33),
+		          new Color(0x99, 0xff, 0x33)};
+
+		int margin = 5;
 
 		if(maxValue != minValue) {
 			float slope = (maxFontSize-minFontSize)/(maxValue-minValue);
-
-			for(int k=0; k<fontSize.length; k++) {
+			for(int k=0; k<fontSize.length; k++)
 				fontSize[k] = (int)(minFontSize+slope*(fontSize[k]-minValue));
-			}
 		} else {
 			for(int k=0; k<fontSize.length; k++)
 				fontSize[k] = (int)minFontSize;
 		}
-
-		Color[] colors = {new Color(0x99, 0x33, 0x33),
-				          new Color(0x99, 0x66, 0x33),
-				          new Color(0x99, 0x99, 0x33),
-				          new Color(0x99, 0xcc, 0x33),
-				          new Color(0x99, 0xff, 0x33)};
-
-		int margin = 5;
 
 		boolean[][] grid = new boolean[width][height];
 		for(int i=0; i<grid.length; i++)
@@ -203,15 +196,17 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
 				grid[i][j] = false;
 
 		BufferedImage image = new BufferedImage(
-			width, height, BufferedImage.TYPE_INT_ARGB);
+				width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2D = image.createGraphics();
 		FontRenderContext frc = g2D.getFontRenderContext();
 
-		for(int k=0; k<text.length; k++) {
+		boolean done = false;
+		int k;
+		for(k=0; k<text.length; k++) {
 			String str = (isVisible)? text[k]+" "+count[k]: text[k];
 
 			Font font = new Font(fontName, Font.BOLD, fontSize[k]);
-  			TextLayout layout = new TextLayout(/*text[k]*/str, font, frc);
+			TextLayout layout = new TextLayout(/*text[k]*/str, font, frc);
 
 			int w = (int)layout.getVisibleAdvance(),
 			    h = (int)(layout.getAscent()+layout.getDescent());
@@ -223,22 +218,22 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
 			    yCoord = (int)layout.getAscent()+(textHeight-h)/2;
 
 			BufferedImage textImage = new BufferedImage(
-				textWidth, textHeight,BufferedImage.TYPE_INT_ARGB);
+					textWidth, textHeight,BufferedImage.TYPE_INT_ARGB);
 			Graphics2D textG2D = textImage.createGraphics();
 
 			textG2D.setColor(Color.white);
 			textG2D.fillRect(0, 0, textWidth-1, textHeight-1);
 			textG2D.setColor(colors[k%colors.length]);
 			textG2D.setFont(font);
-        	textG2D.drawString(/*text[k]*/str, xCoord, yCoord);
+			textG2D.drawString(/*text[k]*/str, xCoord, yCoord);
 
 			BufferedImage biFlip = null;
 			if(k%5 == 0) {
 				biFlip = new BufferedImage(textHeight, textWidth,textImage.getType());
 				for(int i=0; i<textWidth; i++)
-    					for(int j=0; j<textHeight; j++)
-    						biFlip.setRGB(textHeight-1-j, i, textImage.getRGB(i, j));
-    						//biFlip.setRGB(j, textWidth-1-i, textImage.getRGB(i, j));
+    				for(int j=0; j<textHeight; j++)
+    					biFlip.setRGB(textHeight-1-j, i, textImage.getRGB(i, j));
+    					//biFlip.setRGB(j, textWidth-1-i, textImage.getRGB(i, j));
 				textImage = biFlip;
 				int tmp = textWidth;
 				textWidth = textHeight;
@@ -248,79 +243,98 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
 			int[] pixels = new int [textWidth * textHeight];
 			PixelGrabber pg = new PixelGrabber (textImage, 0, 0, textWidth, textHeight,
                 		pixels, 0, textWidth);
-     		try {
-     			pg.grabPixels ();
-     		}
-     		catch (InterruptedException e) {
-        		throw new ComponentExecutionException(e);
-     		}
+			try {
+				pg.grabPixels ();
+			}
+			catch (InterruptedException e) {
+				throw new ComponentExecutionException(e);
+			}
 
 			boolean[][] mask = new boolean[textWidth][textHeight];
 			for(int i=0; i<mask.length; ++i)
 				for(int j=0; j<mask[0].length; ++j)
 					mask[i][j] = false;
 			for (int j=0; j<textHeight; j+=margin) {
-	    			for (int i=0; i< textWidth; i+=margin) {
-					boolean found = false;
-					for(int ii=i; ii<i+margin&&ii<textWidth-margin; ii++) {
-						for(int jj=j; jj<j+margin&&jj<textHeight-margin; jj++) {
-							int value = pixels[jj * textWidth + ii];
-							byte[] rgb = new byte[3];
-							rgb [0] = (byte) (value & 0xFF);
-            				rgb [1] = (byte) ((value >> 8) & 0xFF);
-           					rgb [2] = (byte) ((value >>  16) & 0xFF);
-							//if(rgb[0]!=0 || rgb[1]!=0 || rgb[2]!=0) {
-           					if(!(rgb[0]==-1  && rgb[1]==-1 && rgb[2]==-1)) {
-								//textG2D.fillRect(i, j, 5, 5);
-								mask[i][j] = true;
-								found = true;
-								break;
-							}
-						}//jj
-						if(found)
-							break;
-					}//ii
-				}//i
+	    		for (int i=0; i< textWidth; i+=margin) {
+	    			boolean found = false;
+	    			for(int ii=i; ii<i+margin&&ii<textWidth-margin; ii++) {
+	    				for(int jj=j; jj<j+margin&&jj<textHeight-margin; jj++) {
+	    					int value = pixels[jj * textWidth + ii];
+	    					byte[] rgb = new byte[3];
+	    					rgb [0] = (byte) (value & 0xFF);
+	    					rgb [1] = (byte) ((value >> 8) & 0xFF);
+	    					rgb [2] = (byte) ((value >>  16) & 0xFF);
+	    					//if(rgb[0]!=0 || rgb[1]!=0 || rgb[2]!=0) {
+	    					if(!(rgb[0]==-1  && rgb[1]==-1 && rgb[2]==-1)) {
+	    						//textG2D.fillRect(i, j, 5, 5);
+	    						mask[i][j] = true;
+	    						found = true;
+	    						break;
+	    					}
+	    				}//jj
+	    				if(found)
+	    					break;
+	    			}//ii
+	    		}//i
 			}//j
 
 			double a = Math.random() * Math.PI;
-  			double d = Math.random() * (Math.max(textWidth, textHeight)/4);
-  			double da = (Math.random()-0.5) / 2;
-  			double dd = 0.05;
+			double d = Math.random() * (Math.max(textWidth, textHeight)/4);
+			double da = (Math.random()-0.5) / 2;
+			double dd = 0.05;
 			int x, y;
+			int nr = 0;
 			while (true) {
 				x = (int)(Math.floor((width/2 + (Math.cos(a)*d*2) - (textWidth/2))/5)*5);
-    			y = (int)(Math.floor((height/2 + (Math.sin(a)*d) - (textHeight/2))/5)*5);
+				y = (int)(Math.floor((height/2 + (Math.sin(a)*d) - (textHeight/2))/5)*5);
 
 				x = (x<0)?0: x;
 				y = (y<0)?0: y;
 
-    			boolean fail = false;
-    			for (int xt=0; xt<textWidth && !fail; xt+=margin) {
-      				for (int yt=0; yt<textHeight && !fail; yt+=margin) {
+				boolean fail = false;
+				for (int xt=0; xt<textWidth && !fail; xt+=margin) {
+					for (int yt=0; yt<textHeight && !fail; yt+=margin) {
 						if(xt+x>=width ||
 						   yt+y>=height ||
-					       (mask[xt][yt] && grid[xt + x][yt + y]))
+						   (mask[xt][yt] && grid[xt + x][yt + y]))
           						fail = true;
-      				}
-    			}
-    			if (!fail)
-      				break;
-    			a += da;
-    			d += dd;
-  			}
+					}
+				}
+				if (!fail)
+					break;
+				a += da;
+				d += dd;
 
-			for (int xt=0; xt<textWidth; xt+=margin) {
-    			for (int yt = 0; yt<textHeight; yt+=margin)
-      				if (mask[xt][yt])
-        				grid[xt+x][yt+y] = true;
+				if(++nr>10000) {//endless loop
+					done = true; //finished ahead of schedule
+					break;
+				}
 			}
-
-			for(int i=0; i<textWidth; i++)
-    			for(int j=0; j<textHeight; j++)
-    				if(mask[(i/margin)*margin][(j/margin)*margin])
-    					image.setRGB(x+i, y+j, textImage.getRGB(i, j));
+			if(!done) {
+				for (int xt=0; xt<textWidth; xt+=margin) {
+					for (int yt = 0; yt<textHeight; yt+=margin)
+						if (mask[xt][yt])
+							grid[xt+x][yt+y] = true;
+				}
+				for(int i=0; i<textWidth; i++)
+					for(int j=0; j<textHeight; j++)
+						if(mask[(i/margin)*margin][(j/margin)*margin])
+							image.setRGB(x+i, y+j, textImage.getRGB(i, j));
+			} else
+				break;
 		}//k
+
+		if(done) {
+			StringBuffer buf = new StringBuffer();
+			buf.append("Only " + k + " of " + text.length + " displayed due to limited space.\n");
+			buf.append("For viewing all of the words, the alternatives you can choose are\n");
+			buf.append("1) Increase the width or height of canvas\n");
+			buf.append("2) Decrease the number of words to be displayed.\n");
+			buf.append("3) Decrease the minimum font size.\n");
+			buf.append("4) Decrease the maximum font size.\n");
+			getConsoleOut().println(buf);
+		}
+
 		//g.drawImage(image, 0, 0, this);
 
 	    ByteArrayOutputStream os = new ByteArrayOutputStream();
