@@ -326,7 +326,7 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
 
 		if(done) {
 			StringBuffer buf = new StringBuffer();
-			buf.append("Only " + k + " of " + text.length + " displayed due to limited space.\n");
+			buf.append("Only " + k + " of " + text.length + " words displayed due to limited space.\n");
 			buf.append("For viewing all of the words, the alternatives you can choose are\n");
 			buf.append("1) Increase the width or height of canvas\n");
 			buf.append("2) Decrease the number of words to be displayed.\n");
