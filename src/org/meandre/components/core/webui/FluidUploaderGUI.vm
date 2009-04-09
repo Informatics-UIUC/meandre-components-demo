@@ -159,7 +159,10 @@ $gui.setPushValue($fieldName)
 
 <div id="in">
 <p> Once all the files are uploaded, selecting process will push
-the contents of each of these files to the next component 
+the contents of each of these files to the next component.
+</p>
+<p>
+Note this component assumes that the file(s) contains ascii based text.
 </p>
 <p>
 <div align="center">

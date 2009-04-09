@@ -171,6 +171,8 @@ public class FluidUploaderGUI extends TemplateGUI {
 			buf.append(line).append("\n");
 		}
 		br.close();
+		
+		// now save this input in an array
 		String outputString = buf.toString();
 		output.add(outputString);
 		
