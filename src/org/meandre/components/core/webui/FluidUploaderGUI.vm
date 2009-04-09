@@ -141,6 +141,13 @@
 <br/>
 <br/>
 
+##
+## this is the variable that the componet uses
+## to determine if we are done uploading files
+##
+#set ($fieldName = "done")
+$gui.setPushValue($fieldName)
+
 <STYLE TYPE="text/css">
 #in {width:400px}
 #in P              { font-size: 14pt; line-height: 14pt }
@@ -156,7 +163,7 @@ the contents of each of these files to the next component
 </p>
 <p>
 <div align="center">
-   <a id="url" href="/$sInstanceId?done=true">Process</a>
+   <a id="url" href="/$sInstanceId?${fieldName}=true">Process</a>
 </div>
 </p>
 </div>
