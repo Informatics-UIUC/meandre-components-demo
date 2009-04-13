@@ -1,0 +1,78 @@
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/PushString.rdf>
+alias <meandre://seasr.org/components/push-string> as PUSHSTRING
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/TextFileToDoc.rdf>
+alias <meandre://seasr.org/components/textfiletodoc> as TEXT2DOC
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/OpenNLP_SentenceDetect.rdf>
+alias <meandre://seasr.org/components/opennlp_sentencedetect> as SENTENCEDETECT
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/OpenNLP_Tokenizer.rdf>
+alias <meandre://seasr.org/components/opennlp_tokenizer> as TOKENIZER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/OpenNLP_PosTagger.rdf>
+alias <meandre://seasr.org/components/opennlp_postagger> as POSTAGGER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/OpenNLP_NameFinder.rdf>
+alias <meandre://seasr.org/components/opennlp_namefinder> as NAMEFINDER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/Annotation2XML.rdf>
+alias <meandre://seasr.org/components/annotation2xml> as ANNOTATION2XML
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/GoogleMapMaker.rdf>
+alias <meandre://seasr.org/components/google-map-generator> as MAPMAKER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/GoogleMapViz.rdf>
+alias <meandre://seasr.org/components/google-map-viewer> as MAPVIZ
+
+text2doc = TEXT2DOC()
+
+sentencedetect = SENTENCEDETECT()
+
+tokenizer = TOKENIZER()
+
+postagger = POSTAGGER()
+
+namefinder = NAMEFINDER()
+
+annotation2xml = ANNOTATION2XML()
+
+mapmaker = MAPMAKER()
+
+mapviz = MAPVIZ()
+
+push = PUSHSTRING()
+push.ConsoleOutput = "verbose"
+push.string = "http://www.gutenberg.org/dirs/etext04/dlshg10.txt"
+
+@anything = push()
+text2doc.webdav = "true"
+text2doc.add_space_at_new_lines = "true"
+text2doc(file_name: anything.string )
+
+@t2d = text2doc()
+sentencedetect(document_in: t2d.document)
+
+@st = sentencedetect()
+tokenizer(document_in: st.document_out)
+
+@tk = tokenizer()
+postagger(document_in: tk.document_out)
+
+@pt = postagger()
+namefinder(document_in: pt.document_out)
+
+@nf = namefinder()
+annotation2xml.Entities = "location"
+annotation2xml(Document: nf.document_out)
+
+@ax = annotation2xml()
+mapmaker(Document: ax.Annotation_xml)
+
+@mm = mapmaker()
+mapviz(vectorOfLatitude: mm.vectorOfLatitude)
+mapviz(vectorOfLongitude: mm.vectorOfLongitude)
+mapviz(vectorOfLocation: mm.vectorOfLocation)
+mapviz(vectorOfContext: mm.vectorOfContext)
+
+

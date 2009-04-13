@@ -1,0 +1,35 @@
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/PushString.rdf>
+alias <meandre://seasr.org/components/push-string> as PUSHSTRING
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/URLFetcherAuthenticated.rdf>
+alias <meandre://seasr.org/components/urlfetcherauthenticated> as URLFETCHER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/CSVReader.rdf>
+alias <meandre://seasr.org/components/csv-reader> as READER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/TableViewer.rdf>
+alias <meandre://seasr.org/components/table-viewer> as VIEWER
+
+
+fetcher = URLFETCHER()
+reader = READER()
+viewer = VIEWER()
+
+push = PUSHSTRING()
+push.ConsoleOutput = "verbose"
+push.string = "http://repository.seasr.org/Datasets/UCI/csv/mushroom.csv"
+
+@anything = push()
+fetcher(URL: anything.string )
+
+@c1 = fetcher()
+reader(Stream: c1.Stream)
+
+viewer.Attribute_Type_Header = "true"
+viewer.Attribute_Label_Header = "true"
+viewer.Num_Rows_to_Display = "200"
+viewer.Num_Columns_to_Display = "8"
+@c2 = reader()
+viewer(Content: c2.CSV_Content)
+
+

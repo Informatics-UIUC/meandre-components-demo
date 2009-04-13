@@ -1,0 +1,70 @@
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/org/meandre/components/io/url/URLFetcher.rdf>
+alias <meandre://seasr.org/components/urlfetcher> as URLFETCHER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/StreamContentReader.rdf>
+alias <meandre://seasr.org/components/streamcontentreader> as STREAMREADER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/HTML2Text.rdf>
+alias <meandre://seasr.org/components/html2text> as HTML2TEXT
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/ToLowerCase.rdf>
+alias <meandre://seasr.org/components/tolowercase> as LOWERCASE
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/WordCounter.rdf>
+alias <meandre://seasr.org/components/wordcounter> as WORDCOUNTER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/WordCountFilterAdvanced.rdf>
+alias <meandre://seasr.org/components/word-count-filter-advanced> as WORDFILTER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/TagCloudImageMaker.rdf>
+alias <meandre://seasr.org/components/tag-cloud-image-maker> as TAGCLOUDMAKER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/MIMEContentMaker.rdf>
+alias <meandre://seasr.org/components/mime-content-maker> as MIMECONTENTMAKER
+
+import <file://////E:/Eclipse-workspace/Demo-Components/trunk/resources/HTMLViewer.rdf>
+alias <meandre://seasr.org/components/html_viewer> as HTMLVIEWER
+
+urlfetcher = URLFETCHER()
+urlfetcher.location = "http://www.cnn.com"
+
+@uf = urlfetcher()
+streamreader = STREAMREADER()
+streamreader(Stream: uf.Stream)
+
+@sr = streamreader()
+html2text = HTML2TEXT()
+html2text(Html: sr.Object)
+
+@ht = html2text()
+lowercase = LOWERCASE()
+lowercase(Text: ht.Text)
+
+@lc = lowercase()
+wordcounter = WORDCOUNTER()
+wordcounter(Text: lc.Text)
+
+@wc = wordcounter()
+wordfilter = WORDFILTER()
+wordfilter(Map: wc.Map)
+wordfilter.is_Limited = "true"
+wordfilter.upper_Limit = "200"
+wordfilter.URL_for_Stop_Words = "http://repository.seasr.org/Datasets/Text/common_words.txt"
+
+@wf = wordfilter()
+tagcloudmaker = TAGCLOUDMAKER()
+tagcloudmaker(Map: wf.Map)
+tagcloudmaker.maxSize = "80"
+tagcloudmaker.minSize = "30"
+tagcloudmaker.countVisible = "false"
+
+@tcm = tagcloudmaker()
+mimecontentmaker = MIMECONTENTMAKER()
+mimecontentmaker(Content: tcm.Object)
+mimecontentmaker.MIME_type = "image"
+
+@mimecm = mimecontentmaker()
+htmlviewer = HTMLVIEWER()
+htmlviewer(Content: mimecm.HTML_Content)
+
+
