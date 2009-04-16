@@ -27,7 +27,6 @@ import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamDelimiter;
-import org.seasr.meandre.components.tools.Names;
 
 /** Reads a Jena Model from disk
  * 
