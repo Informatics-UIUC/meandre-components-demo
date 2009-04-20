@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.meandre.components.io.url;
 
@@ -25,11 +25,10 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
 import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
-import org.meandre.core.ExecutableComponent;
 import org.meandre.core.system.components.ext.StreamDelimiter;
 
 /** Reads a Jena Model from disk
- * 
+ *
  * @author Xavier Llor&agrave
  *
  */
@@ -56,10 +55,10 @@ public class WriteText extends AbstractExecutableComponent {
 			name=Names.PROP_ERROR_HANDLING,
 			description = "If set to true errors will be handled and empty models will be pushed. " +
 					      "Otherwise, the component will throw an exception an force the flow to abort.",
-		    defaultValue = "true" 
+		    defaultValue = "true"
 		)
-	private final static String PROP_ERROR_HANDLING = Names.PROP_ERROR_HANDLING;	
-	
+	private final static String PROP_ERROR_HANDLING = Names.PROP_ERROR_HANDLING;
+
 	//--------------------------------------------------------------------------------------------
 
 	@ComponentInput(
@@ -67,34 +66,34 @@ public class WriteText extends AbstractExecutableComponent {
 			description = "The URL or file name containing the model to write"
 		)
 	private final static String INPUT_LOCATION = Names.PORT_LOCATION;
-	
+
 	@ComponentInput(
 			name = Names.PORT_TEXT,
 			description = "The text to write"
 		)
 	private final static String INPUT_TEXT = Names.PORT_TEXT;
-	
+
 	@ComponentOutput(
 			name = Names.PORT_LOCATION,
 			description = "The URL or file name containing the written XML"
 		)
 	private final static String OUTPUT_LOCATION = Names.PORT_LOCATION;
-	
+
 	@ComponentOutput(
 			name = Names.PORT_TEXT,
 			description = "The text written"
 		)
 	private final static String OUTPUT_TEXT= Names.PORT_TEXT;
-	
+
 	//--------------------------------------------------------------------------------------------
-	
+
 	/** The error handling flag */
 	private boolean bErrorHandling;
 
 
 	//--------------------------------------------------------------------------------------------
-	
-	
+
+
 	/**
 	 * @see org.meandre.core.ExecutableComponent#initialize(org.meandre.core.ComponentContextProperties)
 	 */
@@ -102,7 +101,7 @@ public class WriteText extends AbstractExecutableComponent {
 			throws ComponentExecutionException, ComponentContextException {
 		this.bErrorHandling = Boolean.parseBoolean(ccp.getProperty(PROP_ERROR_HANDLING));
 	}
-	
+
 	/**
 	 * @see org.meandre.core.ExecutableComponent#dispose(org.meandre.core.ComponentContextProperties)
 	 */
@@ -118,10 +117,10 @@ public class WriteText extends AbstractExecutableComponent {
 			throws ComponentExecutionException, ComponentContextException {
 
 		Object objLoc = cc.getDataComponentFromInput(INPUT_LOCATION);
-		Object objDoc = cc.getDataComponentFromInput(INPUT_TEXT);	
-		
+		Object objDoc = cc.getDataComponentFromInput(INPUT_TEXT);
+
 		if ( objLoc instanceof StreamDelimiter || objDoc instanceof StreamDelimiter ) {
-			pushDelimiters(cc, objLoc, objDoc);	
+			pushDelimiters(cc, objLoc, objDoc);
 		}
 		else {
 			//Formatting filename to insert time stamp between filename and last file extension
@@ -131,15 +130,17 @@ public class WriteText extends AbstractExecutableComponent {
 			String sLocation;
 			if (index == -1)
 				 sLocation = objLoc.toString()+formatter.format(now);
-			else 
+			else
 				 sLocation = objLoc.toString().substring(0, index)+formatter.format(now)+objLoc.toString().substring(index);
 			String     sText = objDoc.toString();
 			try {
 				Writer wrtr = openWriter(cc.getPublicResourcesDirectory()+File.separator+sLocation);
 				wrtr.write(sText);
 				wrtr.close();
+
+				URL outputURL = new URL(cc.getProxyWebUIUrl(true), "/public/resources/" + sLocation);
 				componentConsoleHandler.whenLogLevelOutput("info","File written "+
-						"and accessible at "+cc.getWebUIUrl(false)+"public/resources/"+sLocation);
+						"and accessible at "+ outputURL);
 			}
 			catch (Throwable t) {
 				String sMessage = "Could not transform XML document into text";
@@ -149,13 +150,13 @@ public class WriteText extends AbstractExecutableComponent {
 					throw new ComponentExecutionException(sMessage+" "+t.toString());
 			}
 			cc.pushDataComponentToOutput(OUTPUT_LOCATION, objLoc);
-			cc.pushDataComponentToOutput(OUTPUT_TEXT, objDoc);	
+			cc.pushDataComponentToOutput(OUTPUT_TEXT, objDoc);
 		}
-			
+
 	}
 
 	/** Pushes the obtained delimiters
-	 * 
+	 *
 	 * @param cc The component context
 	 * @param objLoc The location delimiter
 	 * @param objDoc The document delimiter
@@ -172,13 +173,13 @@ public class WriteText extends AbstractExecutableComponent {
 	}
 
 	/** Push the delimiters to the outputs as needed.
-	 * 
+	 *
 	 * @param cc The component context
 	 * @param objLoc The location delimiter
 	 * @param objDoc The document delimiter
 	 * @throws ComponentContextException Push failed
 	 */
-	private void pushMissalignedDelimiters(ComponentContext cc, Object objLoc, Object objDoc) 
+	private void pushMissalignedDelimiters(ComponentContext cc, Object objLoc, Object objDoc)
 	throws ComponentContextException {
 		String sMsg = "Missaligned delimiters receive, reusing delimiters to banlance the streams";
 		cc.getOutputConsole().println("[WARNING] "+sMsg);
@@ -194,12 +195,12 @@ public class WriteText extends AbstractExecutableComponent {
 	}
 
 	//-----------------------------------------------------------------------------------
-		
+
 	/** Opens a writer to the location where to write.
-	 * 
+	 *
 	 * @param sLocation The location to write to
 	 * @return The writer for this location
-	 * @throws IOException The location could not be read 
+	 * @throws IOException The location could not be read
 	 */
 	private Writer openWriter(String sLocation) throws IOException {
 		try {
