@@ -130,15 +130,16 @@ public class WriteText extends AbstractExecutableComponent {
 			int index = objLoc.toString().lastIndexOf(".");
 			String sLocation;
 			if (index == -1)
-				 sLocation = cc.getPublicResourcesDirectory()+File.separator+objLoc.toString()+formatter.format(now);
+				 sLocation = objLoc.toString()+formatter.format(now);
 			else 
-				 sLocation = cc.getPublicResourcesDirectory()+File.separator+objLoc.toString().substring(0, index)+formatter.format(now)+objLoc.toString().substring(index);
+				 sLocation = objLoc.toString().substring(0, index)+formatter.format(now)+objLoc.toString().substring(index);
 			String     sText = objDoc.toString();
 			try {
-				Writer wrtr = openWriter(sLocation);
+				Writer wrtr = openWriter(cc.getPublicResourcesDirectory()+File.separator+sLocation);
 				wrtr.write(sText);
 				wrtr.close();
-				componentConsoleHandler.whenLogLevelOutput("info","File written at "+sLocation);
+				componentConsoleHandler.whenLogLevelOutput("info","File written "+
+						"and accessible at "+cc.getWebUIUrl(false)+"public/resources/"+sLocation);
 			}
 			catch (Throwable t) {
 				String sMessage = "Could not transform XML document into text";
