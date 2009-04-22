@@ -1,4 +1,4 @@
-package org.meandre.components.text.transform;
+package org.meandre.components.control;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
