@@ -8,11 +8,13 @@ import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextProperties;
 
 @Component(creator="Loretta Auvil",
-		description="This component extracts the text from a pdf document. "+
-		"The input is a String or URL specifiying the url of the pdf document. "+
-		"The output is the extracted text.",
-		name="ProcessTextBasedOnFormat",
-		tags="URL, text, pdf",
+		description="This component examines the URL of the document in order to output "+
+		"html or xml urls on one output port and pdf urls on another output port. All other urls"+
+		"urls are output on the remaining output port. "+
+		"Three different output ports are used for three different types of documents "+
+		"(html or xml url, pdf url, url).",
+		name="Process Text Based On Format",
+		tags="URL, pdf",
 		baseURL="meandre://seasr.org/components/")
 
 public class ProcessTextBasedOnFormat extends AbstractExecutableComponent
@@ -30,10 +32,10 @@ public class ProcessTextBasedOnFormat extends AbstractExecutableComponent
 			"<br>TYPE: java.io.String",
 			name="HTML_URL")
 			public final static String DATA_OUTPUT_HTML = "HTML_URL";
-	@ComponentOutput(description="URL of the text item." +
+	@ComponentOutput(description="URL of the item." +
 			"<br>TYPE: java.io.String",
 			name="TXT_URL")
-			public final static String DATA_OUTPUT_TXT = "TXT_URL";
+			public final static String DATA_OUTPUT_URL = "URL";
 
 	public void disposeCallBack(ComponentContextProperties ccp)
 	throws Exception {
@@ -45,12 +47,14 @@ public class ProcessTextBasedOnFormat extends AbstractExecutableComponent
 	throws Exception {
 
 		String url = (String)cc.getDataComponentFromInput(DATA_INPUT);
-		if (url.endsWith(".pdf"))
+		if (url.endsWith(".pdf") || url.endsWith(".PDF"))
 			cc.pushDataComponentToOutput(DATA_OUTPUT_PDF, url);
-		//else if (url.endsWith(".html") || (url.endsWith(".xml")))
-			//cc.pushDataComponentToOutput(DATA_OUTPUT_HTML, url);
+		else if (url.endsWith(".html") || url.endsWith(".htm")
+				|| url.endsWith(".HTML") || url.endsWith(".HTM")
+				|| url.endsWith(".xml") || url.endsWith(".XML"))
+			cc.pushDataComponentToOutput(DATA_OUTPUT_HTML, url);
 		else
-			cc.pushDataComponentToOutput(DATA_OUTPUT_TXT, url);
+			cc.pushDataComponentToOutput(DATA_OUTPUT_URL, url);
 	}
 
 	public void initializeCallBack(ComponentContextProperties ccp)
