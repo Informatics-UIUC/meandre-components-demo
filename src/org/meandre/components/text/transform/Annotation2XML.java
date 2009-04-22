@@ -189,8 +189,9 @@ public class Annotation2XML extends AbstractExecutableComponent {
         String xmlString = sw.toString();
 
         //print xml
-        getConsoleOut().println("Here's the xml:\n\n" + xmlString);
-		} catch(Exception e) {}
+        componentConsoleHandler.whenLogLevelOutput("finest", "XML Output:/n"+xmlString);
+		
+        } catch(Exception e) {}
 
 		// if statement to check ann.getType() to the property DATA_PROPERTY_ENTITIES
 		// write xml output including doc.getDocID(), ann.getContent(doc), and ann.getType()
