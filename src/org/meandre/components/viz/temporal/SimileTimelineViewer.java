@@ -299,15 +299,15 @@ implements WebUIFragmentCallback {
     	try {
 			doc.getDocumentElement().normalize();
 			docTitle = doc.getDocumentElement().getAttribute("docID");
-			System.out.println("Root element : " + docTitle);
+			getConsoleOut().println("Root element : " + docTitle);
 			NodeList nodeLst = doc.getElementsByTagName("date");
-			System.out.println("Information of date");
+			getConsoleOut().println("Information of date");
 			for (int k = 0; k < nodeLst.getLength(); k++) {
 				Node fstNode = nodeLst.item(k);
 				String aDate = fstNode.getTextContent();
 
 				//standardize date
-				System.out.println("time : " + aDate);
+				//getConsoleOut().println("time : " + aDate);
 
 				String month = null,
 				       day   = null,
