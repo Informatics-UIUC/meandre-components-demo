@@ -272,9 +272,9 @@ implements WebUIFragmentCallback {
 
 		try {
 			doc.getDocumentElement().normalize();
-			System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
+			getConsoleOut().println("Root element : " + doc.getDocumentElement().getNodeName());
 			NodeList nodeLst = doc.getElementsByTagName("location");
-			System.out.println("Information of all addresses");
+			getConsoleOut().println("Information of all addresses");
 			for (int k = 0; k < nodeLst.getLength(); k++) {
 				Node fstNode = nodeLst.item(k);
 
@@ -298,7 +298,7 @@ implements WebUIFragmentCallback {
 		        	br = new BufferedReader(new InputStreamReader(
 		        			url.openConnection().getInputStream()));
 			    }catch(java.io.IOException ex) {
-			    	System.out.println("bad query : " + str);
+			    	getConsoleOut().println("bad query : " + str);
 			    	br = null;
 			    }
 			    if(br == null)
