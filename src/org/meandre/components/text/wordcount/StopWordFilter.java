@@ -49,7 +49,6 @@ import java.net.URL;
 
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Comparator;
 
 import org.meandre.annotations.Component;
@@ -67,28 +66,17 @@ import org.meandre.core.ComponentExecutionException;
            description="Inputs a Map<String, Integer> and deletes all entries " +
            		"whose keys are among stop words. The stop words " +
            		"are specified in a file whose location is defined via " +
-           		"component property. This component can also optionally filter " +
-           		"words with lower word counts.",
-           name="Word Count Filter Advanced",
+           		"component property.",
+           name="StopWordFilter",
            tags="word, filter",
            baseURL="meandre://seasr.org/components/")
 
-public class WordCountFilterAdvanced extends AbstractExecutableComponent
+public class StopWordFilter extends AbstractExecutableComponent
 {
 	@ComponentProperty(defaultValue="http://repository.seasr.org/Datasets/Text/common_words.txt",
  		   			   description="URL containing stop words.",
  		   			   name="URL_for_Stop_Words")
-    final static String DATA_PROPERTY_1 = "URL_for_Stop_Words";
-
-	@ComponentProperty(defaultValue="false",
-                       description="This property sets whether the number of keys should be limited." +
-                       			   "If true, it will filter stop words.",
-                       name="is_Limited")
-    final static String DATA_PROPERTY_2 = "is_Limited";
-	@ComponentProperty(defaultValue="100",
-                       description="This property sets the maximum number of keys to be outputed.",
-                       name="upper_Limit")
-    final static String DATA_PROPERTY_3 = "upper_Limit";
+    final static String DATA_PROPERTY = "URL_for_Stop_Words";
 
 	@ComponentInput(description="Word count summary in Map format." +
             "<br>TYPE: java.util.Map<java.lang.String, java.lang.Integer>",
@@ -111,10 +99,12 @@ public class WordCountFilterAdvanced extends AbstractExecutableComponent
     	Map<String, Integer> inputMap =
     		(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
 
+    	getConsoleOut().print("Result of StopWordFilter: " + inputMap.size());
+
     	//open connection to URL of stop words.
     	InputStream is = null;
         try {
-            URL url = new URL(cc.getProperty(DATA_PROPERTY_1));
+            URL url = new URL(cc.getProperty(DATA_PROPERTY));
             try {
                 is = url.openConnection().getInputStream();
                 //is can not be closed here, otherwise java.net.SocketException: socket closed
@@ -145,31 +135,9 @@ public class WordCountFilterAdvanced extends AbstractExecutableComponent
     		throw new ComponentExecutionException(e);
     	}
 
-    	//filter words with lower counts.
-    	boolean isLimited = Boolean.parseBoolean(
-    			cc.getProperty(DATA_PROPERTY_2));
-    	Map<String, Integer> outputMap = inputMap;
-    	if(isLimited) {
-    		int upperLimit =
-    			Integer.parseInt(cc.getProperty(DATA_PROPERTY_3));
-    		if(inputMap.size() > upperLimit) {
-    			byValueComparator bvc =
-    				new byValueComparator(inputMap);
-    			TreeMap<String, Integer> sortedMap =
-    				new TreeMap<String, Integer>(bvc);
-    			sortedMap.putAll(inputMap);
-    			outputMap = new Hashtable<String, Integer>();
-    			while(upperLimit > 0) {
-    				String key = sortedMap.firstKey();
-    				Integer value = (Integer)sortedMap.get(key);
-    				outputMap.put(key, value);
-    				sortedMap.remove(key);
-    				--upperLimit;
-    			}
-    		}
-    	}
+    	cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
 
-    	cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
+    	getConsoleOut().println(" vs " + inputMap.size());
     }
 
 	/**
