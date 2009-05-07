@@ -34,7 +34,7 @@ public class ProcessTextBasedOnFormat extends AbstractExecutableComponent
 			public final static String DATA_OUTPUT_HTML = "HTML_URL";
 	@ComponentOutput(description="URL of the item." +
 			"<br>TYPE: java.io.String",
-			name="TXT_URL")
+			name="URL")
 			public final static String DATA_OUTPUT_URL = "URL";
 
 	public void disposeCallBack(ComponentContextProperties ccp)
@@ -49,12 +49,14 @@ public class ProcessTextBasedOnFormat extends AbstractExecutableComponent
 		String url = (String)cc.getDataComponentFromInput(DATA_INPUT);
 		if (url.endsWith(".pdf") || url.endsWith(".PDF"))
 			cc.pushDataComponentToOutput(DATA_OUTPUT_PDF, url);
-		else if (url.endsWith(".html") || url.endsWith(".htm")
+		else {
+			if (url.endsWith(".html") || url.endsWith(".htm")
 				|| url.endsWith(".HTML") || url.endsWith(".HTM")
 				|| url.endsWith(".xml") || url.endsWith(".XML"))
 			cc.pushDataComponentToOutput(DATA_OUTPUT_HTML, url);
-		else
+			else
 			cc.pushDataComponentToOutput(DATA_OUTPUT_URL, url);
+		}
 	}
 
 	public void initializeCallBack(ComponentContextProperties ccp)
