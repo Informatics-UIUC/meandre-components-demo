@@ -25,27 +25,12 @@ import java.util.Properties;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.Template;
 
-//import org.apache.velocity.exception.ParseErrorException;
-//import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.VelocityContext;
 
 
 /* 
- * template loading notes:
- * 
- *  templates are searched in
- *     1 local file system on the server: published_resources/templates (under the server install)
- *     2 local file system on the server: ./templates  where . is user.path
- *     3 on the classpath
- *     4 in any jars on the classpath
- *     
- *     the default template is OutputGenerator.vm
- * 
- *  local files take precedence over class path files 
- *  
+ *
  *  ComponentContextProperties  are in the velocity context as ccp
  *  ComponentContext             is in the velocity context as cc
  *  User supplied key=value pairs are in the velocity context as userMap
@@ -128,10 +113,8 @@ public class OutputGenerator
             context.put("cc", cc);
             context.put("gui", this);
             
-            
-            StringWriter sw = new StringWriter();
-        	template.merge(context,sw);
-        	String output = sw.toString();
+            VelocityTemplateService velocity = VelocityTemplateService.getInstance();
+            String output = velocity.generateOutput(context, templateName);
         	
         	cc.pushDataComponentToOutput(DATA_OUTPUT, output);
                 
@@ -144,7 +127,7 @@ public class OutputGenerator
     protected void subInitialize(ComponentContextProperties ccp) {}
     
     protected VelocityContext context;
-    protected Template template;
+    protected String templateName;
     
     /**
      * Called when a flow is started.
@@ -155,26 +138,17 @@ public class OutputGenerator
     	console = ccp.getOutputConsole();
     	
     	try {
-    		
-    		Properties p = new Properties();
-			p.setProperty("resource.loader", "file,class" );
-			p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
-		    p.setProperty("file.resource.loader.path", "published_resources/templates, WEB-INF/templates, ./templates");
-		                               
-		    Velocity.init( p );
-		    
-		    //Velocity.init("WEB-INF/velocity.properties");
-		   
-		    String templateName = ccp.getProperty(DATA_PROPERTY_TEMPLATE);
-			template = Velocity.getTemplate(templateName);
+  
+		    templateName = ccp.getProperty(DATA_PROPERTY_TEMPLATE);
     		
             /*
              *  Make a context object and populate with the data.  This
              *  is where the Velocity engine gets the data to resolve the
              *  references (ex. $date) in the template
              */
-
-            context = new VelocityContext();
+		    
+		    VelocityTemplateService velocity = VelocityTemplateService.getInstance();
+            context = velocity.getNewContext();
             context.put("dir",  System.getProperty("user.dir"));
             context.put("date", new Date());
             context.put("ccp",  ccp);
@@ -193,7 +167,9 @@ public class OutputGenerator
             }
             context.put("userMap", map);
             
+            //
             // push property values to the context
+            //
             for (String name: templateVariables) {
             	String value = ccp.getProperty(name);
             	context.put(name,value);
@@ -217,17 +193,4 @@ public class OutputGenerator
 }
 
 
-    /*
-	formInputName = ccp.getProperty(DATA_PROPERTY_FORM);
-    		
-    Reader reader = 
-        new InputStreamReader(getClass().getClassLoader().
-                                   getResourceAsStream("history.vm"));
-      VelocityContext context = new VelocityContext();
-      context.put("location", location );
-      context.put("weathers", weathers );
-      StringWriter writer = new StringWriter();
-      Velocity.evaluate(context, writer, "", reader);
-      
-      */
 

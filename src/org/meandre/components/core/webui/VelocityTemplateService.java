@@ -11,6 +11,17 @@ import org.apache.velocity.Template;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.ParseErrorException;
 
+/* 
+ * 
+ * template loading notes:
+ * 
+ *  templates are searched in
+ *     1 local file system on the server: published_resources/templates (under the server install)
+ *     2 local file system on the server: ./templates  where . is user.path
+ *     3 on the classpath
+ *     4 in any jars on the classpath
+ *     
+ */
 
 
 public class VelocityTemplateService {
@@ -70,6 +81,19 @@ public class VelocityTemplateService {
     	template.merge(context,sw);
     	return sw.toString();
 	}
-	
-
 }
+
+
+/*
+formInputName = ccp.getProperty(DATA_PROPERTY_FORM);
+		
+Reader reader = 
+    new InputStreamReader(getClass().getClassLoader().
+                               getResourceAsStream("history.vm"));
+  VelocityContext context = new VelocityContext();
+  context.put("location", location );
+  context.put("weathers", weathers );
+  StringWriter writer = new StringWriter();
+  Velocity.evaluate(context, writer, "", reader);
+  
+  */
