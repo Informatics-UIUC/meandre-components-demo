@@ -140,9 +140,8 @@ public class TemplateGUI
         	context.put("response", response);
         	
         	// render the template
-        	StringWriter sw = new StringWriter();
-    		template.merge(context,sw);
-    		String html =  sw.toString();
+        	VelocityTemplateService velocity = VelocityTemplateService.getInstance();
+            String html = velocity.generateOutput(context, templateName);
     		
     		// write the template to the response stream
             response.getWriter().println(html);
@@ -310,7 +309,7 @@ public class TemplateGUI
     protected void subInitialize(ComponentContextProperties ccp) {}
     
     protected VelocityContext context;
-    protected Template template;
+    protected String templateName;
     
     /**
      * Called when a flow is started.
@@ -322,21 +321,13 @@ public class TemplateGUI
     	
     	try {
     		
+    		templateName = ccp.getProperty(DATA_PROPERTY_TEMPLATE);
     		String tf = ccp.getProperty(DATA_PROPERTY_REFRESH);
     		this.doRefresh = Boolean.parseBoolean(tf);
     		
     		
-    		Properties p = new Properties();
-			p.setProperty("resource.loader", "file,class" );
-			p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
-		    p.setProperty("file.resource.loader.path", "published_resources/templates, WEB-INF/templates, ./templates");
-		                               
-		    Velocity.init( p );
-		    
-		    //Velocity.init("WEB-INF/velocity.properties");
-		   
-		    String templateName = ccp.getProperty(DATA_PROPERTY_TEMPLATE);
-			template = Velocity.getTemplate(templateName);
+    		VelocityTemplateService velocity = VelocityTemplateService.getInstance();
+            context = velocity.getNewContext();  
     		
             /*
              *  Make a context object and populate with the data.  This
@@ -385,21 +376,7 @@ public class TemplateGUI
     public void dispose(ComponentContextProperties ccp) {
     }
     
-    /*
-     * 
-     * 
-    		formInputName = ccp.getProperty(DATA_PROPERTY_FORM);
-    		
-    Reader reader = 
-        new InputStreamReader(getClass().getClassLoader().
-                                   getResourceAsStream("history.vm"));
-      VelocityContext context = new VelocityContext();
-      context.put("location", location );
-      context.put("weathers", weathers );
-      StringWriter writer = new StringWriter();
-      Velocity.evaluate(context, writer, "", reader);
-      
-      */
+ 
 }
 
 /* OLD WAY

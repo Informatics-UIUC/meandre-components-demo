@@ -21,6 +21,9 @@ import org.apache.velocity.exception.ParseErrorException;
  *     3 on the classpath
  *     4 in any jars on the classpath
  *     
+ *     NOTES:  if we want don't want to use the Singleton, we can use VelocityEngine 
+ *     see http://velocity.apache.org/engine/releases/velocity-1.5/developer-guide.html#to_singleton_or_not_to_singleton...
+ *     
  */
 
 
