@@ -37,10 +37,14 @@ public class VelocityTemplateService {
 	{
 		
 		Properties p = new Properties();
-		p.setProperty("resource.loader", "file,class" );
+		p.setProperty("resource.loader", "url,file,class" );
 		p.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader" );
+		p.setProperty("url.resource.loader.class", "org.apache.velocity.runtime.resource.loader.URLResourceLoader" );
 	    p.setProperty("file.resource.loader.path", "published_resources/templates, WEB-INF/templates, ./templates");
 	                               
+	    // p.setProperty("url.resource.loader.root", "http://3gne.com/mikeh/");
+	    // you need an empty string for the root property to work
+	    p.setProperty("url.resource.loader.root", "");
 	    Velocity.init( p );
 	    
 	    //Velocity.init("WEB-INF/velocity.properties");
