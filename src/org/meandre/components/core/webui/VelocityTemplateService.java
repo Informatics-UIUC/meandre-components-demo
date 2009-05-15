@@ -16,6 +16,7 @@ import org.apache.velocity.exception.ParseErrorException;
  * template loading notes:
  * 
  *  templates are searched in
+ *     0 http if the template name is prefixed with http://
  *     1 local file system on the server: published_resources/templates (under the server install)
  *     2 local file system on the server: ./templates  where . is user.path
  *     3 on the classpath
@@ -28,7 +29,6 @@ import org.apache.velocity.exception.ParseErrorException;
 
 
 public class VelocityTemplateService {
-	
 	
 	static private VelocityTemplateService instance = null;
 	
@@ -78,7 +78,8 @@ public class VelocityTemplateService {
 			template = Velocity.getTemplate(templateName);
 		}
 		catch (ResourceNotFoundException rnf) {
-			throw new RuntimeException("Unable to find the template " + templateName);
+			return new String("Unable to find the template " + templateName);
+			// throw new RuntimeException("Unable to find the template " + templateName);
 		}
 		catch (ParseErrorException pee) {
 			throw new RuntimeException("Unable to parse the template " + templateName);
