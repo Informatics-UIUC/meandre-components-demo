@@ -46,16 +46,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.StringTokenizer;
 
+import java.util.StringTokenizer;
+import java.util.Date;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+
+import java.text.SimpleDateFormat;
 
 import org.meandre.components.abstracts.AbstractExecutableComponent;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.annotations.ComponentProperty;
 
 import org.meandre.core.ComponentContext;
 import org.meandre.core.ComponentContextException;
@@ -69,13 +73,24 @@ import org.w3c.dom.NodeList;
 
 @Component(creator="Lily Dong",
            description="Generates the necessary HTML and XML files " +
-           "for viewing timeline and store them on the local machine.",
+           "for viewing timeline and store them on the local machine. " +
+           "The two files will be stored under public/resources/timeline/file/. " +
+           "The accompanying javascrpt file, that is examples.js, " +
+           "will be stored under public/resources/timeline/js/. " +
+           "For fast browse, dates are grouped into different time slices. " +
+           "The number of time slices is designed as a property. " +
+           "If granularity is not appropriate, adjusts this porperty.",
            name="SimileTimelineGenerator",
            tags="simile, timeline",
            baseURL="meandre://seasr.org/components/")
 
 public class SimileTimelineMaker extends AbstractExecutableComponent
 {
+	@ComponentProperty(defaultValue="10",
+			description="This property specifies the number of time slices.",
+            name="numberOfSegments")
+    final static String DATA_PROPERTY = "numberOfSegments";
+
 	@ComponentInput(description="Read XML document." +
 	            "<br>TYPE: org.w3c.dom.Document",
       			    name= "Document")
@@ -89,24 +104,30 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
     /** Store document title */
     private String docTitle;
 
-    /** Store the minimum year */
+    /** Store the minimum value of year */
     private int minYear;
+
+    /** Store the maximum value of year */
+    private int maxYear;
+
+    /** Store the number of time slices */
+    private int nrSegments;
 
     /**
      *
      * @param urlOfXml URL of XML file
      * @return HTML file for viewing timeline
      */
-    private String generateHTML(String urlOfXml) {
+    private String generateHTML(String fileNameOfXml) {
     	StringBuffer sb = new StringBuffer();
 
         sb.append("<html>\n");
         sb.append("<head>\n");
 
         sb.append("<script src=\"http://simile.mit.edu/timeline/api/timeline-api.js\" type=\"text/javascript\"></script>\n");
+        sb.append("<script src=\"../js/examples.js\" type=\"text/javascript\"></script>\n");
 
        	sb.append("<script type=\"text/javascript\">\n");
-
        	sb.append("function toggleVisibility(me){\n");
       	sb.append("var child = me.childNodes.item(1);\n");
       	sb.append("if (child.style.display=='none'){\n");
@@ -123,14 +144,17 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 
         sb.append("var bandInfos = [\n");
         sb.append("Timeline.createBandInfo({\n");
-        sb.append("eventSource:    eventSource,\n");
+            sb.append("eventSource:    eventSource,\n");
         	sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
             sb.append("width:          \"70%\",\n");
             sb.append("intervalUnit:   Timeline.DateTime.MONTH,\n");
             sb.append("intervalPixels: 100\n");
         sb.append("}),\n");
         sb.append("Timeline.createBandInfo({\n");
-        sb.append("eventSource:    eventSource,\n");
+        	sb.append("showEventText:	false,\n");
+        	sb.append("trackHeight: 	0.5,\n");
+        	sb.append("trackGap: 		0.2,\n");
+        	sb.append("eventSource:    eventSource,\n");
             sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
             sb.append("width:          \"30%\",\n");
             sb.append("intervalUnit:   Timeline.DateTime.YEAR,\n");
@@ -140,10 +164,10 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 
         sb.append("bandInfos[1].syncWith = 0;\n");
         sb.append("bandInfos[1].highlight = true;\n");
+        sb.append("bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout(1));\n");
 
         sb.append("tl = Timeline.create(document.getElementById(\"my-timeline\"), bandInfos);\n");
-        int beginIndex = urlOfXml.lastIndexOf("/")+1;
-        sb.append("Timeline.loadXML(\"").append(urlOfXml.substring(beginIndex)).append("\", function(xml, url) { eventSource.loadXML(xml, url); });\n");
+        sb.append("Timeline.loadXML(\"").append(fileNameOfXml).append("\", function(xml, url) { eventSource.loadXML(xml, url); });\n");
        	sb.append("}\n");
 
        	sb.append("var resizeTimerID = null;\n");
@@ -162,6 +186,29 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
         sb.append("<body onload=\"onLoad();\" onresize=\"onResize();\">\n");
         sb.append("<div id=\"my-timeline\" style=\"height: 150px; border: 1px solid #aaa\"></div>\n");
 
+        int nrYears = (maxYear-minYear)/nrSegments; //nrYears indicates the number of years in each segment
+        if(nrYears != 0) {
+        	sb.append("<br/>");
+        	sb.append("<div style=\"width: 100%\">\n");
+            sb.append("<table style=\"text-align: center; width: 100%\">\n");
+            int year = minYear;
+            int i = 0;
+            while(!(year>maxYear)) {//every row consists of 10 segments
+            	if(i%10 == 0)
+            		sb.append("<tr>\n");
+            	sb.append("<td><a href=\"javascript:centerTimeline("+year+");\">"+year+"</a></td>\n");
+            	if((i+1)%10 == 0)
+            		sb.append("</tr>\n");
+            	year += nrYears;
+            	++i;
+            }
+            if(i%10 != 0)
+            	sb.append("</tr>\n");
+            sb.append("</table>\n");
+            sb.append("</div>\n");
+            sb.append("<br/>");
+        }
+
         sb.append("</body>\n");
         sb.append("</html>\n");
 
@@ -175,6 +222,7 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
      */
     private String generateXML(Document doc) {
     	minYear = Integer.MAX_VALUE;
+    	maxYear = Integer.MIN_VALUE;
 
     	StringBuffer buf = new StringBuffer(); //Store XML
     	buf.append("<data>\n");
@@ -262,6 +310,7 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 
 				year = dateMatcher.group(1);
 				minYear = Math.min(minYear, Integer.parseInt(year));
+				maxYear = Math.max(maxYear, Integer.parseInt(year));
 				//year or month year or month day year
 				if(day == null)
 					if(month == null) { //season year
@@ -340,45 +389,31 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
      */
     public void executeCallBack(ComponentContext cc)
     throws Exception {
+    	nrSegments = Integer.parseInt(cc.getProperty(DATA_PROPERTY));
 
     	Document doc = (Document)cc.getDataComponentFromInput(DATA_INPUT);
 
-    	String path = new File(".").getAbsolutePath(); //based on local file system
-   	   	int index = path.length()-1;
-   	   	while(true) { //find the last occurrence of alphabet, and ignore \.
-   	   		char ch = path.charAt(index);
-   	   		if(Character.toString(ch).equals(File.separator))
-   	   			break;
-   	   		--index;
-   	   	}
-   	   	int endIndex = index;
-
-   	   	String dir = cc.getPublicResourcesDirectory();
-   	   	index = 0;
-   	   	while(true) { //find the first occurrence of alphabet, and ignore .\
-   	   		char ch = dir.charAt(index);
-   	   		if(Character.isLetter(ch))
-   	   			break;
-   	   		++index;
-   	   	}
-   	   	int beginIndex = index;
-
-   	   	path = path.substring(0, endIndex)+File.separator+
-   	   	dir.substring(beginIndex)+File.separator;
+   	   	String dir = cc.getPublicResourcesDirectory() + File.separator;
+   	   	dir += "timeline" + File.separator;
+   	   	dir += "file" + File.separator;
 
    		String webUiUrl = cc.getWebUIUrl(true).toString();
-    	String urlOfHtml = webUiUrl+"public/resources/myhtml.html",
-    	       urlOfXml = webUiUrl+"public/resources/myxml.xml";
+   		Date now = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		String fileNameOfHtml = "myhtml" + formatter.format(now) + ".html",
+		       fileNameOfXml = "myxml" + formatter.format(now) + ".xml";
+    	String urlOfHtml = webUiUrl + "public/resources/timeline/file/" + fileNameOfHtml,
+    	       urlOfXml  = webUiUrl + "public/resources/timeline/file/" + fileNameOfXml;
 
    	   	try {
    	   		PrintWriter out = new PrintWriter(
-	   				new BufferedWriter(new FileWriter(path+"myxml.xml")));
+	   				new BufferedWriter(new FileWriter(dir+fileNameOfXml)));
 	   		out.write(generateXML(doc));
 	   		out.flush();
 
    	   		out	= new PrintWriter(
-   	   					new BufferedWriter(new FileWriter(path+"myhtml.html")));
-   	   		out.write(generateHTML(urlOfXml));
+   	   					new BufferedWriter(new FileWriter(dir+fileNameOfHtml)));
+   	   		out.write(generateHTML(fileNameOfXml));
    	   		out.flush();
 
    	   		out.close();
