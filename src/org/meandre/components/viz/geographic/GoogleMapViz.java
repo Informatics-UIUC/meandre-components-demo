@@ -137,12 +137,25 @@ implements WebUIFragmentCallback {
         sb.append("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
         sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\">\n");
         sb.append("<head>\n");
+
+        sb.append("<style>\n");
+        sb.append(".scrollable {\n");
+        sb.append("width: 150px;\n");
+        sb.append("height: 450px;\n");
+        sb.append("overflow: auto;\n");
+        sb.append("}\n");
+        sb.append("</style>\n");
+
         sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>\n");
         sb.append("<title>Google Map Viewer</title>\n");
         sb.append("<script src=\"http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key="+
         		googleKey + "\"\n");
         sb.append("type=\"text/javascript\"></script>\n");
         sb.append("<script type=\"text/javascript\">\n");
+
+        sb.append("function myclick(i) {\n");
+        	sb.append("GEvent.trigger(gmarkers[i], \"click\");\n");
+        sb.append("}\n");
 
         sb.append("function toggleVisibility(me){\n");
         	sb.append("var child = me.childNodes.item(1);\n");
@@ -170,21 +183,40 @@ implements WebUIFragmentCallback {
         for(int i=0; i<context.size(); i++)
         	sb.append("cxt[").append(i).append("]=\"").append(context.elementAt(i)).append("\";\n");
 
+        sb.append("var side_bar_html = \"\";\n");
+        sb.append("var gmarkers = [];\n");
+
         sb.append("function initialize() {\n");
+
+        sb.append("for(var i=0; i<loc.length-1; i++) {\n");
+        	sb.append("var min = i;\n");
+        	sb.append("for(var j=i+1; j<loc.length; j++) {\n");
+        		sb.append("if(loc[min]>loc[j])\n");
+        			sb.append("min = j;\n");
+        	sb.append("}\n");
+        	sb.append("var tmp = loc[i];\n");
+        	sb.append("loc[i] = loc[min];\n");
+        	sb.append("loc[min] = tmp;\n");
+        	sb.append("tmp = lat[i];\n");
+        	sb.append("lat[i] = lat[min];\n");
+        	sb.append("lat[min] = tmp;\n");
+        	sb.append("tmp = lon[i];\n");
+        	sb.append("lon[i] = lon[min];\n");
+        	sb.append("lon[min] = tmp;\n");
+        	sb.append("tmp = cxt[i];\n");
+        	sb.append("cxt[i] = cxt[min];\n");
+        	sb.append("cxt[min] = tmp;\n");
+        sb.append("}\n");
+
         sb.append("if (GBrowserIsCompatible()) {\n");
-
         sb.append("var map = new GMap2(document.getElementById(\"map_canvas\"));\n");
-
         sb.append("var bounds = new GLatLngBounds();\n");
-
         sb.append("map.setCenter(new GLatLng(0,0),0);\n");
-
         sb.append("map.addControl(new GSmallMapControl());\n");
         sb.append("map.addControl(new GMapTypeControl());\n");
 
         sb.append("function createMarker(point, index) {\n");
         sb.append("var marker = new GMarker(point);\n");
-
         sb.append("GEvent.addListener(marker, \"click\", function() {\n");
         sb.append("var maxContent = cxt[index];\n");
         sb.append("marker.openInfoWindowHtml('<b>'+loc[index]+'</b>', {maxContent:maxContent, maxTitle:loc[index]});\n");
@@ -194,24 +226,40 @@ implements WebUIFragmentCallback {
 
         sb.append("for (var i=0; i<loc.length; i++) {\n");
         sb.append("var latlng = new GLatLng(lat[i], lon[i]);\n");
-
         sb.append("bounds.extend(latlng);\n");
-
-        sb.append("map.addOverlay(createMarker(latlng, i));\n");
+        sb.append("var marker = createMarker(latlng, i);\n");
+        sb.append("gmarkers.push(marker);\n");
+        sb.append("map.addOverlay(marker);\n");
+        sb.append("side_bar_html = side_bar_html.concat(\'<a href=\"javascript:myclick(\' + i + \')\">\' + loc[i] + \"<\\/a><br>\");\n");
         sb.append("}\n");
-
         sb.append("map.setZoom(map.getBoundsZoomLevel(bounds));\n");
         sb.append("map.setCenter(bounds.getCenter());\n");
+        sb.append("document.getElementById(\"side_bar\").innerHTML = side_bar_html;\n");
 
         sb.append("}\n");
         sb.append("}\n");
+
         sb.append("</script>\n");
         sb.append("</head>\n");
 
         sb.append("<body onload=\"initialize()\">\n");
+
         sb.append("<div align=\"center\">\n");
-        sb.append("<div id=\"map_canvas\" style=\"width: 800px; height: 500px\"></div>\n");
+        sb.append("<table border=1>\n");
+        sb.append("<tr>\n");
+        sb.append("<td>\n");
+        sb.append("<div id=\"map_canvas\" style=\"width: 800px; height: 450px\"></div>\n");
+        sb.append("</td>\n");
+        sb.append("<td width=150 valign=\"top\" style=\"text-decoration: underline; color:#4444ff;\">\n");
+        sb.append("<div id=\"side_bar\" class=\"scrollable\"></div>\n");
+        sb.append("</td>\n");
+        sb.append("</tr>\n");
+        sb.append("</table>\n");
         sb.append("</div>\n");
+
+        /*sb.append("<div align=\"center\">\n");
+        sb.append("<div id=\"map_canvas\" style=\"width: 800px; height: 500px\"></div>\n");
+        sb.append("</div>\n");*/
 
         sb.append("<br/>\n");
 
