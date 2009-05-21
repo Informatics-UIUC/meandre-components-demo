@@ -187,7 +187,7 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 
         sb.append("</head>\n");
         sb.append("<body onload=\"onLoad();\" onresize=\"onResize();\">\n");
-        sb.append("<div id=\"my-timeline\" style=\"height: 150px; border: 1px solid #aaa\"></div>\n");
+        sb.append("<div id=\"my-timeline\" style=\"height: 450px; border: 1px solid #aaa\"></div>\n");
 
         int nrYears = (maxYear-minYear)/nrSegments; //nrYears indicates the number of years in each segment
         if(nrYears != 0) {
