@@ -75,7 +75,6 @@ import org.w3c.dom.NodeList;
            description="Generates the necessary HTML and XML files " +
            "for viewing timeline and store them on the local machine. " +
            "The two files will be stored under public/resources/timeline/file/. " +
-           "The accompanying javascrpt file, that is examples.js, " +
            "will be stored under public/resources/timeline/js/. " +
            "For fast browse, dates are grouped into different time slices. " +
            "The number of time slices is designed as a property. " +
@@ -125,9 +124,13 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
         sb.append("<head>\n");
 
         sb.append("<script src=\"http://simile.mit.edu/timeline/api/timeline-api.js\" type=\"text/javascript\"></script>\n");
-        sb.append("<script src=\"../js/examples.js\" type=\"text/javascript\"></script>\n");
 
        	sb.append("<script type=\"text/javascript\">\n");
+
+       	sb.append("function centerTimeline(date) {\n");
+       	    sb.append("tl.getBand(0).setCenterVisibleDate(Timeline.DateTime.parseGregorianDateTime(date));\n");
+       	sb.append("}\n");
+
        	sb.append("function toggleVisibility(me){\n");
       	sb.append("var child = me.childNodes.item(1);\n");
       	sb.append("if (child.style.display=='none'){\n");
@@ -229,9 +232,9 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 
 		doc.getDocumentElement().normalize();
 		docTitle = doc.getDocumentElement().getAttribute("docID");
-		getConsoleOut().println("Root element : " + docTitle);
+		//getConsoleOut().println("Root element : " + docTitle);
 		NodeList nodeLst = doc.getElementsByTagName("date");
-		getConsoleOut().println("Information of date");
+		//getConsoleOut().println("Information of date");
 		for (int k = 0; k < nodeLst.getLength(); k++) {
 			Node fstNode = nodeLst.item(k);
 			String aDate = fstNode.getTextContent();
