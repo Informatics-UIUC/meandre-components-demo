@@ -61,7 +61,7 @@ import org.meandre.core.ComponentExecutionException;
 @Component(creator="Lily Dong",
            description="Inputs a Map<String, Integer> and filters " +
            "words with lower word counts.",
-           name="LowCoundWordFilter",
+           name="Low Count Word Filter",
            tags="word, filter",
            baseURL="meandre://seasr.org/components/")
 
