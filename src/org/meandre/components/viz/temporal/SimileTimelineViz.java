@@ -114,7 +114,7 @@ implements  WebUIFragmentCallback {
 
     	sb.append("<body>\n");
 
-    	sb.append("<iframe src=\"").append(urlOfHtml).append("\" width=\"100%\" height=\"80%\" FRAMEBORDER=0>\n");
+    	sb.append("<iframe src=\"").append(urlOfHtml).append("\" width=\"100%\" height=\"70%\" FRAMEBORDER=0>\n");
     	sb.append("</iframe>\n");
 
     	sb.append("<div align=\"center\">\n");

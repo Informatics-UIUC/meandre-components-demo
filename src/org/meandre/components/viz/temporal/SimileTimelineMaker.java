@@ -109,8 +109,7 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
     /** Store the maximum value of year */
     private int maxYear;
 
-    /** Store the number of time slices */
-    private int nrSegments;
+    private final String[] units = {"DAY", "MONTH", "YEAR", "DECADE", "CENTURY"};
 
     /**
      *
@@ -127,8 +126,20 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 
        	sb.append("<script type=\"text/javascript\">\n");
 
-       	sb.append("function centerTimeline(date) {\n");
-       	    sb.append("tl.getBand(0).setCenterVisibleDate(Timeline.DateTime.parseGregorianDateTime(date));\n");
+       	sb.append("function submit() {\n");
+       	sb.append("var select_list_field = document.getElementById('year');\n");
+       	sb.append("var select_list_selected_index = select_list_field.selectedIndex;\n");
+       	sb.append("var year = select_list_field.options[select_list_selected_index].text;\n");
+
+       	sb.append("var select_list_field = document.getElementById('month');\n");
+       	sb.append("var month = select_list_field.selectedIndex+1;\n");
+
+       	sb.append("var select_list_field = document.getElementById('day');\n");
+       	sb.append("var select_list_selected_index = select_list_field.selectedIndex;\n");
+       	sb.append("var day = select_list_field.options[select_list_selected_index].text;\n");
+
+       	sb.append("var str = \"Date(\"+year+\",\"+month+\",\"+day+\")\";\n");
+       	sb.append("tl.getBand(0).setCenterVisibleDate(Timeline.DateTime.parseGregorianDateTime(eval('new ' + str)));\n");
        	sb.append("}\n");
 
        	sb.append("function toggleVisibility(me){\n");
@@ -145,13 +156,25 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
         sb.append("function onLoad() {\n");
         sb.append("var eventSource = new Timeline.DefaultEventSource();\n");
 
+        sb.append("var theme = Timeline.ClassicTheme.create();\n");
+        sb.append("theme.event.bubble.width = 450;\n");
+        sb.append("theme.event.bubble.height = 350;\n");
+
+        int nrYears = maxYear - minYear;
+        int index = 0; //day month year
+        if(nrYears>0 && nrYears<101) // month year decade
+        	index = 1;
+        else
+        	index = 2; // year decade century
+
         sb.append("var bandInfos = [\n");
         sb.append("Timeline.createBandInfo({\n");
             sb.append("eventSource:    eventSource,\n");
         	sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
             sb.append("width:          \"70%\",\n");
-            sb.append("intervalUnit:   Timeline.DateTime.MONTH,\n");
-            sb.append("intervalPixels: 100\n");
+            sb.append("intervalUnit:   Timeline.DateTime."+units[index]+",\n");
+            sb.append("intervalPixels: 100,\n");
+            sb.append("theme:          theme\n");
         sb.append("}),\n");
         sb.append("Timeline.createBandInfo({\n");
         	sb.append("showEventText:	false,\n");
@@ -159,15 +182,28 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
         	sb.append("trackGap: 		0.2,\n");
         	sb.append("eventSource:    eventSource,\n");
             sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
-            sb.append("width:          \"30%\",\n");
-            sb.append("intervalUnit:   Timeline.DateTime.YEAR,\n");
+            sb.append("width:          \"20%\",\n");
+            sb.append("intervalUnit:   Timeline.DateTime."+units[index+1]+",\n");
             sb.append("intervalPixels: 200\n");
-        sb.append("})\n");
+        sb.append("}),\n");
+        sb.append("Timeline.createBandInfo({\n");
+    		sb.append("showEventText:	false,\n");
+    		sb.append("trackHeight: 	0.5,\n");
+    		sb.append("trackGap: 		0.2,\n");
+    		sb.append("eventSource:    eventSource,\n");
+    		sb.append("date:           \"Jan 01 ").append(minYear).append(" 00:00:00 GMT\",\n");
+    		sb.append("width:          \"10%\",\n");
+    		sb.append("intervalUnit:   Timeline.DateTime."+units[index+2]+",\n");
+    		sb.append("intervalPixels: 500\n");
+    		sb.append("})\n");
         sb.append("];\n");
 
         sb.append("bandInfos[1].syncWith = 0;\n");
         sb.append("bandInfos[1].highlight = true;\n");
         sb.append("bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout(1));\n");
+        sb.append("bandInfos[2].syncWith = 0;\n");
+        sb.append("bandInfos[2].highlight = true;\n");
+        sb.append("bandInfos[2].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout(1));\n");
 
         sb.append("tl = Timeline.create(document.getElementById(\"my-timeline\"), bandInfos);\n");
         sb.append("Timeline.loadXML(\"").append(fileNameOfXml).append("\", function(xml, url) { eventSource.loadXML(xml, url); });\n");
@@ -189,28 +225,46 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
         sb.append("<body onload=\"onLoad();\" onresize=\"onResize();\">\n");
         sb.append("<div id=\"my-timeline\" style=\"height: 450px; border: 1px solid #aaa\"></div>\n");
 
-        int nrYears = (maxYear-minYear)/nrSegments; //nrYears indicates the number of years in each segment
-        if(nrYears != 0) {
-        	sb.append("<br/>");
-        	sb.append("<div style=\"width: 100%\">\n");
-            sb.append("<table style=\"text-align: center; width: 100%\">\n");
-            int year = minYear;
-            int i = 0;
-            while(!(year>maxYear)) {//every row consists of 10 segments
-            	if(i%10 == 0)
-            		sb.append("<tr>\n");
-            	sb.append("<td><a href=\"javascript:centerTimeline("+year+");\">"+year+"</a></td>\n");
-            	if((i+1)%10 == 0)
-            		sb.append("</tr>\n");
-            	year += nrYears;
-            	++i;
-            }
-            if(i%10 != 0)
-            	sb.append("</tr>\n");
-            sb.append("</table>\n");
-            sb.append("</div>\n");
-            sb.append("<br/>");
-        }
+        sb.append("<br>\n");
+
+        sb.append("<div>\n");
+
+        sb.append("<select id=\"month\">\n");
+        sb.append("<option selected=\"yes\">January</option>\n");
+        sb.append("<option>February</option>\n");
+        sb.append("<option>March</option>\n");
+        sb.append("<option>April</option>\n");
+        sb.append("<option>May</option>\n");
+        sb.append("<option>June</option>\n");
+        sb.append("<option>July</option>\n");
+        sb.append("<option>August</option>\n");
+        sb.append("<option>September</option>\n");
+        sb.append("<option>October</option>\n");
+        sb.append("<option>November</option>\n");
+        sb.append("<option>December</option>\n");
+        sb.append("</select>\n");
+
+        sb.append("<label>/</label>\n");
+
+        sb.append("<select id=\"day\">\n");
+        sb.append("<option selected=\"yes\">1</option>\n");
+        for(int i=2; i<=31; i++)
+            sb.append("<option>" + i + "</option>\n");
+        sb.append("</select>\n");
+
+        sb.append("<label>/</label>\n");
+
+        sb.append("<select id=\"year\">\n");
+        sb.append("<option selected=\"yes\">" + minYear + "</option>\n");
+        for(int i=minYear+1; i<=maxYear; i++)
+            sb.append("<option>" + i + "</option>\n");
+        sb.append("</select>\n");
+
+        sb.append("<label>(mm/dd/yyyy)</label>\n");
+
+        sb.append("<a href=\"#\" onClick=\"submit(); return false;\">select</a>\n");
+
+        sb.append("</div>\n");
 
         sb.append("</body>\n");
         sb.append("</html>\n");
@@ -288,7 +342,8 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 				}
 			}
 
-			datePattern = Pattern.compile("(\\d{4})"); //look for year
+			//datePattern = Pattern.compile("(\\d{4})"); //look for year
+			datePattern = Pattern.compile("(\\d{3,4})"); //look for year with 3 or 4 digits
 			dateMatcher = datePattern.matcher(aDate);
 			if(dateMatcher.find()) { //look for year
 				NamedNodeMap nnp = fstNode.getAttributes();
@@ -306,23 +361,31 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 		        int nr = 0;
 		        while(st.hasMoreTokens()) {
 		        	String nt = st.nextToken();
-		        	   sb.append("&lt;div onclick=&#39;toggleVisibility(this)&#39; style=&#39;position:relative&#39; ALIGN=&#39;LEFT&#39;&gt;Sentence ").append(++nr);
-		        	   sb.append("&lt;span style=&#39;display: none&#39; ALIGN=&#39;LEFT&#39;&gt; &lt;table bgcolor=&#39; yellow&#39; &gt;&lt;tr&gt;&lt;td&gt;").append(nt).append("&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/span&gt;&lt;/div&gt;");
-		        	}
+		        	int pos = nt.toLowerCase().indexOf(aDate);
+		        	String str = "&lt;/font&gt;";
+		        	int offset = pos+aDate.length();
+		        	nt = new StringBuffer(nt).insert(offset, str).toString();
+		        	offset = pos;
+		        	str = "&lt;font color=&#39;red&#39;&gt;";
+		        	nt = new StringBuffer(nt).insert(offset, str).toString();
+		        	sb.append("&lt;div onclick=&#39;toggleVisibility(this)&#39; style=&#39;position:relative&#39; ALIGN=&#39;LEFT&#39;&gt;&lt;b&gt;Sentence ").append(++nr).append("&lt;/b&gt;");
+		        	sb.append("&lt;span style=&#39;display: &#39; ALIGN=&#39;LEFT&#39;&gt; &lt;table &gt;&lt;tr&gt;&lt;td&gt;").append(nt).append("&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/span&gt;&lt;/div&gt;");
+		        }
 		        sentence = sb.toString();
 
 				year = dateMatcher.group(1);
 				minYear = Math.min(minYear, Integer.parseInt(year));
 				maxYear = Math.max(maxYear, Integer.parseInt(year));
+
 				//year or month year or month day year
 				if(day == null)
 					if(month == null) { //season year
 						if(startMonth != null) {//spring or summer or fall or winter year
-							buf.append("<event start=\"").append(startMonth + " " + year).append("\" end=\"").append(endMonth + " " + year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
+							buf.append("<event start=\"").append(startMonth + " " + year).append("\" end=\"").append(endMonth + " " + year).append("\" title=\"").append(aDate+"("+nr+")").append("\">\n").append(sentence).append("\n");
 							buf.append("</event>\n");
 						} else { //year
 							//if(Integer.parseInt(year) != 1832) {
-							buf.append("<event start=\"").append(year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
+							buf.append("<event start=\"").append(year).append("\" title=\"").append(aDate+"("+nr+")").append("\">\n").append(sentence).append("\n");
 							buf.append("</event>\n");//}
 						}
 					} else { //month year
@@ -362,15 +425,15 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 								numberOfDays = 28;
 						}
 						String endDay = month + " " + Integer.toString(numberOfDays);
-						buf.append("<event start=\"").append(startDay + " " + year).append("\" end=\"").append(endDay + " " + year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
+						buf.append("<event start=\"").append(startDay + " " + year).append("\" end=\"").append(endDay + " " + year).append("\" title=\"").append(aDate+"("+nr+")").append("\">\n").append(sentence).append("\n");
 				    	buf.append("</event>\n");
 					}
 				else {
 					if(month == null) {//year
-						buf.append("<event start=\"").append(year).append("\" title=\"").append(/*year*/aDate).append("\">\n").append(sentence).append("\n");
+						buf.append("<event start=\"").append(year).append("\" title=\"").append(aDate+"("+nr+")").append("\">\n").append(sentence).append("\n");
 						buf.append("</event>\n");
-					} else { //month day month
-						buf.append("<event start=\"").append(month + " " + day + " " + year).append("\" title=\"").append(/*month + " " + day + " " + year*/aDate).append("\">\n").append(sentence).append("\n");
+					} else { //month day year
+						buf.append("<event start=\"").append(month + " " + day + " " + year).append("\" title=\"").append(aDate+"("+nr+")").append("\">\n").append(sentence).append("\n");
 						buf.append("</event>\n");
 					}
 				}
@@ -392,8 +455,6 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
      */
     public void executeCallBack(ComponentContext cc)
     throws Exception {
-    	nrSegments = Integer.parseInt(cc.getProperty(DATA_PROPERTY));
-
     	Document doc = (Document)cc.getDataComponentFromInput(DATA_INPUT);
 
    	   	String dir = cc.getPublicResourcesDirectory() + File.separator;
