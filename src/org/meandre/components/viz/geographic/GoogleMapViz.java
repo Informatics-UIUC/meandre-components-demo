@@ -219,7 +219,8 @@ implements WebUIFragmentCallback {
         sb.append("var marker = new GMarker(point);\n");
         sb.append("GEvent.addListener(marker, \"click\", function() {\n");
         sb.append("var maxContent = cxt[index];\n");
-        sb.append("marker.openInfoWindowHtml('<b>'+loc[index]+'</b>', {maxContent:maxContent, maxTitle:loc[index]});\n");
+        sb.append("var str = '<b>'+loc[index]+'</b>';\n");
+        sb.append("marker.openInfoWindowHtml('<b>'+loc[index]+'</b>', {maxContent:maxContent, maxTitle:str});\n");
         sb.append("});\n");
         sb.append("return marker;\n");
         sb.append("}\n");

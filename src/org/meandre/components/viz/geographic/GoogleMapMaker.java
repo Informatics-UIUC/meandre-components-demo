@@ -198,15 +198,20 @@ public class GoogleMapMaker	extends AbstractExecutableComponent
 	        	    int nr = 0;
 	        	    while(st.hasMoreTokens()) {
 	        	    	String nt = st.nextToken();
-	        	    	buf.append("<div onclick='toggleVisibility(this)' style='position:relative' ALIGN='LEFT'>Sentence ").append(++nr);
-	        	    	buf.append("<span style='display: none' ALIGN='LEFT'><table bgcolor='yellow'><tr><td>").append(nt).append("</td></tr></table></span></div>");
+	        	    	int pos = nt.toLowerCase().indexOf(fstNode.getTextContent());
+			        	int offset = pos+fstNode.getTextContent().length();
+			        	nt = new StringBuffer(nt).insert(offset, "</font>").toString();
+			        	offset = pos;
+			        	nt = new StringBuffer(nt).insert(offset, "<font color='red'>").toString();
+	        	    	buf.append("<div onclick='toggleVisibility(this)' style='position:relative' ALIGN='LEFT'><b>Sentence ").append(++nr).append("</b>");
+	        	    	buf.append("<span style='display: ' ALIGN='LEFT'><table><tr><td>").append(nt).append("</td></tr></table></span></div>");
 	        	    }
 
 	        	    /*sentence = "<p align=left>" + sentence;
 	        	    sentence = sentence.replaceAll("[|]", "</p><hr><p align=left>");
 	        	    sentence = sentence + "</p>";*/
 
-	        	    location.add(fstNode.getTextContent());
+	        	    location.add(fstNode.getTextContent()+"("+nr+")");
 	        	    context.add(buf.toString());//sentence);
 
 	        	    s = s.substring(endIndex+12);
