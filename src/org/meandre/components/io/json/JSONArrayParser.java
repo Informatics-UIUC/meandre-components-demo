@@ -87,8 +87,8 @@ public class JSONArrayParser extends AbstractExecutableComponent
         JSONObject jo = (JSONObject)JSONSerializer.toJSON(inpuText);
         JSONArray ja = jo.names();
 
-        getConsoleOut().println(jo.toString());
-        getConsoleOut().println(ja.toString());
+        console.fine(jo.toString());
+        console.fine(ja.toString());
 
         cc.pushDataComponentToOutput(DATA_OUTPUT, ja);
     }

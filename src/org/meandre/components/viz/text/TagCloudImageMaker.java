@@ -116,6 +116,12 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
                      name="Object")
     public final static String DATA_OUTPUT = "Object";
 
+
+	int width, height;
+	String fontName;
+	float maxFontSize, minFontSize;
+	boolean isVisible;
+
     /** When ready for execution.
     *
     * @param cc The component context
@@ -125,19 +131,31 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
     public void executeCallBack(ComponentContext cc)
     throws Exception {
 
-    	int width = Integer.parseInt(cc.getProperty(DATA_PROPERTY_1)),
-            height = Integer.parseInt(cc.getProperty(DATA_PROPERTY_2));
 
-    	String fontName = cc.getProperty(DATA_PROPERTY_3);
-    	float maxFontSize = Float.parseFloat(cc.getProperty(DATA_PROPERTY_4)), //maximum font size
-    	      minFontSize = Float.parseFloat(cc.getProperty(DATA_PROPERTY_5));  //minimum font size
-
-    	boolean isVisible = Boolean.parseBoolean(cc.getProperty(DATA_PROPERTY_6));
 
 		Hashtable<String, Integer> table =
 			(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
 
-		int length = table.size();
+		ByteArrayOutputStream os = makeTagcloudImage(table);
+
+ 		cc.pushDataComponentToOutput(DATA_OUTPUT, os.toByteArray());
+
+ 		try {
+ 			os.close();
+ 		}catch(java.io.IOException e) {
+ 			throw new ComponentExecutionException(e);
+ 		}
+    }
+
+    /**
+     * @param table
+     * @return
+     * @throws ComponentExecutionException
+     */
+    private ByteArrayOutputStream makeTagcloudImage(
+            Hashtable<String, Integer> table)
+            throws ComponentExecutionException {
+        int length = table.size();
 		String[] text = new String[length];
 		int[] fontSize = new int[length];
 		int[] count = new int[length];
@@ -332,7 +350,7 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
 			buf.append("2) Decrease the number of words to be displayed.\n");
 			buf.append("3) Decrease the minimum font size.\n");
 			buf.append("4) Decrease the maximum font size.\n");
-			getConsoleOut().println(buf);
+			console.info(buf.toString());
 		}
 
 		//g.drawImage(image, 0, 0, this);
@@ -344,14 +362,7 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
 	    }catch(java.io.IOException e) {
 	    	throw new ComponentExecutionException(e);
 	    }
-
- 		cc.pushDataComponentToOutput(DATA_OUTPUT, os.toByteArray());
-
- 		try {
- 			os.close();
- 		}catch(java.io.IOException e) {
- 			throw new ComponentExecutionException(e);
- 		}
+        return os;
     }
 
 	/**
@@ -359,6 +370,14 @@ public class TagCloudImageMaker extends AbstractExecutableComponent
      */
     public void initializeCallBack(ComponentContextProperties ccp)
     throws Exception {
+        width = Integer.parseInt(ccp.getProperty(DATA_PROPERTY_1));
+        height = Integer.parseInt(ccp.getProperty(DATA_PROPERTY_2));
+
+        fontName = ccp.getProperty(DATA_PROPERTY_3);
+        maxFontSize = Float.parseFloat(ccp.getProperty(DATA_PROPERTY_4)); //maximum font size
+        minFontSize = Float.parseFloat(ccp.getProperty(DATA_PROPERTY_5));  //minimum font size
+
+        isVisible = Boolean.parseBoolean(ccp.getProperty(DATA_PROPERTY_6));
     }
 
     /**

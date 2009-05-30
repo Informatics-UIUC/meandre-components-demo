@@ -382,9 +382,9 @@ implements WebUIFragmentCallback {
 	   webUiUrl = cc.getWebUIUrl(true).toString();
 	   sInstanceID = cc.getExecutionInstanceID();
 
-	   getConsoleOut().println("path = " + path);
-	   getConsoleOut().println("dir = " + cc.getPublicResourcesDirectory());
-	   getConsoleOut().println("url = " + cc.getWebUIUrl(true).toString());
+	   console.fine("path = " + path);
+	   console.fine("dir = " + cc.getPublicResourcesDirectory());
+	   console.fine("url = " + cc.getWebUIUrl(true).toString());
 
 	   try {
 		   save(path);

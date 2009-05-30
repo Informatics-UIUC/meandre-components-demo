@@ -139,7 +139,7 @@ public class EvernoteWriter extends AbstractExecutableComponent
                 userStore.authenticate(username, password, key);
             User user = authResult.getUser();
             String authToken = authResult.getAuthenticationToken();
-            getConsoleOut().println("Notes for " + user.getUsername());
+            console.fine("Notes for " + user.getUsername());
             String noteStoreUrl = noteStoreUrlBase + user.getShardId();
 
             THttpClient noteStoreTrans =

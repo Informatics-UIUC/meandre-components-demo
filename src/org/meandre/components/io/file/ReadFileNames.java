@@ -100,7 +100,7 @@ import org.meandre.tools.webdav.*;
 		+ "<p>An integer count of the total number of names output is pushed out at the end.</p>",
 		name = "Read File Names", tags = "io, read, file",
         baseURL="meandre://seasr.org/components/")
-        
+
 public class ReadFileNames extends AbstractExecutableComponent  {
 
 	// ==============
@@ -260,7 +260,7 @@ public class ReadFileNames extends AbstractExecutableComponent  {
 				result = "file://"+result;
 
 			ctx.pushDataComponentToOutput(DATA_OUTPUT_FILE_NAMES, result);
-			componentConsoleHandler.whenLogLevelOutput("verbose", _docsProcessed +" : pushing out file name: "+ result);
+			console.fine(_docsProcessed +" : pushing out file name: "+ result);
 			_docsProcessed++;
 		}
 		// assume that the _names have been built and are not depleted

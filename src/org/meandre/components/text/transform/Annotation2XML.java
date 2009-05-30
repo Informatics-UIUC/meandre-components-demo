@@ -134,7 +134,7 @@ public class Annotation2XML extends AbstractExecutableComponent {
 		Element root = doc_out.createElement("root");
         doc_out.appendChild(root);
         root.setAttribute("docID", doc_in.getDocID());
-        getConsoleOut().println("docID: " + doc_in.getDocID());
+        console.fine("docID: " + doc_in.getDocID());
 
 		Hashtable<String, Element> ht = new Hashtable<String, Element>();
 
@@ -189,7 +189,7 @@ public class Annotation2XML extends AbstractExecutableComponent {
         String xmlString = sw.toString();
 
         //print xml
-        componentConsoleHandler.whenLogLevelOutput("finest", "XML Output:/n"+xmlString);
+        console.finest( "XML Output:/n"+xmlString);
 		
         } catch(Exception e) {}
 

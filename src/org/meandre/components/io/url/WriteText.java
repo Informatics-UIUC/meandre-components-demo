@@ -139,13 +139,13 @@ public class WriteText extends AbstractExecutableComponent {
 				wrtr.close();
 
 				URL outputURL = new URL(cc.getProxyWebUIUrl(true), "/public/resources/" + sLocation);
-				componentConsoleHandler.whenLogLevelOutput("info","File written "+
+				console.info("File written "+
 						"and accessible at "+ outputURL);
 			}
 			catch (Throwable t) {
 				String sMessage = "Could not transform XML document into text";
 				cc.getLogger().warning(sMessage);
-				componentConsoleHandler.whenLogLevelOutput("warn",sMessage);
+				console.warning(sMessage);
 				if ( !bErrorHandling )
 					throw new ComponentExecutionException(sMessage+" "+t.toString());
 			}

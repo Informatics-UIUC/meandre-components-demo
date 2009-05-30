@@ -109,7 +109,7 @@ public class ListWords extends AbstractExecutableComponent
         			new InputStreamReader(postMethod.getResponseBodyAsStream()));
         	String line = null;
         	while((line = in.readLine()) != null)
-        		getConsoleOut().println(line);
+        		console.fine(line);
 
         	in.close();
 

@@ -124,7 +124,7 @@ public class LowCountWordFilter extends AbstractExecutableComponent
 
     	cc.pushDataComponentToOutput(DATA_OUTPUT, outputMap);
 
-    	getConsoleOut().println("Result of LowCountWordFilter: " + inputMap.size() + " vs " + outputMap.size());
+    	console.fine("Result of LowCountWordFilter: " + inputMap.size() + " vs " + outputMap.size());
     }
 
 	/**

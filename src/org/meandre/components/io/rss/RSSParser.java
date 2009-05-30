@@ -98,11 +98,11 @@ public class RSSParser extends AbstractExecutableComponent
             throw new ComponentExecutionException(e);
         }
 
-        getConsoleOut().println("Title: " + feed.getTitle());
-        getConsoleOut().println("Author: " + feed.getAuthor());
-        getConsoleOut().println("Description: " + feed.getDescription());
-        getConsoleOut().println("Pub date: " + feed.getPublishedDate());
-        getConsoleOut().println("Copyrignt: " + feed.getCopyright());
+        console.fine("Title: " + feed.getTitle());
+        console.fine("Author: " + feed.getAuthor());
+        console.fine("Description: " + feed.getDescription());
+        console.fine("Pub date: " + feed.getPublishedDate());
+        console.fine("Copyrignt: " + feed.getCopyright());
 
         cc.pushDataComponentToOutput(DATA_OUTPUT, feed);
     }

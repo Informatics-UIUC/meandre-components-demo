@@ -135,9 +135,9 @@ public class GoogleMapMaker	extends AbstractExecutableComponent
 
 		try {
 			doc.getDocumentElement().normalize();
-			getConsoleOut().println("Root element : " + doc.getDocumentElement().getNodeName());
+			console.fine("Root element : " + doc.getDocumentElement().getNodeName());
 			NodeList nodeLst = doc.getElementsByTagName("location");
-			getConsoleOut().println("Information of all addresses");
+			console.fine("Information of all addresses");
 			for (int k = 0; k < nodeLst.getLength(); k++) {
 				Node fstNode = nodeLst.item(k);
 
@@ -161,7 +161,7 @@ public class GoogleMapMaker	extends AbstractExecutableComponent
 		        	br = new BufferedReader(new InputStreamReader(
 		        			url.openConnection().getInputStream()));
 			    }catch(java.io.IOException ex) {
-			    	getConsoleOut().println("bad query : " + str);
+			    	console.fine("bad query : " + str);
 			    	br = null;
 			    }
 			    if(br == null)

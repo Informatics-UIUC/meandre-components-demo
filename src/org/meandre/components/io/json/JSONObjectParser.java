@@ -83,7 +83,7 @@ public class JSONObjectParser extends AbstractExecutableComponent
         String inpuText = (String)cc.getDataComponentFromInput(DATA_INPUT);
         JSONObject jo = (JSONObject)JSONSerializer.toJSON(inpuText);
 
-        getConsoleOut().println(jo.toString());
+        console.fine(jo.toString());
 
         cc.pushDataComponentToOutput(DATA_OUTPUT, jo);
     }

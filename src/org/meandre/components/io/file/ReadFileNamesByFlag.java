@@ -306,12 +306,12 @@ public class ReadFileNamesByFlag extends AbstractExecutableComponent  {
 
 			if (_names.size() == 0){
 				ctx.pushDataComponentToOutput(OUTPUT_LAST_ITEM, "true");
-				componentConsoleHandler.whenLogLevelOutput("verbose", _docsProcessed +" : pushing out file name and true: "+ result);
+				console.fine( _docsProcessed +" : pushing out file name and true: "+ result);
 
 			}
 			else {
 				ctx.pushDataComponentToOutput(OUTPUT_LAST_ITEM, "false");
-				componentConsoleHandler.whenLogLevelOutput("verbose", _docsProcessed + ": pushing out file name and false: "+ result);
+				console.fine( _docsProcessed + ": pushing out file name and false: "+ result);
 			}
 
 		}

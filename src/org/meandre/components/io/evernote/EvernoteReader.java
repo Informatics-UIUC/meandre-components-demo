@@ -132,7 +132,7 @@ public class EvernoteReader extends AbstractExecutableComponent
             User user = authResult.getUser();
 
             String authToken = authResult.getAuthenticationToken();
-            getConsoleOut().println("Notes for " + user.getUsername() + ":");
+            console.fine("Notes for " + user.getUsername() + ":");
 
             String noteStoreUrl = noteStoreUrlBase + user.getShardId();
             THttpClient noteStoreTrans =
@@ -145,14 +145,14 @@ public class EvernoteReader extends AbstractExecutableComponent
             List<Notebook> notebooks =
                 (List<Notebook>)noteStore.listNotebooks(authToken);
             for (Notebook notebook : notebooks) {
-            	getConsoleOut().println("Notebook: " + notebook.getName());
+            	console.fine("Notebook: " + notebook.getName());
                 NoteFilter filter = new NoteFilter();
                 filter.setNotebookGuid(notebook.getGuid());
                 NoteList noteList = noteStore.findNotes(authToken, filter, 0, 100);
                 List<Note> notes = (List<Note>) noteList.getNotes();
                 for (Note note : notes) {
-                	getConsoleOut().println(" * " + note.getTitle());
-                	//getConsoleOut().println(noteStore.getNoteContent(authToken, note.getGuid()));
+                	console.fine(" * " + note.getTitle());
+                	//console.fine(noteStore.getNoteContent(authToken, note.getGuid()));
                 }
             }
 

@@ -58,7 +58,7 @@ import de.intarsys.tools.locator.ByteArrayLocator;
         throws Exception {
 
         //console = ccp.getOutputConsole();
-        getConsoleOut().println("Initializing PDFTextExtrator for " + ccp.getFlowID());
+        console.fine("Initializing PDFTextExtrator for " + ccp.getFlowID());
     }
 
     public void executeCallBack(ComponentContext cc)
@@ -72,7 +72,7 @@ import de.intarsys.tools.locator.ByteArrayLocator;
             else if (cc.getDataComponentFromInput(DATA_INPUT).getClass().getName() == "java.net.URL")
                 url = (URL) cc.getDataComponentFromInput("URL");
             else {
-            	getConsoleOut().println("PDFTextExtractor must receive a java.lang.String or a java.net.URL type");
+            	console.fine("PDFTextExtractor must receive a java.lang.String or a java.net.URL type");
                 url = null;
             }
         } catch(java.net.MalformedURLException e) {
@@ -105,16 +105,16 @@ import de.intarsys.tools.locator.ByteArrayLocator;
             }
             catch (IOException ioex) {
                 //ioex.printStackTrace();
-            	componentConsoleHandler.whenLogLevelOutput("verbose" , ioex);
+            	console.fine( ioex.toString());
                 throw new ComponentExecutionException(ioex);
             }
             catch (COSLoadException coslex) {
                 //coslex.printStackTrace();
-            	componentConsoleHandler.whenLogLevelOutput("verbose" , coslex);
+            	console.fine( coslex.toString());
                 throw new ComponentExecutionException(coslex);
             }
         } else
-        	getConsoleOut().println("PDFTextExtractor can only process PDF files (*.pdf)");
+        	console.fine("PDFTextExtractor can only process PDF files (*.pdf)");
     }
 
     public void disposeCallBack(ComponentContextProperties ccp)
@@ -165,7 +165,7 @@ import de.intarsys.tools.locator.ByteArrayLocator;
                     sb.append(extractor.getContent());
                 } catch (CSException e) {
                     //e.printStackTrace();
-                	componentConsoleHandler.whenLogLevelOutput("verbose" , e);
+                	console.fine( e.toString());
                 }
             } else {
                 extractText((PDPageTree) node, sb);

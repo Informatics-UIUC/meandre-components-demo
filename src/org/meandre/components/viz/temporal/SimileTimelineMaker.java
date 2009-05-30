@@ -286,15 +286,15 @@ public class SimileTimelineMaker extends AbstractExecutableComponent
 
 		doc.getDocumentElement().normalize();
 		docTitle = doc.getDocumentElement().getAttribute("docID");
-		//getConsoleOut().println("Root element : " + docTitle);
+		//console.fine("Root element : " + docTitle);
 		NodeList nodeLst = doc.getElementsByTagName("date");
-		//getConsoleOut().println("Information of date");
+		//console.fine("Information of date");
 		for (int k = 0; k < nodeLst.getLength(); k++) {
 			Node fstNode = nodeLst.item(k);
 			String aDate = fstNode.getTextContent();
 
 			//standardize date
-			//getConsoleOut().println("time : " + aDate);
+			//console.fine("time : " + aDate);
 
 			String month = null,
 				   day   = null,

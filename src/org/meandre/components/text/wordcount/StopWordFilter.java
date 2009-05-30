@@ -99,7 +99,7 @@ public class StopWordFilter extends AbstractExecutableComponent
     	Map<String, Integer> inputMap =
     		(Hashtable<String, Integer>)cc.getDataComponentFromInput(DATA_INPUT);
 
-    	getConsoleOut().print("Result of StopWordFilter: " + inputMap.size());
+    	console.info("Result of StopWordFilter: " + inputMap.size());
 
     	//open connection to URL of stop words.
     	InputStream is = null;
@@ -137,7 +137,7 @@ public class StopWordFilter extends AbstractExecutableComponent
 
     	cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
 
-    	getConsoleOut().println(" vs " + inputMap.size());
+    	console.fine(" vs " + inputMap.size());
     }
 
 	/**

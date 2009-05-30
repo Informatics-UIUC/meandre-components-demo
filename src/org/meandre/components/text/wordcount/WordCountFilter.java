@@ -95,7 +95,7 @@ public class WordCountFilter extends AbstractExecutableComponent
     	try {
 			this.ccHandle = cc;
 			Map inputMap = (Map)cc.getDataComponentFromInput(DATA_INPUT);
-			getConsoleOut().print("Filtering words from "+inputMap.size());
+			console.info("Filtering words from "+inputMap.size());
 			String keysToBeDeleted = cc.getProperty(DATA_PROPERTY);
 	        StringTokenizer st = new StringTokenizer(keysToBeDeleted, ",");
 	        while(st.hasMoreTokens()) {
@@ -104,7 +104,7 @@ public class WordCountFilter extends AbstractExecutableComponent
 	                inputMap.remove(theKey);
 	        }
 
-	        getConsoleOut().println(" to "+inputMap.size());
+	        console.fine(" to "+inputMap.size());
 
 	        cc.pushDataComponentToOutput(DATA_OUTPUT, inputMap);
 		} catch (Exception e) {
