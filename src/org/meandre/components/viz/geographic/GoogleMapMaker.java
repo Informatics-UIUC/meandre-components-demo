@@ -70,7 +70,7 @@ import org.w3c.dom.NamedNodeMap;
 
 @Component(creator="Lily Dong",
            description="Calculates latitude and longitude for an address contained in the input XML document.",
-           name="Google Map Generator",
+           name="Google Map Maker",
            tags="google map, latitude, longitude",
            baseURL="meandre://seasr.org/components/")
 
@@ -164,8 +164,10 @@ public class GoogleMapMaker	extends AbstractExecutableComponent
 			    	console.fine("bad query : " + str);
 			    	br = null;
 			    }
+
 			    if(br == null)
 			    	continue;
+
 		        StringBuffer buffer = new StringBuffer();
 		        String line;
 		        while((line = br.readLine())!= null) {
@@ -177,6 +179,7 @@ public class GoogleMapMaker	extends AbstractExecutableComponent
 		        br.close();
 
 		        String s = buffer.toString();
+
 		        while(true) {//valid location
 		        	if(s.indexOf("<Latitude>") == -1)
 		        		break;
@@ -196,14 +199,20 @@ public class GoogleMapMaker	extends AbstractExecutableComponent
 	        	    StringTokenizer st = new StringTokenizer(sentence, "|");
 	        	    StringBuffer buf = new StringBuffer();
 	        	    int nr = 0;
+
 	        	    while(st.hasMoreTokens()) {
 	        	    	String nt = st.nextToken();
 	        	    	int pos = nt.toLowerCase().indexOf(fstNode.getTextContent());
-			        	int offset = pos+fstNode.getTextContent().length();
+
+	        	    	if(pos == -1)
+	        	    		continue;
+
+	        	    	int offset = pos+fstNode.getTextContent().length();
 			        	nt = new StringBuffer(nt).insert(offset, "</font>").toString();
 			        	offset = pos;
 			        	nt = new StringBuffer(nt).insert(offset, "<font color='red'>").toString();
-	        	    	buf.append("<div onclick='toggleVisibility(this)' style='position:relative' ALIGN='LEFT'><b>Sentence ").append(++nr).append("</b>");
+
+			        	buf.append("<div onclick='toggleVisibility(this)' style='position:relative' ALIGN='LEFT'><b>Sentence ").append(++nr).append("</b>");
 	        	    	buf.append("<span style='display: ' ALIGN='LEFT'><table><tr><td>").append(nt).append("</td></tr></table></span></div>");
 	        	    }
 
