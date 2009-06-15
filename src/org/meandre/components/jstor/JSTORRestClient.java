@@ -146,7 +146,6 @@ public class JSTORRestClient extends AbstractExecutableComponent
     	    			while((line = in.readLine()) != null)
     	    				buf.append(line).append("\n");
     	    			in.close();
-    	    			//System.out.println(buf.toString());
     	    			cc.pushDataComponentToOutput(DATA_OUTPUT, buf.toString());
     	    		}
     			}
