@@ -87,8 +87,9 @@ public class TextExtractor extends AbstractExecutableComponent
     throws Exception {
     	Document source = (Document)cc.getDataComponentFromInput(DATA_INPUT);
     	try {
-    		listNodes(source.getDocumentElement(), "description");
-        	//cc.pushDataComponentToOutput(DATA_OUTPUT, source);
+    		StringBuffer buf = new StringBuffer();
+    		listNodes(source.getDocumentElement(), "dc:description", buf);
+        	cc.pushDataComponentToOutput(DATA_OUTPUT, buf.toString());
     	}catch(Exception e) {
     		throw new ComponentExecutionException(e);
     	}
@@ -98,11 +99,17 @@ public class TextExtractor extends AbstractExecutableComponent
      *
      * @param node root of document
      * @param info info to be extracted
+     * @param buf the extracted content
      */
-    private void listNodes(Node node, String info) {
+    private void listNodes(Node node,
+    					   String info,
+    					   StringBuffer buf) {
     	String nodeName = node.getNodeName();
-    	if (node instanceof Element && nodeName.equals("dc:description")) {
-    		System.out.println(node.getTextContent());
+    	if (node instanceof Element && nodeName.equals(info)) {
+    		String str = node.getTextContent();
+    		int beginIndex = str.indexOf("ABSTRACT:");
+    		beginIndex += beginIndex+new String("ABSTRACT:").length();
+    		buf.append(str.substring(beginIndex));
     	    /*NamedNodeMap attrs = node.getAttributes();
     	    for (int i = 0; i < attrs.getLength(); i++) {
     	        Attr attribute = (Attr) attrs.item(i);
@@ -110,11 +117,10 @@ public class TextExtractor extends AbstractExecutableComponent
     	            + attribute.getValue());
     	    }*/
     	}
-
     	NodeList list = node.getChildNodes();
     	    if (list.getLength() > 0)
     	      for (int i = 0; i < list.getLength(); i++)
-    	        listNodes(list.item(i), info);
+    	        listNodes(list.item(i), info, buf);
     }
 
 	/**

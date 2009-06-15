@@ -87,39 +87,70 @@ public class JSTORRestClient extends AbstractExecutableComponent
     throws Exception {
 
     	try {
-    		//String loc = "http://dfr.jstor.org/sru/?operation=searchRetrieve&query=jstor.discipline+%3D+%22Education%22&version=1.1";
-    		String loc = "http://dfr.jstor.org/sru/?operation=searchRetrieve&recordPacking=xml&version=1.1&startRecord=11&maximumRecords=10&resultSetTTL=&recordSchema=info:srw/schema/1/dc-v1.1&query=dc.description%20=%20springer";
+    		StringBuffer buf = new StringBuffer();
+    		String str1 = "http://dfr.jstor.org/sru/?operation=searchRetrieve&query=dc.description+%3D+%22liberal%22&version=1.1&operation=searchRetrieve&recordSchema=info%3Asrw%2Fschema%2F1%2Fdc-v1.1&maximumRecords=";
+    		String str2 = "&startRecord=";
+    		String str3 = "&recordPacking=xml";
+    		int startRecord = 1;
+    		int maximumRecords = 1;
+
+    		String loc = str1+Integer.toString(maximumRecords) +
+    			str2+Integer.toString(startRecord)+str3;
     		//String loc = "http://dfr.jstor.org/sru/";
     		URL url = new URL(loc);
 
     		HostConfiguration hostConfig = new HostConfiguration();
-        	hostConfig.setHost(url.getHost(), url.getPort());
-        	HttpClient httpClient = new HttpClient(new SimpleHttpConnectionManager());
-        	httpClient.setHostConfiguration(hostConfig);
-        	//PostMethod postMethod = new PostMethod(loc);
-        	GetMethod getMethod = new GetMethod(loc);
+    		hostConfig.setHost(url.getHost(), url.getPort());
+    		HttpClient httpClient = new HttpClient(new SimpleHttpConnectionManager());
+    		httpClient.setHostConfiguration(hostConfig);
+    		//PostMethod postMethod = new PostMethod(loc);
+    		GetMethod getMethod = new GetMethod(loc);
 
-        	/*postMethod.addParameter("operation", "searchRetrieve");
+    		/*postMethod.addParameter("operation", "searchRetrieve");
         	postMethod.addParameter("query", "jstor.text+=+jefferson");
         	postMethod.addParameter("version", "1.1");*/
 
-        	//httpClient.executeMethod(postMethod);
-        	httpClient.executeMethod(getMethod);
+    		//httpClient.executeMethod(postMethod);
+    		int responseCode = httpClient.executeMethod(getMethod);
 
-        	BufferedReader in = new BufferedReader(
-        			new InputStreamReader(/*postMethod*/getMethod.getResponseBodyAsStream()));
-        	String line = null;
-        	StringBuffer buf = new StringBuffer();
-        	while((line = in.readLine()) != null) {
-        		buf.append(line).append("\n");
-        		//console.fine(line);
-        	}
-        	in.close();
-
-        	System.out.println(buf.toString());
-
-        	cc.pushDataComponentToOutput(DATA_OUTPUT, buf.toString());
-
+    		if(responseCode == 200) {
+    			BufferedReader in = new BufferedReader(
+    					new InputStreamReader(/*postMethod*/getMethod.getResponseBodyAsStream()));
+    			String line = null;
+    			while((line = in.readLine()) != null) {
+    				buf.append(line).append("\n");
+    				//console.fine(line);
+    			}
+    			in.close();
+    			String str = buf.toString();
+    			int beginIndex = str.indexOf("<numberOfRecords>"),
+    			    endIndex = str.indexOf("</numberOfRecords>");
+    			if(beginIndex != -1) {
+    				beginIndex += new String("<numberOfRecords>").length();
+    				maximumRecords = Integer.parseInt(
+    					str.substring(beginIndex, endIndex));
+    				loc = str1+Integer.toString(maximumRecords)+
+    					  str2+Integer.toString(startRecord)+
+    					  str3;
+    				buf.delete(0, buf.length());
+    				url = new URL(loc);
+    				hostConfig = new HostConfiguration();
+    	    		hostConfig.setHost(url.getHost(), url.getPort());
+    	    		httpClient = new HttpClient(new SimpleHttpConnectionManager());
+    	    		httpClient.setHostConfiguration(hostConfig);
+    	    		getMethod = new GetMethod(loc);
+    	    		responseCode = httpClient.executeMethod(getMethod);
+    	    		if(responseCode == 200) {
+    	    			in = new BufferedReader(
+    	    					new InputStreamReader(getMethod.getResponseBodyAsStream()));
+    	    			while((line = in.readLine()) != null)
+    	    				buf.append(line).append("\n");
+    	    			in.close();
+    	    			//System.out.println(buf.toString());
+    	    			cc.pushDataComponentToOutput(DATA_OUTPUT, buf.toString());
+    	    		}
+    			}
+    		}
     	}catch(Exception e) {
     		throw new ComponentExecutionException(e);
     	}
