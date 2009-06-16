@@ -55,6 +55,9 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.annotations.Component.FiringPolicy;
+import org.meandre.annotations.Component.Mode;
+import org.meandre.annotations.Component.Licenses;
 
 import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
@@ -66,11 +69,15 @@ import org.meandre.core.ComponentExecutionException;
            description="Demonstrates how to construct a interface to " +
            "consume rest service of jstor at " +
            "http://dfr.jstor.org/api.",
-           name="Rest Client",
+           name="JSTOR Client",
            tags="rest service",
-           baseURL="meandre://seasr.org/components/")
+           mode = Mode.compute,
+           firingPolicy = FiringPolicy.all,
+           rights = Licenses.UofINCSA,
+           baseURL="meandre://seasr.org/components/jstor/",
+           dependency = {"protobuf-java-2.0.3.jar"})
 
-public class JSTORRestClient extends AbstractExecutableComponent
+public class JSTORClient extends AbstractExecutableComponent
 {
 	@ComponentOutput(description="Output the XML passed from JSTOR." +
 			"<br>TYPE: java.lang.String",

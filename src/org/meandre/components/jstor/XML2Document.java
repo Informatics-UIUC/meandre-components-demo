@@ -54,6 +54,9 @@ import org.w3c.dom.Document;
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.annotations.Component.FiringPolicy;
+import org.meandre.annotations.Component.Licenses;
+import org.meandre.annotations.Component.Mode;
 
 import org.meandre.components.abstracts.AbstractExecutableComponent;
 import org.meandre.core.ComponentContext;
@@ -65,7 +68,11 @@ import org.meandre.core.ComponentExecutionException;
            description="Converts XML to doucment.",
            name="XML2Document",
            tags="xml document converter",
-           baseURL="meandre://seasr.org/components/")
+           mode = Mode.compute,
+           firingPolicy = FiringPolicy.all,
+           rights = Licenses.UofINCSA,
+           baseURL="meandre://seasr.org/components/jstor/",
+           dependency = {"protobuf-java-2.0.3.jar"})
 
 public class XML2Document extends AbstractExecutableComponent
 {

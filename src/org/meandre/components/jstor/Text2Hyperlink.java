@@ -42,16 +42,12 @@
 
 package org.meandre.components.jstor;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.net.URLEncoder;
 
 import org.meandre.annotations.Component;
 import org.meandre.annotations.ComponentInput;
 import org.meandre.annotations.ComponentOutput;
+import org.meandre.annotations.ComponentProperty;
 import org.meandre.annotations.Component.FiringPolicy;
 import org.meandre.annotations.Component.Licenses;
 import org.meandre.annotations.Component.Mode;
@@ -63,24 +59,30 @@ import org.meandre.core.ComponentContextProperties;
 import org.meandre.core.ComponentExecutionException;
 
 @Component(creator="Lily Dong",
-           description="Extracts text content from document.",
-           name="Text Extractor",
-           tags="text extractor",
+           description="Converts text to hyperlink.",
+           name="Text2Hyperlink",
+           tags="text hyperlink converter",
            mode = Mode.compute,
            firingPolicy = FiringPolicy.all,
            rights = Licenses.UofINCSA,
            baseURL="meandre://seasr.org/components/jstor/",
            dependency = {"protobuf-java-2.0.3.jar"})
 
-public class TextExtractor extends AbstractExecutableComponent
+public class Text2Hyperlink extends AbstractExecutableComponent
 {
-	@ComponentInput(description="Read document." +
-            "<br>TYPE:  org.w3c.dom.Document",
-                name= "document")
-    public final static String DATA_INPUT = "document";
+	/*@ComponentProperty(defaultValue="",
+			description="This property specifies the search value.",
+			name="query")
+    final static String DATA_PROPERTY = "query";*/
 
-	@ComponentOutput(description="Output text content extracted from document." +
-			"<br>TYPE: java.lang.String",
+
+	@ComponentInput(description="Read text." +
+	            "<br>TYPE: java.lang.String",
+	                name= "string")
+	public final static String DATA_INPUT = "string";
+
+	@ComponentOutput(description="Output hyperlink." +
+				"<br>TYPE: java.lang.String",
 	                 name="string")
 	public final static String DATA_OUTPUT = "string";
 
@@ -92,45 +94,13 @@ public class TextExtractor extends AbstractExecutableComponent
      */
     public void executeCallBack(ComponentContext cc)
     throws Exception {
-    	Document source = (Document)cc.getDataComponentFromInput(DATA_INPUT);
+    	String str = (String)cc.getDataComponentFromInput(DATA_INPUT);
     	try {
-    		StringBuffer buf = new StringBuffer();
-    		listNodes(source.getDocumentElement(), "dc:description", buf);
-
-    		console.info(buf.toString());
-
-        	cc.pushDataComponentToOutput(DATA_OUTPUT, buf.toString());
+        	cc.pushDataComponentToOutput(
+        			DATA_OUTPUT, URLEncoder.encode(str, "UTF-8"));
     	}catch(Exception e) {
     		throw new ComponentExecutionException(e);
     	}
-    }
-
-    /**
-     *
-     * @param node root of document
-     * @param info info to be extracted
-     * @param buf the extracted content
-     */
-    private void listNodes(Node node,
-    					   String info,
-    					   StringBuffer buf) {
-    	String nodeName = node.getNodeName();
-    	if (node instanceof Element && nodeName.equals(info)) {
-    		String str = node.getTextContent();
-    		int beginIndex = str.indexOf("ABSTRACT:");
-    		beginIndex += beginIndex+new String("ABSTRACT:").length();
-    		buf.append(str.substring(beginIndex));
-    	    /*NamedNodeMap attrs = node.getAttributes();
-    	    for (int i = 0; i < attrs.getLength(); i++) {
-    	        Attr attribute = (Attr) attrs.item(i);
-    	        System.out.println(attribute.getName() + "="
-    	            + attribute.getValue());
-    	    }*/
-    	}
-    	NodeList list = node.getChildNodes();
-    	    if (list.getLength() > 0)
-    	      for (int i = 0; i < list.getLength(); i++)
-    	        listNodes(list.item(i), info, buf);
     }
 
 	/**
@@ -147,3 +117,4 @@ public class TextExtractor extends AbstractExecutableComponent
 	throws Exception {
 	}
 }
+
